@@ -30,3 +30,4 @@ The following tutorial will also work and includes a GUI, but needs additional s
 # Devs
 * ninjafella
 * Nourek
+* DoctorBambi
