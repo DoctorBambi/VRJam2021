@@ -26,3 +26,6 @@ git commit -a -m 'say what you did'
 git push
 ```
 The following tutorial will also work and includes a GUI, but needs additional software and can at times be confusing (in my experience and opinion): https://www.youtube.com/watch?v=qpXxcvS-g3g
+
+#Devs
+*ninjafella
