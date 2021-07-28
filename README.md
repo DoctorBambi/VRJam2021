@@ -1,7 +1,7 @@
 # VR Jam 2021
 This is the git setup for the VR Game Jam 2021. For instructions on how to use:
 <br />
-CLI (unix syntax, same on windows mostly):
+*CLI (unix syntax, same on windows mostly):*
 <br />
 <br />
 Download for the first time:
@@ -18,12 +18,12 @@ git clone https://github.com/JuliusWon/VRJam2021.git
 cd VRJam2021
 ```
 <br />
-Update project:
+#Update project:
 <br />
 ```bash
 git pull
 ```
-Sync project:
+#Sync project:
 <br />
 ```bash 
 git add .
