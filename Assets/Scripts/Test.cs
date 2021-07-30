@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-	string peopleWhoGotThisScriptToOpen="Nourek";
+	string peopleWhoGotThisScriptToOpen= ["Nourek", "ninjafella"];
     // Start is called before the first frame update
     void Start()
     {
