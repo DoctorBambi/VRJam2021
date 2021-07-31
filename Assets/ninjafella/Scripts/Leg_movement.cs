@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Leg_movement : MonoBehaviour
 {
-    public Animator m_animator;
+    //public Animator m_animator;
     private float number;
     private Vector3 velocity;
     private Vector3 previous;
@@ -29,36 +29,36 @@ public class Leg_movement : MonoBehaviour
         velocity = (transform.position - previous) / Time.deltaTime;
         previous = transform.position;
 
-        float x = getRidOfTrailingValues(Mathf.Abs(velocity.x));
-        float y = getRidOfTrailingValues(Mathf.Abs(velocity.y));
-        float z = getRidOfTrailingValues(Mathf.Abs(velocity.z));
+        float x = Mathf.Abs(velocity.x);
+        //Debug.Log("x:" + x);
+        float y = Mathf.Abs(velocity.y);
+        //Debug.Log("y:" + y);
+        float z = Mathf.Abs(velocity.z);
+        //Debug.Log("z:" + z);
         if (x == 0 && y == 0 && z == 0)
         {
             number = 0f;
-            m_animator.SetFloat("idk", number);
+            //m_animator.SetFloat("idk", number);
         }
         else
         {
             if (x < y && x < z)
             {
-                Debug.Log("x" + x);
                 number = ((x / divNum) / 11);
                 number = getRidOfTrailingValues(number);
-                m_animator.SetFloat("idk", number);
+                //m_animator.SetFloat("idk", number);
             }
             else if (y < x && y < z)
             {
-                Debug.Log("y" + y);
                 number = ((y / divNum) / 11);
                 number = getRidOfTrailingValues(number);
-                m_animator.SetFloat("idk", number);
+                //m_animator.SetFloat("idk", number);
             }
             else if (z < x && z < y)
             {
-                Debug.Log("z" + z);
                 number = ((z / divNum) / 11);
                 number = getRidOfTrailingValues(number);
-                m_animator.SetFloat("idk", number);
+                //m_animator.SetFloat("idk", number);
             }
         }
         Debug.Log("number:" + number);
