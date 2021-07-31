@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class TeleportBallController : MonoBehaviour
 {
-    //[Header("Components")]
+    [Header("Components")]
     [SerializeField] private GameObject targetPlayer;
+    [SerializeField] private LayerMask notColliding;
     [Header("Values")]
     [Tooltip("The speed in which the ball needs to travel in order to teleport")]
     [SerializeField] private float minVelocity = 4f;
@@ -16,6 +17,7 @@ public class TeleportBallController : MonoBehaviour
     private bool beingHeld;
     private bool thrown = false;
     private bool resetTeleport = true;
+    private bool collideWithTele = false;
     private float rememberTimer;
 
     private void Awake()
@@ -38,6 +40,15 @@ public class TeleportBallController : MonoBehaviour
         BallBeingThrown();
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == notColliding)
+        {
+            collideWithTele = true;
+            TestingBallTele();
+        }
+    }
+
     private void BallBeingThrown()
     {
        if(gameObject.GetComponent<Rigidbody>().velocity.magnitude > minVelocity)
@@ -56,10 +67,11 @@ public class TeleportBallController : MonoBehaviour
     /// </summary>
     private void StartTeleportProcess()
     {
-        if (!beingHeld && thrown == true)
+        if (!beingHeld && thrown == true && !collideWithTele)
         {
             if (resetTeleport)
             {
+                print("Starting Teleport Process");
                 Invoke("TestingBallTele", timeTillTele);
                 //timeTillTele -= Time.deltaTime;
                 //if (timeTillTele <= 0)
@@ -77,6 +89,7 @@ public class TeleportBallController : MonoBehaviour
 
     private void TestingBallTele()
     {
+        print("Testing Ball Tele Called");
         GameObject pointObj = new GameObject();
         pointObj.name = "telePoint";
         pointObj.transform.position = gameObject.transform.position;
@@ -85,10 +98,12 @@ public class TeleportBallController : MonoBehaviour
 
     private void TeleportPlayer(GameObject point)
     {
+        print("Teleport Player Called");
         //targetPlayer = GameObject.FindGameObjectWithTag("Player");
         targetPlayer.transform.position = point.transform.position;
         //resetTeleport = true;
         print(point.transform.position);
+        collideWithTele = false;
         Destroy(point);
         Destroy(gameObject);
     }
