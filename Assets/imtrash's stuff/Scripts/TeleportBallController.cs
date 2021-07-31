@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class TeleportBallController : MonoBehaviour
 {
-    [Header("Components")]
-    [SerializeField] private Transform targetPlayer;
+    //[Header("Components")]
+    private GameObject targetPlayer;
     [Header("Values")]
     [Tooltip("The speed in which the ball needs to travel in order to teleport")]
     [SerializeField] private float minVelocity = 4f;
@@ -64,17 +64,21 @@ public class TeleportBallController : MonoBehaviour
                 if (timeTillTele <= 0)
                 {
                     timeTillTele = rememberTimer;
-                    TeleportPlayer(gameObject.transform.position);
-                    //resetTeleport = false;
+                    GameObject pointObj = new GameObject();
+                    pointObj.name = "telePoint";
+                    pointObj.transform.position = gameObject.transform.position;
+                    TeleportPlayer(pointObj);
+                    resetTeleport = false;
                 }
             }
         }
     }
 
-    private void TeleportPlayer(Vector3 pos)
+    private void TeleportPlayer(GameObject point)
     {
-        targetPlayer.position = pos;
-        //resetTeleport = true;
-        Destroy(gameObject);
+        targetPlayer = GameObject.FindGameObjectWithTag("Player");
+        targetPlayer.transform.position = point.transform.position;
+        resetTeleport = true;
+        print(point.transform.position);
     }
 }
