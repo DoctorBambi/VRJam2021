@@ -6,7 +6,7 @@ using UnityEngine;
 public class TeleportBallController : MonoBehaviour
 {
     //[Header("Components")]
-    private GameObject targetPlayer;
+    [SerializeField] private GameObject targetPlayer;
     [Header("Values")]
     [Tooltip("The speed in which the ball needs to travel in order to teleport")]
     [SerializeField] private float minVelocity = 4f;
@@ -60,25 +60,36 @@ public class TeleportBallController : MonoBehaviour
         {
             if (resetTeleport)
             {
-                timeTillTele -= Time.deltaTime;
-                if (timeTillTele <= 0)
-                {
-                    timeTillTele = rememberTimer;
-                    GameObject pointObj = new GameObject();
-                    pointObj.name = "telePoint";
-                    pointObj.transform.position = gameObject.transform.position;
-                    TeleportPlayer(pointObj);
-                    resetTeleport = false;
-                }
+                Invoke("TestingBallTele", timeTillTele);
+                //timeTillTele -= Time.deltaTime;
+                //if (timeTillTele <= 0)
+                //{
+                //    timeTillTele = rememberTimer;
+                //    GameObject pointObj = new GameObject();
+                //    pointObj.name = "telePoint";
+                //    pointObj.transform.position = gameObject.transform.position;
+                //    TeleportPlayer(pointObj);
+                //    resetTeleport = false;
+                //}
             }
         }
     }
 
+    private void TestingBallTele()
+    {
+        GameObject pointObj = new GameObject();
+        pointObj.name = "telePoint";
+        pointObj.transform.position = gameObject.transform.position;
+        TeleportPlayer(pointObj);
+    }
+
     private void TeleportPlayer(GameObject point)
     {
-        targetPlayer = GameObject.FindGameObjectWithTag("Player");
+        //targetPlayer = GameObject.FindGameObjectWithTag("Player");
         targetPlayer.transform.position = point.transform.position;
-        resetTeleport = true;
+        //resetTeleport = true;
         print(point.transform.position);
+        Destroy(point);
+        Destroy(gameObject);
     }
 }

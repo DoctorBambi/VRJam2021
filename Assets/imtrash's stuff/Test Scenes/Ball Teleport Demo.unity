@@ -747,6 +747,11 @@ PrefabInstance:
       propertyPath: targetPlayer
       value: 
       objectReference: {fileID: 1958711590}
+    - target: {fileID: 605795514404158030, guid: 49ddfc2cd85ae6646af9e38ff05c2d47,
+        type: 3}
+      propertyPath: timeTillTele
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 3415528014463943396, guid: 49ddfc2cd85ae6646af9e38ff05c2d47,
         type: 3}
       propertyPath: m_Name
