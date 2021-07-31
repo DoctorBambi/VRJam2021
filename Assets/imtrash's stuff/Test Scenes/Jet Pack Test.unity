@@ -128,6 +128,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1403455982, guid: 0f9df8d02c9bafe49a092afcdf1f5074, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1265840278076346949, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6813231609968197283, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6813231609968197308, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6813231610204987864, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6813231611603224232, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
         type: 3}
       propertyPath: m_RootOrder
@@ -187,6 +211,36 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: HandJet (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6813231611603224235, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6813231611603224238, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+        type: 3}
+      propertyPath: CanBeDropped
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6813231611603224238, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+        type: 3}
+      propertyPath: HideHandGraphics
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6813231611603224238, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+        type: 3}
+      propertyPath: SecondaryGrabbable
+      value: 
+      objectReference: {fileID: 1487783306}
+    - target: {fileID: 6813231611603224238, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+        type: 3}
+      propertyPath: SecondaryGrabBehavior
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6813231611603224238, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+        type: 3}
+      propertyPath: MakeChildCollidersGrabbable
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0f9df8d02c9bafe49a092afcdf1f5074, type: 3}
@@ -422,7 +476,7 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 354497351}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &736896212
+--- !u!114 &736896214
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -592,6 +646,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: HandJet
       objectReference: {fileID: 0}
+    - target: {fileID: 6813231611603224238, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+        type: 3}
+      propertyPath: CanBeDropped
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6813231611603224238, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+        type: 3}
+      propertyPath: HideHandGraphics
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6813231611603224238, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+        type: 3}
+      propertyPath: SecondaryGrabbable
+      value: 
+      objectReference: {fileID: 1487783306}
+    - target: {fileID: 6813231611603224238, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+        type: 3}
+      propertyPath: SecondaryGrabBehavior
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0f9df8d02c9bafe49a092afcdf1f5074, type: 3}
 --- !u!1001 &1176270325
@@ -666,8 +740,19 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3415528014463943416, guid: 49ddfc2cd85ae6646af9e38ff05c2d47,
+        type: 3}
+      propertyPath: SecondaryGrabBehavior
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49ddfc2cd85ae6646af9e38ff05c2d47, type: 3}
+--- !u!4 &1218961092 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6813231611603224232, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+    type: 3}
+  m_PrefabInstance: {fileID: 61262006}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1420532609
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -737,25 +822,51 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a789d0b9ce34ff842880e59ef8261779, type: 3}
+--- !u!1 &1487783299 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3415528014463943396, guid: 49ddfc2cd85ae6646af9e38ff05c2d47,
+    type: 3}
+  m_PrefabInstance: {fileID: 1176270325}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1487783306 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3415528014463943416, guid: 49ddfc2cd85ae6646af9e38ff05c2d47,
     type: 3}
   m_PrefabInstance: {fileID: 1176270325}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1487783299}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5cdea428d48e2bb488d33d5f75c39bb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1487783311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1487783299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f8651e6d16dfee4d88f1bb4153fd4f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  jetHand0: {fileID: 1551132346}
+  jetHand1: {fileID: 1218961092}
+--- !u!4 &1551132346 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6813231611603224232, guid: 0f9df8d02c9bafe49a092afcdf1f5074,
+    type: 3}
+  m_PrefabInstance: {fileID: 1033919683}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1668380257 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 516478790668450256, guid: 47cf36bb32bf65c45aa4a110404cd5f6,
     type: 3}
   m_PrefabInstance: {fileID: 354497351}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1668380258
+--- !u!114 &1668380260
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
