@@ -7,7 +7,7 @@ public class ChunkLoading : MonoBehaviour
 	AsteroidSpawner astSpawner;
 	[SerializeField]
 	//curently occupied chunk
-	Vector3Int chunk; 
+	public Vector3Int chunk; 
 	[SerializeField]
 	Transform player;
 	public float chunkScale;
@@ -22,11 +22,12 @@ public class ChunkLoading : MonoBehaviour
 		Vector3 chunk_rough=player.position/chunkScale;
 		return new Vector3Int(Mathf.RoundToInt(chunk_rough.x),Mathf.RoundToInt(chunk_rough.y),Mathf.RoundToInt(chunk_rough.z));
 	}
+	void OnDrawGizmos(){
+		Gizmos.DrawCube(chunk*10, new Vector3(10,10,10));
+	}
 	void Update(){
 		bool changedChunkThisFrame = GetCurrentChunk() != chunk;
 		chunk = GetCurrentChunk();
-		/* Debug.Log(GetCurrentChunk()); */
-		/* Debug.Log(chunk); */
 		chunk chunkVar = chunks[GetCurrentChunk().x,GetCurrentChunk().y,GetCurrentChunk().z];
 		if(changedChunkThisFrame){
 			if(chunkVar != null){
@@ -39,10 +40,6 @@ public class ChunkLoading : MonoBehaviour
 				{
 					astSpawner.SpawnAsteroid(player.position);
 				}
-			}
-			foreach (Vector3 coord in chunkVar.asteroids)
-			{
-				Debug.Log(Physics.OverlapSphere(coord, .2f)[0].gameObject);	
 			}
 		}
 	}
