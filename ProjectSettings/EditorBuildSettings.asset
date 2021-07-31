@@ -8,21 +8,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/imtrash's stuff/BNG Framework/Scenes/XR Demo.unity
     guid: a1360534006d3f845bc79b46b93cfec5
-  - enabled: 0
+  - enabled: 1
     path: Assets/imtrash's stuff/BNG Framework/Scenes/Scene Transitioning.unity
     guid: 9d7c9629abf9c99449e358b0938b47d0
-  - enabled: 0
+  - enabled: 1
     path: Assets/imtrash's stuff/BNG Framework/Scenes/Physics Hands.unity
     guid: 34a4579517c578e4080d0a6ef2c96294
-  - enabled: 0
+  - enabled: 1
     path: Assets/imtrash's stuff/BNG Framework/Scenes/Rigidbody Player.unity
     guid: 57fc97c5771a777449aa8bd02514df22
-  - enabled: 0
+  - enabled: 1
     path: Assets/imtrash's stuff/BNG Framework/Scenes/Vehicle Example.unity
     guid: d96233ee44d985d4fb8dc23a907c06eb
-  - enabled: 0
-    path: Assets/ninjafella/IK.unity
-    guid: 06bb87707165d5d46ab7993d60fee42b
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: c20a830ddf0ba5741bc5badcc4b09bd0,
       type: 2}
