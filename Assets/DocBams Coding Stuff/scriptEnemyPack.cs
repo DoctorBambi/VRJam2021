@@ -6,6 +6,7 @@ using UnityEngine;
 public class scriptEnemyPack : MonoBehaviour
 {
     public GameObject[] enemyPrefabs;
+    public GameObject earth;
 
     public enum types
     {
@@ -17,12 +18,17 @@ public class scriptEnemyPack : MonoBehaviour
     private types type;
 
     public Transform packStartPoint;
-    public int packSize;
+    public int packSize = 5;
+    public float patrolAreaSize = 5;
+
+    private List<GameObject> packUnits = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
     {
         type = types.AllDriller;
+
+        SpawnPack(type, packStartPoint.position);
     }
 
     // Update is called once per frame
@@ -30,4 +36,49 @@ public class scriptEnemyPack : MonoBehaviour
     {
         
     }
+
+    public void SpawnPack(types type, Vector3 position)
+	{
+		switch (type)
+		{
+            case types.AllDriller:
+                GameObject pf;
+                foreach (GameObject go in enemyPrefabs)
+				{
+                    if (go.name.Contains("Driller"))
+					{
+                        pf = go;
+                        for (int i = 0; i < packSize; i++)
+                        {
+                            var unit = Instantiate(pf);
+
+                            unit.transform.position = Random.insideUnitSphere * patrolAreaSize + position;
+
+                            var script = unit.GetComponent<scriptEnemyDriller>();
+                            script.pack = this;
+
+                            packUnits.Add(unit);
+                        }
+                        break;
+					}
+				}
+                break;
+		}
+        
+	}
+
+    public void AlertPackMembers(Transform target)
+	{
+		switch (type)
+		{
+            case types.AllDriller:
+                foreach (GameObject unit in packUnits)
+                {
+                    var script = unit.GetComponent<scriptEnemyDriller>();
+                    script.target = target;
+                    script.SetCurrentState(scriptEnemyDriller.states.Chasing);
+                }
+                break;
+		}
+	}
 }
