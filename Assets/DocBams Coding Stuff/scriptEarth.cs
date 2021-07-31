@@ -18,6 +18,11 @@ public class scriptEarth : MonoBehaviour
     private states currentState;
     private states prevState;
 
+    private List<GameObject> attachedEnemies = new List<GameObject>();
+
+    //Coroutines
+    private IEnumerator dyingRoutine;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,11 +48,19 @@ public class scriptEarth : MonoBehaviour
             SetCurrentState(states.Dead);
 	}
 
+    public void EmbedInto(GameObject thingToEmbed)
+	{
+        attachedEnemies.Add(thingToEmbed);
+	}
+
     void HandleDeath()
 	{
-        //fancy coroutine stuff
-        Destroy(gameObject);
-	}
+        if (dyingRoutine == null)
+		{
+            dyingRoutine = DyingRoutine();
+            StartCoroutine(dyingRoutine);
+		}
+    }
 
     //sets the curent state and  caches the previous state
     public void SetCurrentState(states newState)
@@ -57,5 +70,21 @@ public class scriptEarth : MonoBehaviour
             prevState = currentState; //cache the previous state
             currentState = newState;
         }
+    }
+
+    //Coroutines
+    private IEnumerator DyingRoutine()
+    {
+        //Handle attached enemies
+        foreach (GameObject go in attachedEnemies)
+        {
+            go.SendMessage("DislodgeFrom", SendMessageOptions.DontRequireReceiver);
+        }
+        attachedEnemies.Clear();
+
+        yield return new WaitForSeconds(.25f); //give the enemies time to run their dislodge scripts
+
+        //Destroy the planet ;.;
+        Destroy(gameObject);
     }
 }

@@ -28,6 +28,9 @@ public class scriptEnemyDriller : MonoBehaviour
     private Rigidbody rb;
     private Transform target;
 
+    //Coroutines
+    private IEnumerator dislodgeRoutine;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -81,12 +84,15 @@ public class scriptEnemyDriller : MonoBehaviour
         if (earth != null)
             target = earth.transform;
 
-        //Look at target
-        transform.LookAt(Vector3.Lerp(transform.position, target.position, lookSpeed));
+        if (target != null)
+		{
+            //Look at target
+            transform.LookAt(Vector3.Lerp(transform.position, target.position, lookSpeed));
 
-        //Move toward the target
-        if (rb.velocity.sqrMagnitude < maxVelocity)
-            rb.AddForce(transform.forward * movementSpeed);
+            //Move toward the target
+            if (rb.velocity.sqrMagnitude < maxVelocity)
+                rb.AddForce(transform.forward * movementSpeed);
+		}
     }
 
     void HandleBraking()
@@ -101,7 +107,7 @@ public class scriptEnemyDriller : MonoBehaviour
         }
     }
 
-    //Weve embedded ourselves into an object, drill into it until its pulverized
+    //We've embedded ourselves into an object, drill into it until it is pulverized
     void HandleEmbed()
 	{
         transform.parent.SendMessage("HandleDamage", drillDamage, SendMessageOptions.DontRequireReceiver);
@@ -117,14 +123,17 @@ public class scriptEnemyDriller : MonoBehaviour
 	{
         print(collision.collider.name);
 
-        if (collision.collider.CompareTag("Asteroid"))
-        {
-            Obliterate(collision.collider.gameObject);
-		}
-        else if (collision.collider.CompareTag("Earth"))
+        if (currentState == states.Chasing)
 		{
-            EmbedInto(collision.collider.gameObject);
-		}
+            if (collision.collider.CompareTag("Asteroid"))
+            {
+                Obliterate(collision.collider.gameObject);
+            }
+            else if (collision.collider.CompareTag("Earth"))
+            {
+                EmbedInto(collision.collider.gameObject);
+            }
+        }
 	}
 
     //pulverize a thing into dust
@@ -146,17 +155,17 @@ public class scriptEnemyDriller : MonoBehaviour
         //rb.isKinematic = true;
 
         transform.SetParent(target.transform, true);
-	}
+        target.SendMessage("EmbedInto", gameObject, SendMessageOptions.DontRequireReceiver);
+    }
 
     //unparents the driller and allows it to move again
-    public void DislodgeFrom(GameObject target)
+    public void DislodgeFrom()
 	{
-        currentState = states.Idle;
-        //rb.isKinematic = false;
-        gameObject.AddComponent<Rigidbody>();
-        rb.AddForce(-transform.forward * movementSpeed);//back the enemy away from embeded target
-
-        transform.SetParent(null, true);//need to set to the scene
+        if (dislodgeRoutine == null)
+        {
+            dislodgeRoutine = DislodgeRoutine();
+            StartCoroutine(dislodgeRoutine);
+        }
     }
 
     //sets the curent state and caches the previous state
@@ -168,4 +177,31 @@ public class scriptEnemyDriller : MonoBehaviour
             currentState = newState;
         }
 	}
+
+    //Reapply the rigidbody with driller settings, this is super not ideal.
+    private void ReinitializeRidgidBody()
+	{
+        //rb.isKinematic = false;
+        rb = gameObject.AddComponent<Rigidbody>();
+        rb.useGravity = false;
+        rb.mass = .1f;
+        rb.drag = .1f;
+        rb.angularDrag = .05f;
+    }
+
+    //Coroutines
+    private IEnumerator DislodgeRoutine()
+    {
+        SetCurrentState(states.Idle);
+        target = null;
+        transform.SetParent(null, true);//set parent to the scene
+
+        ReinitializeRidgidBody();
+
+        rb.AddForce(-transform.forward * movementSpeed);//back the enemy away from embeded target
+
+        yield return new WaitForSeconds(2f); //give the enemy time to back away from asteroid
+
+        SetCurrentState(states.Chasing);
+    }
 }
