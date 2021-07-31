@@ -48,7 +48,7 @@ GameObject:
   - component: {fileID: 8442218428292457778}
   - component: {fileID: 8442218428292457789}
   m_Layer: 0
-  m_Name: Driller
+  m_Name: prefabDriller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81,13 +81,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c472ba17fd42614d84049f43b9338bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  earth: {fileID: 0}
-  sightRadius: 50
+  pack: {fileID: 0}
+  sightRadius: 3
   movementSpeed: 0.1
   maxVelocity: 10
   lookSpeed: 0.1
   breakingSpeed: 0.02
   drillDamage: 0.1
+  stunCooldown: 5
+  target: {fileID: 0}
 --- !u!54 &8442218428292457788
 Rigidbody:
   m_ObjectHideFlags: 0

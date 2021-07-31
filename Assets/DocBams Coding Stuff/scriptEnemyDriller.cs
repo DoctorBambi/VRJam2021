@@ -4,17 +4,19 @@ using UnityEngine;
 
 public class scriptEnemyDriller : MonoBehaviour
 {
-    public GameObject earth;
-    public float sightRadius = 50f;
+    public scriptEnemyPack pack;
+    public float sightRadius = 3f;
     public float movementSpeed = 10f;
     public float maxVelocity = 10f;
     public float lookSpeed = .1f;
     public float breakingSpeed = .01f;
     public float drillDamage = .1f;
+    public float stunCooldown = 5f;
 
     public enum states
     {
         Idle,
+        Patrolling,
         Chasing,
         Attacking,
         Embedded,
@@ -26,10 +28,11 @@ public class scriptEnemyDriller : MonoBehaviour
     private states prevState;
 
     private Rigidbody rb;
-    private Transform target;
+    public Transform target;
 
     //Coroutines
     private IEnumerator dislodgeRoutine;
+    private IEnumerator stunRoutine;
 
     // Start is called before the first frame update
     void Start()
@@ -39,7 +42,7 @@ public class scriptEnemyDriller : MonoBehaviour
         if (rb == null) Debug.LogError("No rigidbody found for this enemy.");
 
         //Initial state
-        SetCurrentState(states.Chasing);
+        SetCurrentState(states.Patrolling);
     }
 
     // Update is called once per frame
@@ -50,6 +53,10 @@ public class scriptEnemyDriller : MonoBehaviour
         {
             HandleIdle();
         }
+        else if (currentState == states.Patrolling)
+		{
+            HandlePatrolling();
+		}
         //Chase Mode
         else if (currentState == states.Chasing)
 		{
@@ -78,11 +85,24 @@ public class scriptEnemyDriller : MonoBehaviour
         target = null;
 	}
 
+    void HandlePatrolling()
+	{
+        
+
+        //Check if we sense the player.
+        var dist = Vector3.Distance(transform.position, pack.earth.transform.position);
+
+        if (dist < sightRadius)
+		{
+            pack.AlertPackMembers(pack.earth.transform);
+		}
+	}
+
     void HandleChasing()
 	{
         //Target the earth
-        if (earth != null)
-            target = earth.transform;
+        //if (earth != null)
+        //    target = earth.transform;
 
         if (target != null)
 		{
@@ -123,6 +143,13 @@ public class scriptEnemyDriller : MonoBehaviour
 	{
         print(collision.collider.name);
 
+        //general collisions
+        if (collision.transform.name.Contains("Hand"))//if we collide with player's hand
+		{
+            Stun();
+		}
+
+        //chase contextual collisions
         if (currentState == states.Chasing)
 		{
             if (collision.collider.CompareTag("Asteroid"))
@@ -168,6 +195,15 @@ public class scriptEnemyDriller : MonoBehaviour
         }
     }
 
+    public void Stun()
+	{
+        if (stunRoutine == null)
+        {
+            stunRoutine = StunRoutine();
+            StartCoroutine(stunRoutine);
+        }
+	}
+
     //sets the curent state and caches the previous state
     public void SetCurrentState(states newState)
 	{
@@ -203,5 +239,18 @@ public class scriptEnemyDriller : MonoBehaviour
         yield return new WaitForSeconds(2f); //give the enemy time to back away from asteroid
 
         SetCurrentState(states.Chasing);
+
+        dislodgeRoutine = null;
+    }
+
+    private IEnumerator StunRoutine()
+    {
+        SetCurrentState(states.Stunned);
+
+        yield return new WaitForSeconds(stunCooldown); //oo we stunned
+
+        SetCurrentState(prevState);
+
+        stunRoutine = null;
     }
 }
