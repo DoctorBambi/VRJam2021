@@ -18,7 +18,7 @@ public class AsteroidSpawner : MonoBehaviour
 	GameObject Asteroid;
 	[SerializeField]
 	float chunkRadius = 10;
-	void SpawnAsteroid(Vector3 basePosition){
+	public void SpawnAsteroid(Vector3 basePosition){
 		Vector3 scaleA = baseSize * RandomConstVectorThree(1-sizeVariation, 1+sizeVariation); 
 		Vector3 positionA = basePosition+RandomConstVectorThree(-chunkRadius,chunkRadius);
 		GameObject tempAsteroid = Instantiate(Asteroid);
