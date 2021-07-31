@@ -10,7 +10,8 @@ public class AsteroidDespawner : MonoBehaviour
 		cl = FindObjectOfType<ChunkLoading>();
 	}
 	void Update(){
-		if(transform.position.x>(float)cl.chunk.x+dist||transform.position.x<(float)cl.chunk.x-dist||transform.position.x>(float)cl.chunk.y+dist||transform.position.x<(float)cl.chunk.y-dist||transform.position.x>(float)cl.chunk.z+dist||transform.position.x<(float)cl.chunk.z-dist){
+		if(Vector3.Distance(transform.position, cl.chunk*10)>20){
+		/* if(transform.position.x>(float)cl.chunk.x+dist||transform.position.x<(float)cl.chunk.x-dist||transform.position.x>(float)cl.chunk.y+dist||transform.position.x<(float)cl.chunk.y-dist||transform.position.x>(float)cl.chunk.z+dist||transform.position.x<(float)cl.chunk.z-dist){ */
 			Destroy(this.gameObject);
 		}
 	}

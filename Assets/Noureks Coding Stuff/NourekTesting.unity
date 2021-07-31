@@ -370,6 +370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 520d2ac774dd4a78da5ab21f93e46b3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cl: {fileID: 1924808571}
   sizeVariation: 0.25
   baseSize: 1
   Asteroid: {fileID: 4104852569633097451, guid: 78d90bb82c8eaf0eea7005dac2bf655f,
@@ -387,6 +388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 303e6e3ca63f7b9ce832fc772cbed0b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  astSpawner: {fileID: 1924808570}
   chunk: {x: 0, y: 0, z: 0}
   player: {fileID: 658221998}
   chunkScale: 10
