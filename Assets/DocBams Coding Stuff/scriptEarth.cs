@@ -16,8 +16,8 @@ public class scriptEarth : MonoBehaviour
         Dead
     }
 
-    private states currentState;
-    private states prevState;
+    public states currentState;
+    public states prevState;
 
     private List<GameObject> attachedEnemies = new List<GameObject>();
 
@@ -72,7 +72,7 @@ public class scriptEarth : MonoBehaviour
 
 	}
 
-    //sets the curent state and  caches the previous state
+    //sets the curent state and caches the previous state
     public void SetCurrentState(states newState)
     {
         if (newState != currentState)

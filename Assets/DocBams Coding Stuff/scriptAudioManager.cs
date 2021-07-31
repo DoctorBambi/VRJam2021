@@ -38,10 +38,14 @@ public class scriptAudioManager : MonoBehaviour
         //Enemy territory
         else if (currentVibe == vibes.EnemyTerritory)
             HandleEnemyTerritory();
+        //It's go time
         else if (currentVibe == vibes.Alerted)
             HandleAlerted();
+        //It's go time
+        else if (currentVibe == vibes.Dead)
+            HandleDead();
 
-        CheckEnemyPacks();
+        CheckUnits();
     }
 
     //sets the curent vibe and  caches the previous vibe
@@ -102,10 +106,33 @@ public class scriptAudioManager : MonoBehaviour
         }
 	}
 
-    void CheckEnemyPacks()
+    void HandleDead()
+	{
+        if (vibeChange)
+        {
+            TransitionMusic();
+        }
+
+        if (playLoopRoutine == null && vibeChange) //only one-shot this.
+		{
+            playLoopRoutine = PlayLoopRoutine(earth.GetComponent<AudioSource>(), vibes.Dead);
+            StartCoroutine(playLoopRoutine);
+        }
+	}
+
+    void CheckUnits()
     {
         vibes vibe = vibes.Chill;
 
+        //If the earth is dead, then what's the point?!
+        if (earth.GetComponent<scriptEarth>().currentState == scriptEarth.states.Dead)
+		{
+            vibe = vibes.Dead;
+            SetCurrentVibe(vibe);
+            return;
+		}
+
+        //Check the enemy packs to get their thoughts
         foreach (GameObject pack in enemyPacks)
         {
             var packScript = pack.GetComponent<scriptEnemyPack>();
