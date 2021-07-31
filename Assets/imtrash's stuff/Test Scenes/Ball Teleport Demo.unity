@@ -583,24 +583,9 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 605795514404158030, guid: 49ddfc2cd85ae6646af9e38ff05c2d47,
         type: 3}
-      propertyPath: minVelocity
-      value: 6.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 605795514404158030, guid: 49ddfc2cd85ae6646af9e38ff05c2d47,
-        type: 3}
       propertyPath: targetPlayer
       value: 
       objectReference: {fileID: 1860171999}
-    - target: {fileID: 605795514404158030, guid: 49ddfc2cd85ae6646af9e38ff05c2d47,
-        type: 3}
-      propertyPath: timeTillTele
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 605795514404158030, guid: 49ddfc2cd85ae6646af9e38ff05c2d47,
-        type: 3}
-      propertyPath: notColliding.m_Bits
-      value: 4096
-      objectReference: {fileID: 0}
     - target: {fileID: 3415528014463943396, guid: 49ddfc2cd85ae6646af9e38ff05c2d47,
         type: 3}
       propertyPath: m_Name

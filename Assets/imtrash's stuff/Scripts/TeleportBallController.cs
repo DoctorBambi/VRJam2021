@@ -7,7 +7,6 @@ public class TeleportBallController : MonoBehaviour
 {
     [Header("Components")]
     [SerializeField] private GameObject targetPlayer;
-    [SerializeField] private LayerMask notColliding;
     [Header("Values")]
     [Tooltip("The speed in which the ball needs to travel in order to teleport")]
     [SerializeField] private float minVelocity = 4f;
@@ -42,8 +41,10 @@ public class TeleportBallController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.layer == notColliding)
+        print(collision.gameObject.layer);
+        if (collision.gameObject.layer == 12)
         {
+            print("Passed Layer Check");
             collideWithTele = true;
             TestingBallTele();
         }
