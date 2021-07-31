@@ -86,5 +86,7 @@ public class scriptEarth : MonoBehaviour
 
         //Destroy the planet ;.;
         Destroy(gameObject);
+
+        dyingRoutine = null;
     }
 }
