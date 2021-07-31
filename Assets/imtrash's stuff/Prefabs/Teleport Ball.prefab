@@ -296,9 +296,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetPlayer: {fileID: 0}
-  notColliding:
-    serializedVersion: 2
-    m_Bits: 4096
   minVelocity: 6.5
   timeTillTele: 2
 --- !u!114 &605795514404158031
