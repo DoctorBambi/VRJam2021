@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 9160a82712976926c9cd4ad9d16c109b, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,8 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.00020029859, g: 0.00020950442, b: 0.00020029859,
+    a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -546,8 +547,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cl: {fileID: 1924808571}
   sizeVariation: 0.25
-  baseSize: 1
-  Asteroid: {fileID: 4104852569633097451, guid: 78d90bb82c8eaf0eea7005dac2bf655f,
+  baseSize: 0.5
+  Asteroid: {fileID: 5968722300495988370, guid: 3eddfae553b42e18383a6b7dcd0519c5,
     type: 3}
   chunkRadius: 10
 --- !u!114 &1924808571
