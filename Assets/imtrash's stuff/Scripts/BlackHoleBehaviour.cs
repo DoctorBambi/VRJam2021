@@ -19,6 +19,11 @@ public class BlackHoleBehaviour : MonoBehaviour
         victims.Remove(other.gameObject);
     }
 
+    public void RemoveObjectOnList(GameObject other)
+    {
+        victims.Remove(other);
+    }
+
     private void Update()
     {
         PullObjects();
