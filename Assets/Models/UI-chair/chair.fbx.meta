@@ -1,0 +1,367 @@
+fileFormatVersion: 2
+guid: b0de4bb7f3da84299b476f18e54bd3ee
+ModelImporter:
+  serializedVersion: 19301
+  internalIDToNameTable:
+  - first:
+      74: -5064176109800382233
+    second: chair|AreaAction
+  - first:
+      74: -6252950703230383016
+    second: chair|chairAction
+  - first:
+      74: 4137909786307616730
+    second: chair|Cube.001Action.003
+  - first:
+      74: 6941273502657212578
+    second: chair|Cube.001Action.007
+  - first:
+      74: -2231288646698645689
+    second: chair|Cube.001Action.011
+  - first:
+      74: -1164663071200939161
+    second: chair|Cube.001Action.016
+  - first:
+      74: 1707385075730791508
+    second: chair|Cube.002Action
+  - first:
+      74: 3002332366626649164
+    second: chair|Cube.002Action.002
+  - first:
+      74: -1505075704105103042
+    second: chair|Cube.002Action.004
+  - first:
+      74: -7739064643399387384
+    second: chair|doorAction.002
+  - first:
+      74: 2403784606252853149
+    second: chair|Light.001Action
+  - first:
+      74: -8949571273749200787
+    second: chair|PointAction.001
+  - first:
+      74: 8097882068314776103
+    second: chair|TextAction.007
+  - first:
+      74: 4691028006507446120
+    second: chair|TextAction.011
+  - first:
+      74: 2174176959090483578
+    second: chair|Torus.001Action
+  - first:
+      74: -6022232669029363323
+    second: Left UI handle|AreaAction
+  - first:
+      74: -2486274848352452617
+    second: Left UI handle|chairAction
+  - first:
+      74: 3557870381885464071
+    second: Left UI handle|Cube.001Action.003
+  - first:
+      74: 7089708801864948130
+    second: Left UI handle|Cube.001Action.007
+  - first:
+      74: -3678502760596939752
+    second: Left UI handle|Cube.001Action.011
+  - first:
+      74: 869316812378470715
+    second: Left UI handle|Cube.001Action.016
+  - first:
+      74: 2342949029283023195
+    second: Left UI handle|Cube.002Action
+  - first:
+      74: -8909072386177836037
+    second: Left UI handle|Cube.002Action.002
+  - first:
+      74: 8383964966120470243
+    second: Left UI handle|Cube.002Action.004
+  - first:
+      74: 7728358391461951669
+    second: Left UI handle|doorAction.002
+  - first:
+      74: 1845329936261037205
+    second: Left UI handle|Light.001Action
+  - first:
+      74: 5472627080892125030
+    second: Left UI handle|PointAction.001
+  - first:
+      74: 2892329814135220365
+    second: Left UI handle|TextAction.007
+  - first:
+      74: -7637407176324530713
+    second: Left UI handle|TextAction.011
+  - first:
+      74: 9031574362168102836
+    second: Left UI handle|Torus.001Action
+  - first:
+      74: 5132379476458309265
+    second: Left UI handle.001|AreaAction
+  - first:
+      74: -1809410642855619648
+    second: Left UI handle.001|chairAction
+  - first:
+      74: -6424956399856255524
+    second: Left UI handle.001|Cube.001Action.003
+  - first:
+      74: -2899534585004512001
+    second: Left UI handle.001|Cube.001Action.007
+  - first:
+      74: 1768545860571227066
+    second: Left UI handle.001|Cube.001Action.011
+  - first:
+      74: -607349130192942282
+    second: Left UI handle.001|Cube.001Action.016
+  - first:
+      74: -5618769277657507947
+    second: Left UI handle.001|Cube.002Action
+  - first:
+      74: 1995745484826148152
+    second: Left UI handle.001|Cube.002Action.002
+  - first:
+      74: -2328133870760142638
+    second: Left UI handle.001|Cube.002Action.004
+  - first:
+      74: -2191539161081114779
+    second: Left UI handle.001|doorAction.002
+  - first:
+      74: 2578192044726095904
+    second: Left UI handle.001|Light.001Action
+  - first:
+      74: 8643747896171571207
+    second: Left UI handle.001|PointAction.001
+  - first:
+      74: -3263165511031855154
+    second: Left UI handle.001|TextAction.007
+  - first:
+      74: 7205777657231848616
+    second: Left UI handle.001|TextAction.011
+  - first:
+      74: -260643449551928779
+    second: Left UI handle.001|Torus.001Action
+  - first:
+      74: 3214056488143117968
+    second: UI handle|AreaAction
+  - first:
+      74: -8917190562465028904
+    second: UI handle|chairAction
+  - first:
+      74: 357353225108779277
+    second: UI handle|Cube.001Action.003
+  - first:
+      74: -1714531057768735913
+    second: UI handle|Cube.001Action.007
+  - first:
+      74: -3399553049993093983
+    second: UI handle|Cube.001Action.011
+  - first:
+      74: -7593727567184017180
+    second: UI handle|Cube.001Action.016
+  - first:
+      74: 2581714151327595044
+    second: UI handle|Cube.002Action
+  - first:
+      74: 1684009109997721052
+    second: UI handle|Cube.002Action.002
+  - first:
+      74: -3278215348375070093
+    second: UI handle|Cube.002Action.004
+  - first:
+      74: -4870395599914442562
+    second: UI handle|doorAction.002
+  - first:
+      74: 2272624666685019896
+    second: UI handle|Light.001Action
+  - first:
+      74: -4318763489860327468
+    second: UI handle|PointAction.001
+  - first:
+      74: 882325028809963844
+    second: UI handle|TextAction.007
+  - first:
+      74: -5438109282971105233
+    second: UI handle|TextAction.011
+  - first:
+      74: 5405395947826683644
+    second: UI handle|Torus.001Action
+  - first:
+      74: 2048342054984950515
+    second: Text.004|AreaAction
+  - first:
+      74: -1396192091581540223
+    second: Text.004|chairAction
+  - first:
+      74: 3454115433369164750
+    second: Text.004|Cube.001Action.003
+  - first:
+      74: 126340480732232154
+    second: Text.004|Cube.001Action.007
+  - first:
+      74: -9110642342441821028
+    second: Text.004|Cube.001Action.011
+  - first:
+      74: 7310773300592548028
+    second: Text.004|Cube.001Action.016
+  - first:
+      74: -6356258772688135959
+    second: Text.004|Cube.002Action
+  - first:
+      74: -1463861988121491936
+    second: Text.004|Cube.002Action.002
+  - first:
+      74: -2154806677097023100
+    second: Text.004|Cube.002Action.004
+  - first:
+      74: 2828563827796075537
+    second: Text.004|doorAction.002
+  - first:
+      74: 785290197540320009
+    second: Text.004|Light.001Action
+  - first:
+      74: 5541677187088370966
+    second: Text.004|PointAction.001
+  - first:
+      74: 3433518030462480830
+    second: Text.004|TextAction.007
+  - first:
+      74: -7758708016587740729
+    second: Text.004|TextAction.011
+  - first:
+      74: -6257386713029199564
+    second: Text.004|Torus.001Action
+  - first:
+      74: 8549448955011714571
+    second: Text.005|AreaAction
+  - first:
+      74: 644020274185433113
+    second: Text.005|chairAction
+  - first:
+      74: 1813964533480225598
+    second: Text.005|Cube.001Action.003
+  - first:
+      74: 6895307763492160022
+    second: Text.005|Cube.001Action.007
+  - first:
+      74: 7851088739480676806
+    second: Text.005|Cube.001Action.011
+  - first:
+      74: 464637826601392963
+    second: Text.005|Cube.001Action.016
+  - first:
+      74: -2476675023776034016
+    second: Text.005|Cube.002Action
+  - first:
+      74: 3698915701411696091
+    second: Text.005|Cube.002Action.002
+  - first:
+      74: -4212786304251661692
+    second: Text.005|Cube.002Action.004
+  - first:
+      74: 4182743753528388595
+    second: Text.005|doorAction.002
+  - first:
+      74: 7387507582410679294
+    second: Text.005|Light.001Action
+  - first:
+      74: 7748445987775154107
+    second: Text.005|PointAction.001
+  - first:
+      74: 2157173513090870996
+    second: Text.005|TextAction.007
+  - first:
+      74: -8182157584526867804
+    second: Text.005|TextAction.011
+  - first:
+      74: 3677779663551471577
+    second: Text.005|Torus.001Action
+  externalObjects: {}
+  materials:
+    materialImportMode: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
