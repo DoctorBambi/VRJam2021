@@ -10,7 +10,7 @@ public class leEarth
     public Vector3 smallSize;
     private Vector3 originalSize;
     public float shrinkSpeed = 5f;
-
+    public AudioSource voice;
     public IEnumerator shrink()
     {
         float startTime = Time.time;
@@ -25,7 +25,12 @@ public class leEarth
             yield return null;
 
         }
+        yield return new WaitForSeconds(5f);
+        voice.enabled = true;
+
     }
+
+
 }
 
 [System.Serializable]
@@ -74,13 +79,14 @@ public class Line
     public LineRenderer lineRednerer;
     public Vector3 endPosition;
     private Vector3 startPosition;
+    public AudioSource beamSound;
 
     public IEnumerator extend()
     {
         float startTime = Time.time;
 
         startPosition = lineRednerer.GetPosition(0);
-
+        beamSound.enabled = true;
         Vector3 pos = startPosition;
         while (pos != endPosition)
         {
@@ -89,6 +95,7 @@ public class Line
             lineRednerer.SetPosition(1, pos);
             yield return null;
         }
+        
     }
 
     public IEnumerator retract()
@@ -114,6 +121,7 @@ public class CutScene_controller : MonoBehaviour
     public GameObject earthTrigger;
     public Ship ship;
     public GameObject arrow;
+    public GameObject info;
 
     // Start is called before the first frame update
     void Start()
@@ -145,6 +153,6 @@ public class CutScene_controller : MonoBehaviour
 
         earthTrigger.SetActive(true);
         arrow.SetActive(true);
-
+        info.SetActive(true);
     }
 }
