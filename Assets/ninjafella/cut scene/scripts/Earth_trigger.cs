@@ -9,7 +9,7 @@ public class Earth_trigger : MonoBehaviour
     {
         if (other.tag == "Player")
         {
-            //SceneManager.LoadScene(1, LoadSceneMode.Single);
+            SceneManager.LoadScene(0, LoadSceneMode.Single);
         }
     }
 }
