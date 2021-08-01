@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/imtrash's stuff/Test Scenes/Jet Pack Test.unity
+    guid: d8ac3f08df4d93b44977e041a2019866
+  - enabled: 1
     path: Assets/imtrash's stuff/BNG Framework/Scenes/XR Demo.unity
     guid: a1360534006d3f845bc79b46b93cfec5
   - enabled: 1
