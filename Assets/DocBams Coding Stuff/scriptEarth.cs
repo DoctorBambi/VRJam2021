@@ -71,6 +71,7 @@ public class scriptEarth : MonoBehaviour
         health -= damageAmount;
 
         if (health <= 0)
+			SceneManager.LoadScene(2);
             SetCurrentState(states.Dead);
 	}
 
