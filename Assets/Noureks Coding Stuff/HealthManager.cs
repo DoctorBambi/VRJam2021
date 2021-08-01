@@ -5,6 +5,10 @@ using UnityEngine.SceneManagement;
 public class HealthManager : MonoBehaviour
 {
 	[SerializeField]
+	AudioClip deathMusic;
+	[SerializeField]
+	AudioSource audioSource;
+	[SerializeField]
 	GameObject deathScreen;
 	public int health;
 	public bool isDead;
@@ -23,7 +27,9 @@ public class HealthManager : MonoBehaviour
 		}
 		if(isDead){
 			deathScreen.SetActive(true);
-			Time.timeScale=0;
+			audioSource.clip = deathMusic;
+			audioSource.Play();
+			Invoke("ReloadScene",10f);
 		}
 	}
 	void takeDamage(int damage){
