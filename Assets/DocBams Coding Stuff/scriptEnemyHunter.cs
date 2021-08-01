@@ -2,18 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class scriptEnemyDriller : scriptEnemy
+public class scriptEnemyHunter : scriptEnemy
 {
-
-    public float drillDamage = .1f;
-
     public enum states
     {
         Idle,
         Patrolling,
         Chasing,
         Attacking,
-        Embedded,
         Braking,
         Stunned
     }
@@ -22,7 +18,6 @@ public class scriptEnemyDriller : scriptEnemy
     private states prevState;
 
     //Coroutines
-    private IEnumerator dislodgeRoutine;
     private IEnumerator patrolRoutine;
     private IEnumerator stunRoutine;
 
@@ -47,39 +42,34 @@ public class scriptEnemyDriller : scriptEnemy
         }
         //Patrol mode
         else if (currentState == states.Patrolling)
-		{
+        {
             HandlePatrolling();
-		}
+        }
         //Chase Mode
         else if (currentState == states.Chasing)
-		{
+        {
             HandleChasing();
         }
         //Braking Mode
         else if (currentState == states.Braking)
-		{
+        {
             HandleBraking();
-		}
-        //Embedded Mode
-        else if (currentState == states.Embedded)
-		{
-            HandleEmbed();
-		}
+        }
         //Stun Mode
         else if (currentState == states.Stunned)
-		{
+        {
             HandleStun();
-		}
+        }
     }
 
     void HandleIdle()
-	{
+    {
         //For now we're just chillin
         target = null;
-	}
+    }
 
     void HandlePatrolling()
-	{
+    {
         //give patrol commands
         if (patrolRoutine == null)
         {
@@ -96,24 +86,24 @@ public class scriptEnemyDriller : scriptEnemy
     }
 
     void HandleChasing()
-	{
+    {
         //Target the earth
         //if (earth != null)
         //    target = earth.transform;
 
         if (target != null)
-		{
+        {
             //Look at target
             transform.LookAt(Vector3.Lerp(transform.position, target.position, lookSpeed));
 
             //Move toward the target
             if (rb != null && rb.velocity.sqrMagnitude < maxVelocity)
                 rb.AddForce(transform.forward * chaseSpeed);
-		}
+        }
     }
 
     void HandleBraking()
-	{
+    {
         //Slow down to a stop
         rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, breakingSpeed);
         rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, breakingSpeed);
@@ -124,111 +114,51 @@ public class scriptEnemyDriller : scriptEnemy
         }
     }
 
-    //We've embedded ourselves into an object, drill into it until it is pulverized
-    void HandleEmbed()
-	{
-        transform.parent.SendMessage("HandleDamage", drillDamage, SendMessageOptions.DontRequireReceiver);
-    }
-
     void HandleStun()
-	{
+    {
         //Just let the ship drift from whatever chaos stunned it.
         target = null;
     }
 
-	private void OnCollisionEnter(Collision collision)
-	{
+    private void OnCollisionEnter(Collision collision)
+    {
         print(collision.collider.name);
 
         //general collisions
         if (collision.transform.name.Contains("Hand"))//if we collide with player's hand
-		{
+        {
             Stun();
-		}
-
-        //chase contextual collisions
-        if (currentState == states.Chasing)
-		{
-            if (collision.collider.CompareTag("Asteroid"))
-            {
-                Obliterate(collision.collider.gameObject);
-            }
-            else if (collision.collider.CompareTag("Earth"))
-            {
-                EmbedInto(collision.collider.gameObject);
-            }
         }
-	}
+    }
 
     //pulverize a thing into dust
     private void Obliterate(GameObject target)
-	{
+    {
         //Likely will activate a coroutine that does lots of flashy stuff.
         SetCurrentState(states.Braking);
         Destroy(target);
-	}
-
-    //embed the driller into the target
-    private void EmbedInto(GameObject target)
-	{
-        currentState = states.Embedded;
-
-        Destroy(rb);
-        //rb.velocity = Vector3.zero;
-        //rb.angularVelocity = Vector3.zero;
-        //rb.isKinematic = true;
-
-        transform.SetParent(target.transform, true);
-        target.SendMessage("EmbedInto", gameObject, SendMessageOptions.DontRequireReceiver);
-    }
-
-    //unparents the driller and allows it to move again
-    public void DislodgeFrom()
-	{
-        if (dislodgeRoutine == null)
-        {
-            dislodgeRoutine = DislodgeRoutine();
-            StartCoroutine(dislodgeRoutine);
-        }
     }
 
     public void Stun()
-	{
+    {
         if (stunRoutine == null)
         {
             stunRoutine = StunRoutine();
             StartCoroutine(stunRoutine);
         }
-	}
+    }
 
     //sets the curent state and caches the previous state
     public void SetCurrentState(states newState)
-	{
+    {
         if (newState != currentState)
-		{
+        {
             prevState = currentState; //cache the previous state
             currentState = newState;
         }
-	}
-
-    //Coroutines
-    private IEnumerator DislodgeRoutine()
-    {
-        SetCurrentState(states.Idle);
-        target = null;
-        transform.SetParent(null, true);//set parent to the scene
-
-        ReinitializeRidgidBody();
-
-        rb.AddForce(-transform.forward * chaseSpeed);//back the enemy away from embeded target
-
-        yield return new WaitForSeconds(2f); //give the enemy time to back away from asteroid
-
-        SetCurrentState(states.Patrolling);
-
-        dislodgeRoutine = null;
     }
 
+    //Coroutines
     private IEnumerator PatrolRoutine()
     {
         patrolLocation = Random.insideUnitSphere * pack.patrolAreaSize + pack.packStartPoint.position;
