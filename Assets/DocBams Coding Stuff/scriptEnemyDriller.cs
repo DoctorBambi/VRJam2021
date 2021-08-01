@@ -104,11 +104,14 @@ public class scriptEnemyDriller : scriptEnemy
             StartCoroutine(patrolRoutine);
         }
 
-        //Check if we sense the player.
-        var dist = Vector3.Distance(transform.position, pack.earth.transform.position);
-        if (dist < sightRadius)
-        {
-            pack.AlertPackMembers(pack.earth.transform);
+        //Check if we sense the player and they're still alive.
+        if (pack.earth.GetComponent<scriptEarth>().currentState != scriptEarth.states.Dead)
+		{
+            var dist = Vector3.Distance(transform.position, pack.earth.transform.position);
+            if (dist < sightRadius)
+            {
+                pack.AlertPackMembers(pack.earth.transform);
+            }
         }
     }
 
@@ -155,7 +158,7 @@ public class scriptEnemyDriller : scriptEnemy
 
 	private void OnCollisionEnter(Collision collision)
 	{
-        print(collision.collider.name);
+        //print(collision.collider.name);
 
         //general collisions
         if (collision.transform.name.Contains("Hand"))//if we collide with player's hand

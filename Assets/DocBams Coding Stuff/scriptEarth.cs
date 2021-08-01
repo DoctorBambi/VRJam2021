@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class scriptEarth : MonoBehaviour
 {
     public float maxHealth = 100;
@@ -20,6 +20,14 @@ public class scriptEarth : MonoBehaviour
     public states prevState;
 
     private List<GameObject> attachedEnemies = new List<GameObject>();
+
+    //Audio
+    //Don't think we need these as the audio manager will play the death sound when needed.
+    //[SerializeField]
+    //AudioClip deathMusic;
+
+    //[SerializeField]
+    //AudioSource audioSource;
 
     //Coroutines
     private IEnumerator dyingRoutine;
@@ -60,6 +68,7 @@ public class scriptEarth : MonoBehaviour
 
     void HandleDeath()
 	{
+
         if (dyingRoutine == null)
 		{
             dyingRoutine = DyingRoutine();
@@ -82,6 +91,11 @@ public class scriptEarth : MonoBehaviour
         }
     }
 
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     //Coroutines
     private IEnumerator DyingRoutine()
     {
@@ -92,11 +106,16 @@ public class scriptEarth : MonoBehaviour
         }
         attachedEnemies.Clear();
 
-        yield return new WaitForSeconds(.25f); //give the enemies time to run their dislodge scripts
+        var aSrc = GetComponent<AudioSource>();
+
+        yield return new WaitForSeconds(aSrc.clip.length); //wait for the death music to finish before reloading.
 
         //Destroy the planet ;.;
         //Destroy(gameObject);
-        gameObject.GetComponent<Renderer>().enabled = false;
+        //gameObject.GetComponent<Renderer>().enabled = false;
+
+        //Reload the scene
+        Invoke("ReloadScene", 0f);
 
         dyingRoutine = null;
     }

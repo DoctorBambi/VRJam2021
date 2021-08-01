@@ -37,6 +37,15 @@ public class scriptEnemyPack : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Go find the earth
+        var potentialEarths = GameObject.FindGameObjectsWithTag("Earth");
+        if (potentialEarths.Length == 0)
+            Debug.LogError("There is no earth object in the scene for this enemy pack to look for.");
+        else if (potentialEarths.Length > 1)
+            Debug.LogError("There is more than 1 earth object in the scene.");
+        else
+            earth = potentialEarths[0];
+
         SpawnPack(type, packStartPoint.position);
     }
 

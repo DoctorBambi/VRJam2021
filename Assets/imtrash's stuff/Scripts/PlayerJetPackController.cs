@@ -50,7 +50,7 @@ public class PlayerJetPackController : MonoBehaviour
             slowFall = false;
             GetComponent<PlayerGravity>().GravityEnabled = false;
             transform.position += Vector3.up * Time.deltaTime * liftVelocity;
-            transform.position += Vector3.forward * Time.deltaTime * forwardVelocity;
+            //transform.position += Vector3.forward * Time.deltaTime * forwardVelocity;
         }
         else { slowFall = true; }
 
