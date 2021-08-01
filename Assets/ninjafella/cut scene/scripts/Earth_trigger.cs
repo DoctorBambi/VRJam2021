@@ -7,7 +7,7 @@ public class Earth_trigger : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "Untagged")
         {
             SceneManager.LoadScene(0, LoadSceneMode.Single);
         }
