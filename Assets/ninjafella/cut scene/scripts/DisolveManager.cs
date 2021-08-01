@@ -21,7 +21,7 @@ public class DisolveManager : MonoBehaviour
     {
         for (float i = targetDissolve; i <= targetCondense; i = i + step)
         {
-            shader.material.SetFloat("_CutoffHeight", i);
+            shader.material.SetFloat("_Threshold", i);
             yield return new WaitForSeconds(0.1f);
         }
         
