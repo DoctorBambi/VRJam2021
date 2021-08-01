@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4610591986898345802
+--- !u!1 &1027557041340129347
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,49 +8,46 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4610591986898345801}
-  - component: {fileID: 4610591986898345800}
+  - component: {fileID: 1027557041340129345}
+  - component: {fileID: 1027557041340129346}
   m_Layer: 0
-  m_Name: prefabEnemyPack
+  m_Name: prefabAudioManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4610591986898345801
+--- !u!4 &1027557041340129345
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4610591986898345802}
+  m_GameObject: {fileID: 1027557041340129347}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.6469357, y: -0.66, z: 21.92}
+  m_LocalPosition: {x: 11.273236, y: -3.3097012, z: 12.6377945}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4610591986898345800
+--- !u!114 &1027557041340129346
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4610591986898345802}
+  m_GameObject: {fileID: 1027557041340129347}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5df7c908c95d0fa4b8ce0822ef5cb90f, type: 3}
+  m_Script: {fileID: 11500000, guid: 97c434fd275be114c94f38dc0decbeb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyPrefabs:
-  - {fileID: 8442218428292457785, guid: 38a476271da66a943913627850241965, type: 3}
-  - {fileID: 8719615386816156755, guid: 2f5d3a8a1fdbddc45a0ca822dc52fcde, type: 3}
   earth: {fileID: 0}
-  type: 0
-  aware: 0
-  packStartPoint: {fileID: 4610591986898345801}
-  packSize: 10
-  patrolAreaSize: 2
-  enemyTerritoryRange: 10
-  packAlerted: 0
+  enemyPacks:
+  - {fileID: 0}
+  musicLoops:
+  - {fileID: 8300000, guid: b3e5d1013575c7247ae9b517b64e1322, type: 3}
+  - {fileID: 8300000, guid: 4116e8945f7ba4a4daad7a4683cc4cdb, type: 3}
+  - {fileID: 8300000, guid: 36a9fdd15a8ff5948b232235384971bd, type: 3}
+  - {fileID: 8300000, guid: ed29d67ac465f1746840e47b1c7b0420, type: 3}
