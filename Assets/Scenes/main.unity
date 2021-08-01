@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -550,8 +550,8 @@ MonoBehaviour:
   droneSpawnerTwo: {fileID: 4610591986898345802, guid: 829848ec365beec4e86bb87f0c0dde35,
     type: 3}
   cl: {fileID: 1024454743}
-  sizeVariation: 0.5
-  baseSize: 0.5
+  sizeVariation: 1
+  baseSize: 1
   Asteroid: {fileID: 5968722300495988370, guid: 3eddfae553b42e18383a6b7dcd0519c5,
     type: 3}
   chunkRadius: 10
@@ -1282,12 +1282,12 @@ PrefabInstance:
     - target: {fileID: 1462243957812138642, guid: 4d695564a10769541a1c83691ea76cfd,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 151.13394
+      value: 103.13394
       objectReference: {fileID: 0}
     - target: {fileID: 1462243957812138642, guid: 4d695564a10769541a1c83691ea76cfd,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 811.8335
+      value: 1008.2
       objectReference: {fileID: 0}
     - target: {fileID: 1462243957812138642, guid: 4d695564a10769541a1c83691ea76cfd,
         type: 3}
