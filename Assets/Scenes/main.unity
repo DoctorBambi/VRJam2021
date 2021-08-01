@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -670,7 +670,7 @@ MonoBehaviour:
   chunk: {x: 1, y: 1, z: 1}
   player: {fileID: 375809220}
   chunkScale: 10
-  numAsteroidsPerChunk: 100
+  numAsteroidsPerChunk: 25
 --- !u!114 &1024454744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -688,8 +688,8 @@ MonoBehaviour:
   droneSpawnerTwo: {fileID: 4610591986898345802, guid: 829848ec365beec4e86bb87f0c0dde35,
     type: 3}
   cl: {fileID: 1024454743}
-  sizeVariation: 1
-  baseSize: 1
+  sizeVariation: 0.25
+  baseSize: 0.75
   Asteroid: {fileID: 5968722300495988370, guid: 3eddfae553b42e18383a6b7dcd0519c5,
     type: 3}
   chunkRadius: 10
