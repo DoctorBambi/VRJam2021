@@ -123,7 +123,7 @@ public class scriptEnemyHunter : scriptEnemy
 		}
 
 		//Check if we sense the player and they're still alive.
-		if (pack.earth.GetComponent<scriptEarth>().currentState != scriptEarth.states.Dead)
+		if (pack.earth.GetComponent<scriptEarth>().currentState != scriptEarth.states.Dead && pack.earth.GetComponent<scriptEarth>().currentState != scriptEarth.states.Safe)
 		{
 			var dist = Vector3.Distance(transform.position, pack.earth.transform.position);
 			if (dist < sightRadius)

@@ -13,7 +13,8 @@ public class scriptAudioManager : MonoBehaviour
         Chill,
         EnemyTerritory,
         Alerted,
-        Dead
+        Dead,
+        Victory
     }
 
     private vibes currentVibe;
@@ -35,6 +36,8 @@ public class scriptAudioManager : MonoBehaviour
         else
             earth = potentialEarths[0];
 
+        FindEnemyPacks();
+
         SetCurrentVibe(vibes.Chill);
     }
 
@@ -50,9 +53,11 @@ public class scriptAudioManager : MonoBehaviour
         //It's go time
         else if (currentVibe == vibes.Alerted)
             HandleAlerted();
-        //It's go time
+        //You Died
         else if (currentVibe == vibes.Dead)
             HandleDead();
+        else if (currentVibe == vibes.Victory)
+            HandleVictory();
 
         CheckUnits();
     }
@@ -71,6 +76,16 @@ public class scriptAudioManager : MonoBehaviour
 		{
             vibeChange = false;
 		}
+    }
+
+    public void FindEnemyPacks()
+	{
+        //Go find enemy packs
+        var potentialPacks = GameObject.FindGameObjectsWithTag("EnemyPack");
+        if (potentialPacks.Length == 0)
+            Debug.LogWarning("There is no enemy packs in the scene.");
+        else
+            enemyPacks = potentialPacks;
     }
 
     void HandleChill()
@@ -129,6 +144,20 @@ public class scriptAudioManager : MonoBehaviour
         }
 	}
 
+    void HandleVictory()
+	{
+        if (vibeChange)
+        {
+            TransitionMusic();
+        }
+
+        if (playLoopRoutine == null && vibeChange) //only one-shot this.
+		{
+            playLoopRoutine = PlayLoopRoutine(earth.GetComponent<AudioSource>(), vibes.Victory);
+            StartCoroutine(playLoopRoutine);
+        }
+	}
+
     void CheckUnits()
     {
         vibes vibe = vibes.Chill;
@@ -140,6 +169,12 @@ public class scriptAudioManager : MonoBehaviour
             SetCurrentVibe(vibe);
             return;
 		}
+        else if (earth.GetComponent<scriptEarth>().currentState == scriptEarth.states.Safe)
+		{
+            vibe = vibes.Victory;
+            SetCurrentVibe(vibe);
+            return;
+        }
 
         //Check the enemy packs to get their thoughts
         foreach (GameObject pack in enemyPacks)
