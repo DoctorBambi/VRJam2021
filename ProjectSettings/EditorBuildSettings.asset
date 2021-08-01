@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/main.unity
+    guid: 271a4924197476eb9bf214f160ea7d7f
+  - enabled: 1
+    path: Assets/imtrash's stuff/Test Scenes/Jet Pack Test.unity
+    guid: d8ac3f08df4d93b44977e041a2019866
+  m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: c20a830ddf0ba5741bc5badcc4b09bd0,
+      type: 2}
+    Unity.XR.OpenVR.Settings: {fileID: 11400000, guid: 2ec24d39f7b5ac84aad7e5df7b4fd3ea,
+      type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: 7c0d65f8139523c47a3ac0b1587ccdf6,
+      type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 6fed0e7f74b3a0b4a96fb289b7bf2d6f,
+      type: 2}
+    xr.sdk.mock-hmd.settings: {fileID: 11400000, guid: 1347bb71998314a4986b646c6f8f0c24,
+      type: 2}
