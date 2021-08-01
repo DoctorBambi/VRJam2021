@@ -7,4 +7,8 @@ public class MenuCode : MonoBehaviour
 	public void LoadScene(int index){
 		SceneManager.LoadScene(index);
 	}
+	public void Quit(int index){
+		Application.Quit();
+	}
+
 }
