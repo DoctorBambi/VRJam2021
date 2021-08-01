@@ -18,7 +18,7 @@ public class scriptEnemyDriller : scriptEnemy
         Stunned
     }
 
-    private states currentState;
+    public states currentState;
     private states prevState;
 
     //Coroutines
@@ -159,6 +159,12 @@ public class scriptEnemyDriller : scriptEnemy
             }
         }
 	}
+
+    public void AlertUnit(Transform newTarget)
+    {
+        target = newTarget;
+        SetCurrentState(scriptEnemyDriller.states.Chasing);
+    }
 
     //pulverize a thing into dust
     private void Obliterate(GameObject target)

@@ -15,7 +15,7 @@ public class scriptEnemyPack : MonoBehaviour
         RandomMix
     }
 
-    private types type;
+    public types type;
 
     public enum awareness
     {
@@ -37,8 +37,6 @@ public class scriptEnemyPack : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        type = types.AllDriller;
-
         SpawnPack(type, packStartPoint.position);
     }
 
@@ -54,75 +52,79 @@ public class scriptEnemyPack : MonoBehaviour
 		switch (type)
 		{
             case types.AllDriller:
-                GameObject pf;
-                foreach (GameObject go in enemyPrefabs)
-				{
-                    if (go.name.Contains("Driller"))
-					{
-                        pf = go;
-                        for (int i = 0; i < packSize; i++)
-                        {
-                            var unit = Instantiate(pf);
+                GameObject drillerPf = enemyPrefabs[(int)types.AllDriller];
+                
+                for (int i = 0; i < packSize; i++)
+                {
+                    var unit = Instantiate(drillerPf);
 
-                            unit.transform.position = Random.insideUnitSphere * patrolAreaSize + position;
+                    unit.transform.position = Random.insideUnitSphere * patrolAreaSize + position;
 
-                            var script = unit.GetComponent<scriptEnemyDriller>();
-                            script.pack = this;
+                    var script = unit.GetComponent<scriptEnemyDriller>();
+                    script.pack = this;
 
-                            packUnits.Add(unit);
-                        }
-                        break;
-					}
-				}
+                    packUnits.Add(unit);
+                }
                 break;
-		}
-        
+            case types.AllHunter:
+                GameObject hunterPf = enemyPrefabs[(int)types.AllHunter];
+
+                for (int i = 0; i < packSize; i++)
+                {
+                    var unit = Instantiate(hunterPf);
+
+                    unit.transform.position = Random.insideUnitSphere * patrolAreaSize + position;
+
+                    var script = unit.GetComponent<scriptEnemyHunter>();
+                    script.pack = this;
+
+                    packUnits.Add(unit);
+                }
+                break;
+            default:
+                Debug.LogWarning($"Have not implemented pack type {type}.");
+                break;
+        }
 	}
 
     void CheckProximity()
 	{
         if (earth != null)
 		{
-            if (!packAlerted)
-			{
-                var dist = Vector3.Distance(packStartPoint.position, earth.transform.position);
+            var dist = Vector3.Distance(packStartPoint.position, earth.transform.position);
 
-                if (dist < enemyTerritoryRange)
-                {
-                    print("In enemy territory.");
+            if (dist < enemyTerritoryRange)
+            {
+                if (!packAlerted)
                     aware = awareness.InTerritory;
-                    //audioManager.SetCurrentVibe(scriptAudioManager.vibes.EnemyTerritory);
-                }
                 else
-                {
-                    print("Out of enemy territory.");
-                    aware = awareness.Unknown;
-                    //audioManager.SetCurrentVibe(scriptAudioManager.vibes.Chill);
-                }
+                    aware = awareness.Alerted;
             }
-			else
-			{
-                print("Alerted.");
-                aware = awareness.Alerted;
-                //audioManager.SetCurrentVibe(scriptAudioManager.vibes.Alerted);
-			}
+            else
+            {
+                aware = awareness.Unknown;
+                RetreatPackMembers();
+            }
 		}
 	}
 
     public void AlertPackMembers(Transform target)
 	{
         packAlerted = true;
-
-		switch (type)
-		{
-            case types.AllDriller:
-                foreach (GameObject unit in packUnits)
-                {
-                    var script = unit.GetComponent<scriptEnemyDriller>();
-                    script.target = target;
-                    script.SetCurrentState(scriptEnemyDriller.states.Chasing);
-                }
-                break;
-		}
+		
+        foreach (GameObject unit in packUnits)
+        {
+            unit.SendMessage("AlertUnit", target, SendMessageOptions.DontRequireReceiver);
+        }
 	}
+
+    public void RetreatPackMembers()
+	{
+        packAlerted = false;
+
+        foreach (GameObject unit in packUnits)
+        {
+            unit.SendMessage("RetreatUnit", SendMessageOptions.DontRequireReceiver);
+        }
+    }
 }
