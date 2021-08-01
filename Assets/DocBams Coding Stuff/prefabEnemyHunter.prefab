@@ -522,7 +522,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pack: {fileID: 0}
-  sightRadius: 3
+  sightRadius: 5
   patrolSpeed: 2
   patrolCooldown: 5
   chaseSpeed: 10

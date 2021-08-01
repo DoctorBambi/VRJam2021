@@ -186,6 +186,12 @@ public class scriptEnemyDriller : scriptEnemy
         SetCurrentState(scriptEnemyDriller.states.Chasing);
     }
 
+    public void RetreatUnit()
+    {
+        target = null;
+        SetCurrentState(scriptEnemyDriller.states.Patrolling);
+    }
+
     //pulverize a thing into dust
     private void Obliterate(GameObject target)
 	{

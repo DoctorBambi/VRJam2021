@@ -231,6 +231,12 @@ public class scriptEnemyHunter : scriptEnemy
 		SetCurrentState(scriptEnemyHunter.states.Chasing);
 	}
 
+	public void RetreatUnit()
+	{
+		target = null;
+		SetCurrentState(scriptEnemyHunter.states.Patrolling);
+	}
+
 	//pulverize a thing into dust
 	private void Obliterate(GameObject target)
 	{
