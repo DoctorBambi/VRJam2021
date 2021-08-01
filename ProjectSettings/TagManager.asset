@@ -8,6 +8,8 @@ TagManager:
   - Earth
   - Hand
   - Driller
+  - EnemyPack
+  - Sun
   layers:
   - Default
   - TransparentFX

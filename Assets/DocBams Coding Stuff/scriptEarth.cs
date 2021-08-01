@@ -13,7 +13,8 @@ public class scriptEarth : MonoBehaviour
         Nominal,
         Freezing,
         Warming,
-        Dead
+        Dead,
+        Safe
     }
 
     public states currentState;
@@ -31,6 +32,7 @@ public class scriptEarth : MonoBehaviour
 
     //Coroutines
     private IEnumerator dyingRoutine;
+    private IEnumerator safeRoutine;
 
     // Start is called before the first frame update
     void Start()
@@ -47,13 +49,24 @@ public class scriptEarth : MonoBehaviour
         //Death mode
         if (currentState == states.Dead)
             HandleDeath();
+        //Safe mode
+        else if (currentState == states.Safe)
+            HandleSafe();
 
         //Handle Proximity to enemies
         else
             HandleProximity();
     }
 
-    public void HandleDamage(float damageAmount)
+	private void OnTriggerEnter(Collider other)
+	{
+		if (other.CompareTag("Sun"))
+		{
+            SetCurrentState(states.Safe);
+		}
+	}
+
+	public void HandleDamage(float damageAmount)
 	{
         health -= damageAmount;
 
@@ -73,6 +86,16 @@ public class scriptEarth : MonoBehaviour
 		{
             dyingRoutine = DyingRoutine();
             StartCoroutine(dyingRoutine);
+		}
+    }
+
+    void HandleSafe()
+	{
+
+        if (safeRoutine == null)
+		{
+            safeRoutine = SafeRoutine();
+            StartCoroutine(safeRoutine);
 		}
     }
 
@@ -118,5 +141,28 @@ public class scriptEarth : MonoBehaviour
         Invoke("ReloadScene", 0f);
 
         dyingRoutine = null;
+    }
+
+    private IEnumerator SafeRoutine()
+    {
+        //Handle attached enemies
+        foreach (GameObject go in attachedEnemies)
+        {
+            go.SendMessage("DislodgeFrom", SendMessageOptions.DontRequireReceiver);
+        }
+        attachedEnemies.Clear();
+
+        var aSrc = GetComponent<AudioSource>();
+
+        yield return new WaitForSeconds(aSrc.clip.length); //wait for the death music to finish before reloading.
+
+        //Destroy the planet ;.;
+        //Destroy(gameObject);
+        //gameObject.GetComponent<Renderer>().enabled = false;
+
+        //... Now what?
+        //Invoke("ReloadScene", 0f);
+
+        safeRoutine = null;
     }
 }
