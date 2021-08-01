@@ -44,7 +44,7 @@ public class TeleportBallController : MonoBehaviour
         print(collision.gameObject.layer);
         if (collision.gameObject.layer == 12)
         {
-            //print("Passed Layer Check");
+            print("Passed Layer Check");
             collideWithTele = true;
             MakeTeleportPoint();
         }
@@ -72,7 +72,7 @@ public class TeleportBallController : MonoBehaviour
         {
             if (resetTeleport)
             {
-                //print("Starting Teleport Process");
+                print("Starting Teleport Process");
                 Invoke("MakeTeleportPoint", timeTillTele);
                 //timeTillTele -= Time.deltaTime;
                 //if (timeTillTele <= 0)
@@ -90,7 +90,7 @@ public class TeleportBallController : MonoBehaviour
 
     private void MakeTeleportPoint()
     {
-        //print("Testing Ball Tele Called");
+        print("Testing Ball Tele Called");
         GameObject pointObj = new GameObject();
         pointObj.name = "telePoint";
         pointObj.transform.position = gameObject.transform.position;
@@ -99,8 +99,8 @@ public class TeleportBallController : MonoBehaviour
 
     private void TeleportPlayer(GameObject point)
     {
-        //print("Teleport Player Called");
-        //targetPlayer = GameObject.FindGameObjectWithTag("Player");
+        print("Teleport Player Called");
+        targetPlayer = GameObject.FindGameObjectWithTag("Player");
         targetPlayer.transform.position = point.transform.position;
         //resetTeleport = true;
         //print(point.transform.position);
