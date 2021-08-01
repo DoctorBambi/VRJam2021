@@ -5,14 +5,17 @@ using BNG;
 using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
-	bool toggle = false;
+	bool toggle = true;
 	bool menuButton;
 	[SerializeField]
 	GameObject UI;
     void Update()
     {
-        menuButton = InputBridge.Instance.StartButton;
-		UI.SetActive(menuButton);
+        menuButton = InputBridge.Instance.XButtonDown;
+		if(menuButton){
+			UI.SetActive(toggle);
+			toggle = !toggle;
+		}
     }
 	public void loadMenu(){
 		SceneManager.LoadScene(0);	

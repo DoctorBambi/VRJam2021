@@ -6,13 +6,12 @@ public class AsteroidDespawner : MonoBehaviour
 {
 	ChunkLoading cl;
 	[SerializeField]
-	float dist = 20;
+	float dist = 10;
 	void Start(){
 		cl = FindObjectOfType<ChunkLoading>();
 	}
 	void Update(){
-		if(Vector3.Distance(transform.position, cl.chunk*20)>dist){
-		/* if(transform.position.x>(float)cl.chunk.x+dist||transform.position.x<(float)cl.chunk.x-dist||transform.position.x>(float)cl.chunk.y+dist||transform.position.x<(float)cl.chunk.y-dist||transform.position.x>(float)cl.chunk.z+dist||transform.position.x<(float)cl.chunk.z-dist){ */
+		if(Vector3.Distance(transform.position, cl.chunk*10)>dist){
 			Destroy(this.gameObject);
 		}
 	}
