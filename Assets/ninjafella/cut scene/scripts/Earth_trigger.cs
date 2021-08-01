@@ -9,7 +9,7 @@ public class Earth_trigger : MonoBehaviour
     {
         if (other.tag == "Untagged")
         {
-            SceneManager.LoadScene(0, LoadSceneMode.Single);
+            SceneManager.LoadScene(2, LoadSceneMode.Single);
         }
     }
 }
