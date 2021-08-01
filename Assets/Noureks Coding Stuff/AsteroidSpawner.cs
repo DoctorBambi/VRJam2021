@@ -12,6 +12,10 @@ public class AsteroidSpawner : MonoBehaviour
 		/* } */
 	}
 	[SerializeField]
+	GameObject droneSpawnerOne;
+	[SerializeField]
+	GameObject droneSpawnerTwo;
+	[SerializeField]
 	ChunkLoading cl;
 	[SerializeField]
 	float sizeVariation = .25f;
@@ -21,10 +25,20 @@ public class AsteroidSpawner : MonoBehaviour
 	GameObject Asteroid;
 	[SerializeField]
 	float chunkRadius = 10;
+	[SerializeField]
+	Transform player;
+	[SerializeField]
+	Vector3 sunPos;
 	public void SpawnAsteroid(Vector3 basePosition,int index){
 		Vector3 scaleA = baseSize * RandomConstVectorThree(1-sizeVariation, 1+sizeVariation); 
 		Vector3 positionA = basePosition+RandomConstVectorThree(-chunkRadius,chunkRadius);
 		GameObject tempAsteroid = Instantiate(Asteroid);
+		if(Random.Range(0, Vector3.Distance(sunPos,player.position)) < 20){
+			tempAsteroid = Instantiate(droneSpawnerOne);		
+			if(Random.Range(0, 2) == 1){
+				tempAsteroid = Instantiate(droneSpawnerTwo);	
+			}
+		}
 		tempAsteroid.transform.position = positionA;
 		tempAsteroid.transform.localScale = scaleA;
 		tempAsteroid.transform.eulerAngles = RandomConstVectorThree(-180, 180);

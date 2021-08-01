@@ -9,8 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/menu.unity
     guid: 5bdaef4b9c28d43cdb3ab8007f584269
   - enabled: 1
-    path: Assets/imtrash's stuff/Test Scenes/Jet Pack Test.unity
-    guid: d8ac3f08df4d93b44977e041a2019866
+    path: Assets/ninjafella/cut scene/cut scene.unity
+    guid: 7ab537f5550a54147b06fe6bcce57162
   - enabled: 1
     path: Assets/Scenes/main.unity
     guid: 271a4924197476eb9bf214f160ea7d7f
