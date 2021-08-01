@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class scriptEarth : MonoBehaviour
 {
     public float maxHealth = 100;
@@ -15,7 +15,10 @@ public class scriptEarth : MonoBehaviour
         Warming,
         Dead
     }
-
+	[SerializeField]
+	AudioClip deathMusic;
+	[SerializeField]
+	AudioSource audioSource;
     public states currentState;
     public states prevState;
 
@@ -57,11 +60,17 @@ public class scriptEarth : MonoBehaviour
 	{
         attachedEnemies.Add(thingToEmbed);
 	}
-
+	public void ReloadScene(){
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);	
+	}
     void HandleDeath()
 	{
+
         if (dyingRoutine == null)
 		{
+			audioSource.clip = deathMusic;
+			audioSource.Play();
+			Invoke("ReloadScene",4f);
             dyingRoutine = DyingRoutine();
             StartCoroutine(dyingRoutine);
 		}
