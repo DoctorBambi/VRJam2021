@@ -532,7 +532,7 @@ MonoBehaviour:
   chunk: {x: 1, y: 1, z: 1}
   player: {fileID: 375809220}
   chunkScale: 10
-  numAsteroidsPerChunk: 1000
+  numAsteroidsPerChunk: 100
 --- !u!114 &1024454744
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2081,12 +2081,12 @@ PrefabInstance:
     - target: {fileID: 5282868273046277411, guid: deabf9e4b640c934f915abc427e7a31f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 157
+      value: 104
       objectReference: {fileID: 0}
     - target: {fileID: 5282868273046277411, guid: deabf9e4b640c934f915abc427e7a31f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 760
+      value: 1026.2001
       objectReference: {fileID: 0}
     - target: {fileID: 5282868273046277411, guid: deabf9e4b640c934f915abc427e7a31f,
         type: 3}

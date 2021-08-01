@@ -130,6 +130,6 @@ public class ChunkLoading : MonoBehaviour
 
 }
 public class chunk{
-	public Vector3[] asteroids = new Vector3[10];
+	public Vector3[] asteroids = new Vector3[100];
 }
 
