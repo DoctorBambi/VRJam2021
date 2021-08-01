@@ -62,9 +62,18 @@ public class CutScene_controller : MonoBehaviour
         }
         disolveManager.condenseCall();
         yield return new WaitForSeconds(5f);
-        lineRednerer.enabled = false;
+        //lineRednerer.enabled = false;
+        startTime = Time.time;
+        pos = startPosition;
+        while (pos != endPosition)
+        {
+            float t = (Time.time - startTime) / LineAnimationLength;
+            pos = Vector3.Lerp(startPosition, endPosition, t);
+            lineRednerer.SetPosition(0, pos);
+            yield return null;
+        }
         StartCoroutine(earth.shrink());
         yield return new WaitForSeconds(5f);
-        disolveManager.dissolve();
+        disolveManager.dissolve(); 
     }
 }
