@@ -21,6 +21,17 @@ public class scriptEnemyDriller : scriptEnemy
     public states currentState;
     private states prevState;
 
+    //Audio
+    public AudioClip[] sounds;
+
+    public enum soundTypes
+    {
+        Idle,
+        HighSpeed
+    }
+
+    private AudioSource aSrc;
+
     //Coroutines
     private IEnumerator dislodgeRoutine;
     private IEnumerator patrolRoutine;
@@ -32,6 +43,9 @@ public class scriptEnemyDriller : scriptEnemy
         //Initing components
         rb = GetComponent<Rigidbody>();
         if (rb == null) Debug.LogError("No rigidbody found for this enemy.");
+
+        aSrc = GetComponent<AudioSource>();
+        if (aSrc == null) Debug.LogError("No audio source found for this enemy.");
 
         //Initial state
         SetCurrentState(states.Patrolling);
@@ -70,6 +84,9 @@ public class scriptEnemyDriller : scriptEnemy
 		{
             HandleStun();
 		}
+
+        //Handle Audio settings
+        HandleAudio();
     }
 
     void HandleIdle()
@@ -215,6 +232,33 @@ public class scriptEnemyDriller : scriptEnemy
             prevState = currentState; //cache the previous state
             currentState = newState;
         }
+	}
+
+    //Audio
+    void HandleAudio()
+	{
+		switch (currentState)
+		{
+            case states.Chasing:
+                aSrc.clip = sounds[(int)soundTypes.HighSpeed];
+                if (aSrc.isPlaying == false) aSrc.Play();
+                break;
+            default:
+                aSrc.clip = sounds[(int)soundTypes.Idle];
+                if (aSrc.isPlaying == false) aSrc.Play();
+                break;
+		}
+
+        if (rb != null)
+        {
+            var curVel = Mathf.Clamp(rb.velocity.sqrMagnitude, 0, maxVelocity);
+            var ratio = ((curVel / maxVelocity) * 2) + 1; //* 2 + 1 because pitch can go from 1 to 3.
+
+            aSrc.pitch = Mathf.Lerp(aSrc.pitch, ratio, .1f);
+        }
+        else
+            aSrc.pitch = Mathf.Lerp(aSrc.pitch, 1, .1f);
+        
 	}
 
     //Coroutines

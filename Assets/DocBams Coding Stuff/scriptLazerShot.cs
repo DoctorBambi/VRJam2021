@@ -6,18 +6,20 @@ public class scriptLazerShot : MonoBehaviour
 {
 	public float bulletDamage = 5f;
 	public float bulletSpeed = 5f;
+	public bool isFiring = false;
 
 	private void Update()
 	{
 		//Move bullet forward
-		transform.position += transform.forward * bulletSpeed * Time.deltaTime;
+		if (isFiring)
+			transform.position += transform.forward * bulletSpeed * Time.deltaTime;
 	}
 
-	private void OnCollisionEnter(Collision collision)
+	private void OnTriggerEnter(Collider other)
 	{
-		if (collision.collider.name == "Earth")
+		if (other.name == "Earth")
 		{
-			collision.collider.SendMessage("HandleDamage", bulletDamage, SendMessageOptions.DontRequireReceiver);
+			other.SendMessage("HandleDamage", bulletDamage, SendMessageOptions.DontRequireReceiver);
 			Destroy(gameObject);
 		}
 		else

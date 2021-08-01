@@ -7,6 +7,7 @@ public class scriptEnemyHunter : scriptEnemy
 	public float shootingRange = 2f; // how close does it need to be to shoot at earth
 	public float shootCooldown = 2f;
 	public int bulletLifespan = 5;
+	public GameObject ammoType;
 
 	public enum states
 	{
@@ -31,6 +32,18 @@ public class scriptEnemyHunter : scriptEnemy
 	private shotTypes shotType;
 
 	private GameObject lazerShot;
+	private Transform bulletChamber; //where bullets are loaded for firing
+
+	//Audio
+	public AudioClip[] sounds;
+
+	public enum soundTypes
+	{
+		Idle,
+		HighSpeed
+	}
+
+	private AudioSource aSrc;
 
 	//Coroutines
 	private IEnumerator patrolRoutine;
@@ -44,8 +57,13 @@ public class scriptEnemyHunter : scriptEnemy
 		rb = GetComponent<Rigidbody>();
 		if (rb == null) Debug.LogError("No rigidbody found for this enemy.");
 
-		lazerShot = transform.Find("Lazer").gameObject;
-		if (lazerShot == null) Debug.LogError("No lazer shot found for this hunter.");
+		aSrc = GetComponent<AudioSource>();
+		if (aSrc == null) Debug.LogError("No audio source found for this enemy.");
+
+		if (ammoType == null) Debug.LogError("No ammo type assigned for this enemy.");
+
+		bulletChamber = transform.Find("BulletChamber");
+		if (bulletChamber == null) Debug.LogError("No bullet chamber found for this enemy.");
 
 		//Initial state
 		SetCurrentState(states.Patrolling);
@@ -84,6 +102,9 @@ public class scriptEnemyHunter : scriptEnemy
 		{
 			HandleStun();
 		}
+
+		//Handle Audio settings
+		HandleAudio();
 	}
 
 	void HandleIdle()
@@ -125,8 +146,7 @@ public class scriptEnemyHunter : scriptEnemy
 			{
 				if (hit.collider.name == "Earth") //then we're in range so start attacking
 				{
-					SetCurrentState(states.Attacking); //set this first so that when braking is done, we return to attacking.
-					SetCurrentState(states.Braking);
+					SetCurrentState(states.Attacking);
 				}
 				else //some other obstacle is in the way so try to get around it.
 				{
@@ -154,6 +174,10 @@ public class scriptEnemyHunter : scriptEnemy
 			{
 				if (hit.collider.name == "Earth") //then we're in range so start shooting
 				{
+					//Slow down to a stop
+					rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, breakingSpeed);
+					rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, breakingSpeed);
+
 					//Shoot at earth
 					if (shootRoutine == null)
 					{
@@ -231,6 +255,34 @@ public class scriptEnemyHunter : scriptEnemy
 		}
 	}
 
+	//Audio
+	void HandleAudio()
+	{
+		switch (currentState)
+		{
+			case states.Chasing:
+			case states.Attacking:
+				aSrc.clip = sounds[(int)soundTypes.HighSpeed];
+				if (aSrc.isPlaying == false) aSrc.Play();
+				break;
+			default:
+				aSrc.clip = sounds[(int)soundTypes.Idle];
+				if (aSrc.isPlaying == false) aSrc.Play();
+				break;
+		}
+
+		if (rb != null)
+		{
+			var curVel = Mathf.Clamp(rb.velocity.sqrMagnitude, 0, maxVelocity);
+			var ratio = ((curVel / maxVelocity) * 2) + 1; //* 2 + 1 because pitch can go from 1 to 3.
+
+			aSrc.pitch = Mathf.Lerp(aSrc.pitch, ratio, .1f);
+		}
+		else
+			aSrc.pitch = Mathf.Lerp(aSrc.pitch, 1, .1f);
+
+	}
+
 	//Coroutines
 	private IEnumerator PatrolRoutine()
 	{
@@ -265,11 +317,13 @@ public class scriptEnemyHunter : scriptEnemy
 		{
 			case shotTypes.Single:
 				//Instantiate lazer and fire at earth
-				var inst = Instantiate(lazerShot, lazerShot.transform.position, lazerShot.transform.rotation);
+				var inst = Instantiate(ammoType, bulletChamber.position, bulletChamber.rotation);
 				//inst.transform.position = lazerShot.transform.position;
 				//inst.transform.rotation = lazerShot.transform.rotation;
 				//inst.transform.localScale = lazerShot.transform.localScale;
 				inst.SetActive(true);
+				inst.GetComponent<AudioSource>().Play();
+				inst.GetComponent<scriptLazerShot>().isFiring = true;
 				Destroy(inst, bulletLifespan);
 				break;
 			default:
