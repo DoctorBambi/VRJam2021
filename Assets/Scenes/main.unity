@@ -550,8 +550,8 @@ MonoBehaviour:
   droneSpawnerTwo: {fileID: 4610591986898345802, guid: 829848ec365beec4e86bb87f0c0dde35,
     type: 3}
   cl: {fileID: 1024454743}
-  sizeVariation: 0.5
-  baseSize: 0.5
+  sizeVariation: 1
+  baseSize: 1
   Asteroid: {fileID: 5968722300495988370, guid: 3eddfae553b42e18383a6b7dcd0519c5,
     type: 3}
   chunkRadius: 10
