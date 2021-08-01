@@ -43,12 +43,15 @@ namespace BNG {
             audioSource = GetComponent<AudioSource>();
         }
 
-        public override void OnTrigger(float triggerValue) {
+        public override void OnTrigger(float triggerValue)
+        {
 
-            if(triggerValue > 0.25f) {
+            if (triggerValue > 0.25f)
+            {
                 doJet(triggerValue);
             }
-            else {
+            else
+            {
                 stopJet();
             }
 
