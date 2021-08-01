@@ -17,9 +17,20 @@ public class scriptEnemyPack : MonoBehaviour
 
     private types type;
 
+    public enum awareness
+    {
+        Unknown,
+        InTerritory,
+        Alerted
+    }
+
+    public awareness aware;
+
     public Transform packStartPoint;
     public int packSize = 5;
     public float patrolAreaSize = 5;
+    public float enemyTerritoryRange = 5;
+    public bool packAlerted = true;
 
     private List<GameObject> packUnits = new List<GameObject>();
 
@@ -34,7 +45,8 @@ public class scriptEnemyPack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //Check earth proximity
+        CheckProximity();
     }
 
     public void SpawnPack(types type, Vector3 position)
@@ -67,8 +79,40 @@ public class scriptEnemyPack : MonoBehaviour
         
 	}
 
+    void CheckProximity()
+	{
+        if (earth != null)
+		{
+            if (!packAlerted)
+			{
+                var dist = Vector3.Distance(packStartPoint.position, earth.transform.position);
+
+                if (dist < enemyTerritoryRange)
+                {
+                    print("In enemy territory.");
+                    aware = awareness.InTerritory;
+                    //audioManager.SetCurrentVibe(scriptAudioManager.vibes.EnemyTerritory);
+                }
+                else
+                {
+                    print("Out of enemy territory.");
+                    aware = awareness.Unknown;
+                    //audioManager.SetCurrentVibe(scriptAudioManager.vibes.Chill);
+                }
+            }
+			else
+			{
+                print("Alerted.");
+                aware = awareness.Alerted;
+                //audioManager.SetCurrentVibe(scriptAudioManager.vibes.Alerted);
+			}
+		}
+	}
+
     public void AlertPackMembers(Transform target)
 	{
+        packAlerted = true;
+
 		switch (type)
 		{
             case types.AllDriller:

@@ -6,12 +6,15 @@ public class scriptEnemyDriller : MonoBehaviour
 {
     public scriptEnemyPack pack;
     public float sightRadius = 3f;
-    public float movementSpeed = 10f;
+    public float patrolSpeed = 2f;
+    public float patrolCooldown = 5f;//time before finding a new spot to patrol.
+    public float chaseSpeed = 10f;
     public float maxVelocity = 10f;
     public float lookSpeed = .1f;
     public float breakingSpeed = .01f;
     public float drillDamage = .1f;
     public float stunCooldown = 5f;
+    public Vector3 patrolLocation;
 
     public enum states
     {
@@ -32,6 +35,7 @@ public class scriptEnemyDriller : MonoBehaviour
 
     //Coroutines
     private IEnumerator dislodgeRoutine;
+    private IEnumerator patrolRoutine;
     private IEnumerator stunRoutine;
 
     // Start is called before the first frame update
@@ -53,6 +57,7 @@ public class scriptEnemyDriller : MonoBehaviour
         {
             HandleIdle();
         }
+        //Patrol mode
         else if (currentState == states.Patrolling)
 		{
             HandlePatrolling();
@@ -87,16 +92,20 @@ public class scriptEnemyDriller : MonoBehaviour
 
     void HandlePatrolling()
 	{
-        
+        //give patrol commands
+        if (patrolRoutine == null)
+        {
+            patrolRoutine = PatrolRoutine();
+            StartCoroutine(patrolRoutine);
+        }
 
         //Check if we sense the player.
         var dist = Vector3.Distance(transform.position, pack.earth.transform.position);
-
         if (dist < sightRadius)
-		{
+        {
             pack.AlertPackMembers(pack.earth.transform);
-		}
-	}
+        }
+    }
 
     void HandleChasing()
 	{
@@ -110,8 +119,8 @@ public class scriptEnemyDriller : MonoBehaviour
             transform.LookAt(Vector3.Lerp(transform.position, target.position, lookSpeed));
 
             //Move toward the target
-            if (rb.velocity.sqrMagnitude < maxVelocity)
-                rb.AddForce(transform.forward * movementSpeed);
+            if (rb != null && rb.velocity.sqrMagnitude < maxVelocity)
+                rb.AddForce(transform.forward * chaseSpeed);
 		}
     }
 
@@ -234,13 +243,29 @@ public class scriptEnemyDriller : MonoBehaviour
 
         ReinitializeRidgidBody();
 
-        rb.AddForce(-transform.forward * movementSpeed);//back the enemy away from embeded target
+        rb.AddForce(-transform.forward * chaseSpeed);//back the enemy away from embeded target
 
         yield return new WaitForSeconds(2f); //give the enemy time to back away from asteroid
 
-        SetCurrentState(states.Chasing);
+        SetCurrentState(states.Patrolling);
 
         dislodgeRoutine = null;
+    }
+
+    private IEnumerator PatrolRoutine()
+    {
+        patrolLocation = Random.insideUnitSphere * pack.patrolAreaSize + pack.packStartPoint.position;
+
+        //Look at target
+        transform.LookAt(Vector3.Lerp(transform.position, patrolLocation, lookSpeed));
+
+        //Move toward the target
+        if (rb != null && rb.velocity.sqrMagnitude < maxVelocity)
+            rb.AddForce(transform.forward * patrolSpeed);
+
+        yield return new WaitForSeconds(patrolCooldown);
+
+        patrolRoutine = null;
     }
 
     private IEnumerator StunRoutine()

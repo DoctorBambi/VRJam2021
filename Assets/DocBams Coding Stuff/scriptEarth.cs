@@ -6,6 +6,7 @@ public class scriptEarth : MonoBehaviour
 {
     public float maxHealth = 100;
     public float health;
+    public float enemyTerritoryDist = 5f;
 
     public enum states
     {
@@ -15,8 +16,8 @@ public class scriptEarth : MonoBehaviour
         Dead
     }
 
-    private states currentState;
-    private states prevState;
+    public states currentState;
+    public states prevState;
 
     private List<GameObject> attachedEnemies = new List<GameObject>();
 
@@ -38,6 +39,10 @@ public class scriptEarth : MonoBehaviour
         //Death mode
         if (currentState == states.Dead)
             HandleDeath();
+
+        //Handle Proximity to enemies
+        else
+            HandleProximity();
     }
 
     public void HandleDamage(float damageAmount)
@@ -62,7 +67,12 @@ public class scriptEarth : MonoBehaviour
 		}
     }
 
-    //sets the curent state and  caches the previous state
+    void HandleProximity()
+	{
+
+	}
+
+    //sets the curent state and caches the previous state
     public void SetCurrentState(states newState)
     {
         if (newState != currentState)
@@ -85,7 +95,8 @@ public class scriptEarth : MonoBehaviour
         yield return new WaitForSeconds(.25f); //give the enemies time to run their dislodge scripts
 
         //Destroy the planet ;.;
-        Destroy(gameObject);
+        //Destroy(gameObject);
+        gameObject.GetComponent<Renderer>().enabled = false;
 
         dyingRoutine = null;
     }
