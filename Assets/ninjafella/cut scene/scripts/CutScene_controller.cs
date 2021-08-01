@@ -113,6 +113,7 @@ public class CutScene_controller : MonoBehaviour
     public leEarth earth;
     public GameObject earthTrigger;
     public Ship ship;
+    public GameObject arrow;
 
     // Start is called before the first frame update
     void Start()
@@ -128,8 +129,8 @@ public class CutScene_controller : MonoBehaviour
         StartCoroutine(line.extend());
         yield return new WaitForSeconds(line.LineAnimationLength);
 
-        disolveManager.condenseCall();
-        yield return new WaitForSeconds(5f);
+        StartCoroutine(disolveManager.condense());
+        yield return new WaitForSeconds(2.5f);
 
         StartCoroutine(line.retract());
         yield return new WaitForSeconds(line.LineAnimationLength);
@@ -143,6 +144,7 @@ public class CutScene_controller : MonoBehaviour
         yield return new WaitForSeconds(ship.warpTime);
 
         earthTrigger.SetActive(true);
+        arrow.SetActive(true);
 
     }
 }

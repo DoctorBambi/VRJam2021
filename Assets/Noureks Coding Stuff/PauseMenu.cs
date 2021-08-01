@@ -11,11 +11,8 @@ public class PauseMenu : MonoBehaviour
 	GameObject UI;
     void Update()
     {
-        menuButton = InputBridge.Instance.AButtonDown;
-		if(menuButton){
-			toggle = !toggle;
-			UI.SetActive(toggle);
-		}
+        menuButton = InputBridge.Instance.StartButton;
+		UI.SetActive(menuButton);
     }
 	public void loadMenu(){
 		SceneManager.LoadScene(0);	

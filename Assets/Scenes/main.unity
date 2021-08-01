@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -199,6 +199,12 @@ RectTransform:
   m_AnchoredPosition: {x: 244.26, y: -162.9}
   m_SizeDelta: {x: 401.97244, y: 147.64005}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!4 &375809220 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3734581330401436788, guid: deabf9e4b640c934f915abc427e7a31f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1776414637}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &598756033
 GameObject:
   m_ObjectHideFlags: 0
@@ -382,7 +388,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   astSpawner: {fileID: 1024454744}
   chunk: {x: 0, y: 0, z: 0}
-  player: {fileID: 0}
+  player: {fileID: 375809220}
   chunkScale: 20
   numAsteroidsPerChunk: 200
 --- !u!114 &1024454744
@@ -398,11 +404,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cl: {fileID: 1024454743}
-  sizeVariation: 0.25
+  sizeVariation: 0.5
   baseSize: 0.5
   Asteroid: {fileID: 5968722300495988370, guid: 3eddfae553b42e18383a6b7dcd0519c5,
     type: 3}
-  chunkRadius: 10
+  chunkRadius: 20
 --- !u!4 &1024454745
 Transform:
   m_ObjectHideFlags: 0
@@ -435,7 +441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 515431d7f307653e3b7a0164e4da0948, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UI: {fileID: 0}
+  UI: {fileID: 7428048668635157362}
 --- !u!1001 &1033919683
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -970,6 +976,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 82567964589710748, guid: deabf9e4b640c934f915abc427e7a31f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 990585770673765038, guid: deabf9e4b640c934f915abc427e7a31f,
         type: 3}
       propertyPath: m_Name
@@ -1068,6 +1079,11 @@ PrefabInstance:
     - target: {fileID: 7182331689167767564, guid: deabf9e4b640c934f915abc427e7a31f,
         type: 3}
       propertyPath: GravityEnabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7431687818704552662, guid: deabf9e4b640c934f915abc427e7a31f,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
