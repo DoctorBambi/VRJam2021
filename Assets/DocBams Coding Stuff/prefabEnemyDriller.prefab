@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4619796999565285669}
   - component: {fileID: 8292434608440356404}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Wings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4430229216244075958}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Colliders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8996834290662358280}
   - component: {fileID: 8519321500021563102}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: MainBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,7 +160,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8442218428292310791}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 8442218428292457778}
   - component: {fileID: 8442218428292457789}
   - component: {fileID: 2231196839797027180}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: prefabEnemyDriller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -491,7 +491,7 @@ GameObject:
   - component: {fileID: 8442218428960125004}
   - component: {fileID: 8442218428960125007}
   - component: {fileID: 8442218428960125006}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -584,7 +584,7 @@ GameObject:
   - component: {fileID: 8442218429273680843}
   - component: {fileID: 8442218429273680842}
   - component: {fileID: 8442218429273680853}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -677,7 +677,7 @@ GameObject:
   - component: {fileID: 8442218429524152496}
   - component: {fileID: 8442218429524152499}
   - component: {fileID: 8442218429524152498}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -770,7 +770,7 @@ GameObject:
   - component: {fileID: 8442218430258973301}
   - component: {fileID: 8442218430258973300}
   - component: {fileID: 8442218430258973303}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -861,6 +861,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8700617353114198275, guid: 044f0e23e17904447b13a49fb7e16290,
         type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: -8700617353114198275, guid: 044f0e23e17904447b13a49fb7e16290,
+        type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -934,6 +939,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8391222552659086748, guid: 044f0e23e17904447b13a49fb7e16290,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 65702495048144492, guid: 044f0e23e17904447b13a49fb7e16290,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
     - target: {fileID: 65702495048144492, guid: 044f0e23e17904447b13a49fb7e16290,
         type: 3}
       propertyPath: m_IsActive
@@ -943,6 +958,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: spaceship-drill
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 044f0e23e17904447b13a49fb7e16290,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 7869873546869171050, guid: 044f0e23e17904447b13a49fb7e16290,
+        type: 3}
+      propertyPath: m_Layer
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 7869873546869171050, guid: 044f0e23e17904447b13a49fb7e16290,
         type: 3}

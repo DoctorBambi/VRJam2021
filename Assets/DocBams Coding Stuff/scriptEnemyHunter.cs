@@ -131,6 +131,12 @@ public class scriptEnemyHunter : scriptEnemy
 				pack.AlertPackMembers(pack.earth.transform);
 			}
 		}
+
+		if (pack.packAlerted) //then get back in the action.
+		{
+			target = pack.earth.transform;
+			SetCurrentState(states.Chasing);
+		}
 	}
 
 	void HandleChasing()
@@ -163,6 +169,8 @@ public class scriptEnemyHunter : scriptEnemy
 					rb.AddForce(transform.forward * chaseSpeed);
 			}
 		}
+		else
+			Debug.Log("I have no target to chase.");
 	}
 
 	void HandleAttacking()
@@ -204,7 +212,7 @@ public class scriptEnemyHunter : scriptEnemy
 
 		if (rb.velocity == Vector3.zero) //then we've finished braking so go back to whatever we were doing
 		{
-			SetCurrentState(prevState); //return to task being performed before braking.
+			SetCurrentState(states.Patrolling); //start patrolling to get your barings.
 		}
 	}
 
@@ -219,7 +227,7 @@ public class scriptEnemyHunter : scriptEnemy
 		//print(collision.collider.name);
 
 		//general collisions
-		if (collision.transform.name.Contains("Hand"))//if we collide with player's hand
+		if (collision.transform.name.Contains("Hand") || collision.transform.name == "prefabStungun")//if we collide with player's hand
 		{
 			Stun();
 		}
@@ -315,7 +323,7 @@ public class scriptEnemyHunter : scriptEnemy
 
 		yield return new WaitForSeconds(stunCooldown);
 
-		SetCurrentState(prevState);
+		SetCurrentState(states.Patrolling);
 
 		stunRoutine = null;
 	}
