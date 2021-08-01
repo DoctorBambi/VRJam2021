@@ -15,14 +15,19 @@ public class scriptEarth : MonoBehaviour
         Warming,
         Dead
     }
-	[SerializeField]
-	AudioClip deathMusic;
-	[SerializeField]
-	AudioSource audioSource;
+
     public states currentState;
     public states prevState;
 
     private List<GameObject> attachedEnemies = new List<GameObject>();
+
+    //Audio
+    //Don't think we need these as the audio manager will play the death sound when needed.
+    //[SerializeField]
+    //AudioClip deathMusic;
+
+    //[SerializeField]
+    //AudioSource audioSource;
 
     //Coroutines
     private IEnumerator dyingRoutine;
@@ -60,17 +65,12 @@ public class scriptEarth : MonoBehaviour
 	{
         attachedEnemies.Add(thingToEmbed);
 	}
-	public void ReloadScene(){
-		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);	
-	}
+
     void HandleDeath()
 	{
 
         if (dyingRoutine == null)
 		{
-			audioSource.clip = deathMusic;
-			audioSource.Play();
-			Invoke("ReloadScene",4f);
             dyingRoutine = DyingRoutine();
             StartCoroutine(dyingRoutine);
 		}
@@ -91,6 +91,11 @@ public class scriptEarth : MonoBehaviour
         }
     }
 
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     //Coroutines
     private IEnumerator DyingRoutine()
     {
@@ -101,12 +106,16 @@ public class scriptEarth : MonoBehaviour
         }
         attachedEnemies.Clear();
 
-        yield return new WaitForSeconds(.25f); //give the enemies time to run their dislodge scripts
+        var aSrc = GetComponent<AudioSource>();
+
+        yield return new WaitForSeconds(aSrc.clip.length); //wait for the death music to finish before reloading.
 
         //Destroy the planet ;.;
         //Destroy(gameObject);
         //gameObject.GetComponent<Renderer>().enabled = false;
-        //Teleport it way off into space so you trigger
+
+        //Reload the scene
+        Invoke("ReloadScene", 0f);
 
         dyingRoutine = null;
     }
