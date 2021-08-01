@@ -96,7 +96,8 @@ public class scriptEarth : MonoBehaviour
 
         //Destroy the planet ;.;
         //Destroy(gameObject);
-        gameObject.GetComponent<Renderer>().enabled = false;
+        //gameObject.GetComponent<Renderer>().enabled = false;
+        //Teleport it way off into space so you trigger
 
         dyingRoutine = null;
     }
