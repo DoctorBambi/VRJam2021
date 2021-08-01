@@ -25,32 +25,61 @@ public class leEarth
             yield return null;
 
         }
-
     }
 }
 
-public class CutScene_controller : MonoBehaviour
+[System.Serializable]
+public class Ship
 {
+    public GameObject ship;
+    public Vector3 endLocation;
+    public Vector3 warpAwayLocation;
+    private Vector3 startLocation;
+    public float warpTime = 5f;
 
-    public float LineAnimationLength = 5f;
-    public LineRenderer lineRednerer;
-    public DisolveManager disolveManager;
-    public leEarth earth;
-
-    // Start is called before the first frame update
-    void Start()
+    public IEnumerator warp()
     {
-        StartCoroutine(AnimateLine());
-        //disolveManager.condenseCall();
-        //StartCoroutine(earth.shrink());
+        float startTime = Time.time;
+        startLocation = ship.transform.position;
+        Vector3 pos = startLocation;
+        while (pos != endLocation)
+        {
+            float t = (Time.time - startTime) / warpTime;
+            pos = Vector3.Lerp(startLocation, endLocation, t);
+            ship.transform.position = pos;
+            yield return null;
+        }
     }
 
-    private IEnumerator AnimateLine()
+    public IEnumerator warpAway()
+    {
+        float startTime = Time.time;
+        startLocation = ship.transform.position;
+        Vector3 pos = startLocation;
+        while (pos != warpAwayLocation)
+        {
+            float t = (Time.time - startTime) / warpTime;
+            pos = Vector3.Lerp(startLocation, warpAwayLocation, t);
+            ship.transform.position = pos;
+            yield return null;
+        }
+        ship.SetActive(false);
+    }
+}
+
+[System.Serializable]
+public class Line
+{
+    public float LineAnimationLength = 5f;
+    public LineRenderer lineRednerer;
+    public Vector3 endPosition;
+    private Vector3 startPosition;
+
+    public IEnumerator extend()
     {
         float startTime = Time.time;
 
-        Vector3 startPosition = lineRednerer.GetPosition(0);
-        Vector3 endPosition = lineRednerer.GetPosition(1);
+        startPosition = lineRednerer.GetPosition(0);
 
         Vector3 pos = startPosition;
         while (pos != endPosition)
@@ -60,11 +89,13 @@ public class CutScene_controller : MonoBehaviour
             lineRednerer.SetPosition(1, pos);
             yield return null;
         }
-        disolveManager.condenseCall();
-        yield return new WaitForSeconds(5f);
-        //lineRednerer.enabled = false;
-        startTime = Time.time;
-        pos = startPosition;
+    }
+
+    public IEnumerator retract()
+    {
+        float startTime = Time.time;
+        startPosition = lineRednerer.GetPosition(0);
+        Vector3 pos = startPosition;
         while (pos != endPosition)
         {
             float t = (Time.time - startTime) / LineAnimationLength;
@@ -72,8 +103,46 @@ public class CutScene_controller : MonoBehaviour
             lineRednerer.SetPosition(0, pos);
             yield return null;
         }
-        StartCoroutine(earth.shrink());
+    }
+}
+
+public class CutScene_controller : MonoBehaviour
+{
+    public Line line;
+    public DisolveManager disolveManager;
+    public leEarth earth;
+    public GameObject earthTrigger;
+    public Ship ship;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        StartCoroutine(begin());
+    }
+
+    private IEnumerator begin()
+    {
+        StartCoroutine(ship.warp());
+        yield return new WaitForSeconds(ship.warpTime + 1f);
+
+        StartCoroutine(line.extend());
+        yield return new WaitForSeconds(line.LineAnimationLength);
+
+        disolveManager.condenseCall();
         yield return new WaitForSeconds(5f);
-        disolveManager.dissolve(); 
+
+        StartCoroutine(line.retract());
+        yield return new WaitForSeconds(line.LineAnimationLength);
+
+        StartCoroutine(earth.shrink());
+        yield return new WaitForSeconds(earth.shrinkSpeed);
+
+        disolveManager.dissolve();
+
+        StartCoroutine(ship.warpAway());
+        yield return new WaitForSeconds(ship.warpTime);
+
+        earthTrigger.SetActive(true);
+
     }
 }

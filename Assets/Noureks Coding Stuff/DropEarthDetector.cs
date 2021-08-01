@@ -8,7 +8,7 @@ public class DropEarthDetector : MonoBehaviour
 	public float maxDistance = 20;
 	void Update(){
 		if(Vector3.Distance(transform.position, player.position)>maxDistance){
-			FindObjectOfType<HealthManager>().isDead = true;
+			FindObjectOfType<scriptEarth>().HandleDamage(Mathf.Infinity);
 		}
 	}
 }
