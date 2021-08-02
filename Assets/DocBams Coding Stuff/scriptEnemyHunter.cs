@@ -340,7 +340,12 @@ public class scriptEnemyHunter : scriptEnemy
 				//inst.transform.localScale = lazerShot.transform.localScale;
 				inst.SetActive(true);
 				inst.GetComponent<AudioSource>().Play();
-				inst.GetComponent<scriptLazerShot>().isFiring = true;
+
+				var sls = inst.GetComponent<scriptLazerShot>();
+				if (sls == null)
+					Debug.LogError("No scriptLazerShot found on this ammoType.", ammoType);
+
+				sls.isFiring = true;
 				Destroy(inst, bulletLifespan);
 				break;
 			default:

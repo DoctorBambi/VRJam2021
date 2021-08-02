@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefabs:
-  - {fileID: 8442218428292457785, guid: 38a476271da66a943913627850241965, type: 3}
+  - {fileID: 3371362840670206125, guid: 50a2b3a5c45765642b5eb6fd49382fb6, type: 3}
   - {fileID: 8719615386816156755, guid: 2f5d3a8a1fdbddc45a0ca822dc52fcde, type: 3}
   earth: {fileID: 0}
   type: 0
@@ -54,3 +54,5 @@ MonoBehaviour:
   patrolAreaSize: 2
   enemyTerritoryRange: 10
   packAlerted: 0
+  sleepRange: 20
+  isSleeping: 1

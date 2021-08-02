@@ -21,7 +21,27 @@ ModelImporter:
   - first:
       74: -4955789268244171687
     second: Cylinder|Cylinder|Cylinder|Action|Cylinder|Action
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Blade
+    second: {fileID: 2100000, guid: 9c8831b4e71ff3d43a0985f43641cce1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Handle
+    second: {fileID: 2100000, guid: a3100e1e4e0a11845a93e65b6d050865, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: ee1d0aa9fbcf736449a112fb6cd44119, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: lightning
+    second: {fileID: 2100000, guid: 09968c1a918cbb04986bf7f8d4b9b79f, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
