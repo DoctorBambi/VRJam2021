@@ -33,7 +33,7 @@ public class AsteroidSpawner : MonoBehaviour
 		Vector3 scaleA = baseSize * RandomConstVectorThree(1-sizeVariation, 1+sizeVariation); 
 		Vector3 positionA = basePosition+RandomConstVectorThree(-chunkRadius,chunkRadius);
 		GameObject tempAsteroid = Instantiate(Asteroid);
-		if(Random.Range(0, Vector3.Distance(sunPos,player.position)) < 20){
+		if(Random.Range(0, Vector3.Distance(sunPos,player.position)) < 60){
 			tempAsteroid = Instantiate(droneSpawnerOne);		
 			if(Random.Range(0, 2) == 1){
 				tempAsteroid = Instantiate(droneSpawnerTwo);	
