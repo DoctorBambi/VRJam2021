@@ -19,6 +19,7 @@ public class scriptEnemyPack : MonoBehaviour
 
     public enum awareness
     {
+        Asleep,
         Unknown,
         InTerritory,
         Alerted
@@ -31,6 +32,8 @@ public class scriptEnemyPack : MonoBehaviour
     public float patrolAreaSize = 5;
     public float enemyTerritoryRange = 5;
     public bool packAlerted = true;
+    public float sleepRange = 20f; //range at which we will disable pack members to save on resources.
+    public bool isSleeping = false;
 
     private List<GameObject> packUnits = new List<GameObject>();
 
@@ -102,7 +105,20 @@ public class scriptEnemyPack : MonoBehaviour
 		{
             var dist = Vector3.Distance(packStartPoint.position, earth.transform.position);
 
-            if (dist < enemyTerritoryRange)
+            if (dist > sleepRange && !isSleeping)
+			{
+                //put pack to sleep
+                aware = awareness.Asleep;
+                SleepPackMembers();
+
+			}
+            else if (dist < sleepRange && isSleeping)
+			{
+                //wake pack up
+                aware = awareness.Unknown;
+                WakePackMembers();
+			}
+            else if (dist < enemyTerritoryRange)
             {
                 if (!packAlerted)
                     aware = awareness.InTerritory;
@@ -114,6 +130,26 @@ public class scriptEnemyPack : MonoBehaviour
                 aware = awareness.Unknown;
                 RetreatPackMembers();
             }
+		}
+	}
+
+    public void SleepPackMembers()
+	{
+        isSleeping = true;
+
+        foreach (GameObject unit in packUnits)
+		{
+            unit.SetActive(false);
+		}
+	}
+
+    public void WakePackMembers()
+	{
+        isSleeping = false;
+
+        foreach (GameObject unit in packUnits)
+		{
+            unit.SetActive(true);
 		}
 	}
 
@@ -133,7 +169,8 @@ public class scriptEnemyPack : MonoBehaviour
 
         foreach (GameObject unit in packUnits)
         {
-            unit.SendMessage("RetreatUnit", SendMessageOptions.DontRequireReceiver);
+            if (unit != null)
+                unit.SendMessage("RetreatUnit", SendMessageOptions.DontRequireReceiver);
         }
     }
 }
