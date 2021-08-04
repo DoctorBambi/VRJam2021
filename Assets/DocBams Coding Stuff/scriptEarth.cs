@@ -68,11 +68,15 @@ public class scriptEarth : MonoBehaviour
 
 	public void HandleDamage(float damageAmount)
 	{
+        print("Earth has been hit!");
+
         health -= damageAmount;
 
         if (health <= 0)
-			SceneManager.LoadScene(2);
+		{
+			//SceneManager.LoadScene(2);
             SetCurrentState(states.Dead);
+		}
 	}
 
     public void EmbedInto(GameObject thingToEmbed)
@@ -82,7 +86,6 @@ public class scriptEarth : MonoBehaviour
 
     void HandleDeath()
 	{
-
         if (dyingRoutine == null)
 		{
             dyingRoutine = DyingRoutine();
@@ -139,7 +142,7 @@ public class scriptEarth : MonoBehaviour
         //gameObject.GetComponent<Renderer>().enabled = false;
 
         //Reload the scene
-        Invoke("ReloadScene", 0f);
+        Invoke("ReloadScene", 1f);
 
         dyingRoutine = null;
     }

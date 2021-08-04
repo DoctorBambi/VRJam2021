@@ -54,5 +54,5 @@ MonoBehaviour:
   patrolAreaSize: 2
   enemyTerritoryRange: 10
   packAlerted: 0
-  sleepRange: 20
+  sleepRange: 50
   isSleeping: 1

@@ -204,7 +204,7 @@ GameObject:
   - component: {fileID: 4978582049165864184}
   - component: {fileID: 354415068420816579}
   m_Layer: 0
-  m_Name: prefabEnemyDriller 1
+  m_Name: prefabEnemyDriller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -251,7 +251,7 @@ MonoBehaviour:
   stunCooldown: 5
   patrolLocation: {x: 0, y: 0, z: 0}
   target: {fileID: 0}
-  drillDamage: 0.1
+  drillDamage: 0.2
   currentState: 0
   sounds:
   - {fileID: 8300000, guid: 8f90aab743ca1854a98fc315c2f60cad, type: 3}
