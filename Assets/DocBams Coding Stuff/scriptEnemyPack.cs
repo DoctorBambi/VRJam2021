@@ -5,7 +5,8 @@ using UnityEngine;
 //An enemy pack is a collection of enemies, when one becomes aware of the player, they can transmit that to other units in the pack.
 public class scriptEnemyPack : MonoBehaviour
 {
-    public GameObject[] enemyPrefabs;
+	#region Properties
+	public GameObject[] enemyPrefabs;
     public GameObject earth;
 
     public enum types
@@ -36,9 +37,10 @@ public class scriptEnemyPack : MonoBehaviour
     public bool isSleeping = false;
 
     private List<GameObject> packUnits = new List<GameObject>();
+	#endregion
 
-    // Start is called before the first frame update
-    void Start()
+	// Start is called before the first frame update
+	void Start()
     {
         //Go find the earth
         var potentialEarths = GameObject.FindGameObjectsWithTag("Earth");
@@ -101,7 +103,7 @@ public class scriptEnemyPack : MonoBehaviour
 
     void CheckProximity()
 	{
-        if (earth != null)
+        if (earth != null && earth.GetComponent<scriptEarth>().currentState != scriptPlanetoid.states.Dead && earth.GetComponent<scriptEarth>().currentState != scriptPlanetoid.states.Safe)
 		{
             var dist = Vector3.Distance(packStartPoint.position, earth.transform.position);
 
@@ -110,7 +112,6 @@ public class scriptEnemyPack : MonoBehaviour
                 //put pack to sleep
                 aware = awareness.Asleep;
                 SleepPackMembers();
-
 			}
             else if (dist < sleepRange && isSleeping)
 			{
@@ -131,6 +132,11 @@ public class scriptEnemyPack : MonoBehaviour
                 RetreatPackMembers();
             }
 		}
+		else //earth is not in an attackable state, so pull everyone back home.
+		{
+            aware = awareness.Unknown;
+            RetreatPackMembers();
+        }
 	}
 
     public void SleepPackMembers()

@@ -219,7 +219,7 @@ Transform:
   m_GameObject: {fileID: 3371362840670206125}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 10.54, y: 0, z: 0}
-  m_LocalScale: {x: 0.033918336, y: 0.033918336, z: 0.033918336}
+  m_LocalScale: {x: 0.06112084, y: 0.06112084, z: 0.06112084}
   m_Children:
   - {fileID: 3371362840671107731}
   - {fileID: 4556452820244227006}
@@ -244,15 +244,14 @@ MonoBehaviour:
   sightRadius: 5
   patrolSpeed: 2
   patrolCooldown: 5
-  chaseSpeed: 10
-  maxVelocity: 10
+  chaseSpeed: 4
+  maxVelocity: 4
   lookSpeed: 0.1
   breakingSpeed: 0.02
   stunCooldown: 5
   patrolLocation: {x: 0, y: 0, z: 0}
   target: {fileID: 0}
   drillDamage: 0.2
-  currentState: 0
   sounds:
   - {fileID: 8300000, guid: 8f90aab743ca1854a98fc315c2f60cad, type: 3}
   - {fileID: 8300000, guid: 7c6332ea3c05c3841b7f4e50a8d2a6b0, type: 3}
@@ -374,7 +373,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 8f90aab743ca1854a98fc315c2f60cad, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: -3
   Loop: 1
   Mute: 0
   Spatialize: 0

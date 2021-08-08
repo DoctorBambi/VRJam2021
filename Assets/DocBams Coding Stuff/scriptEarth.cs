@@ -2,49 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class scriptEarth : MonoBehaviour
+public class scriptEarth : scriptPlanetoid
 {
-    public float maxHealth = 100;
-    public float health;
-    public float enemyTerritoryDist = 5f;
+    #region Properties
 
-    public enum states
+    GameObject model;
+
+    #endregion
+
+    #region MonoBehaviour Stuff
+    protected override void Start()
     {
-        Nominal,
-        Freezing,
-        Warming,
-        Dead,
-        Safe
-    }
+        base.Start();
 
-    public states currentState;
-    public states prevState;
-
-    private List<GameObject> attachedEnemies = new List<GameObject>();
-
-    //Audio
-    //Don't think we need these as the audio manager will play the death sound when needed.
-    //[SerializeField]
-    //AudioClip deathMusic;
-
-    //[SerializeField]
-    //AudioSource audioSource;
-
-    //Coroutines
-    private IEnumerator dyingRoutine;
-    private IEnumerator safeRoutine;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        health = maxHealth;
-
-        //Initial state
-        SetCurrentState(states.Nominal);
+        model = transform.Find("EarthContainer").gameObject;
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
         //Death mode
         if (currentState == states.Dead)
@@ -52,21 +27,19 @@ public class scriptEarth : MonoBehaviour
         //Safe mode
         else if (currentState == states.Safe)
             HandleSafe();
-
-        //Handle Proximity to enemies
-        else
-            HandleProximity();
     }
 
-	private void OnTriggerEnter(Collider other)
+    protected override void OnTriggerEnter(Collider other)
 	{
 		if (other.CompareTag("Sun"))
 		{
             SetCurrentState(states.Safe);
 		}
 	}
+	#endregion
 
-	public void HandleDamage(float damageAmount)
+	#region External Inputs
+	public override void HandleDamage(float damageAmount)
 	{
         print("Earth has been hit!");
 
@@ -79,94 +52,56 @@ public class scriptEarth : MonoBehaviour
 		}
 	}
 
-    public void EmbedInto(GameObject thingToEmbed)
-	{
-        attachedEnemies.Add(thingToEmbed);
-	}
-
-    void HandleDeath()
-	{
-        if (dyingRoutine == null)
-		{
-            dyingRoutine = DyingRoutine();
-            StartCoroutine(dyingRoutine);
-		}
-    }
-
-    void HandleSafe()
-	{
-
-        if (safeRoutine == null)
-		{
-            safeRoutine = SafeRoutine();
-            StartCoroutine(safeRoutine);
-		}
-    }
-
-    void HandleProximity()
-	{
-
-	}
-
-    //sets the curent state and caches the previous state
-    public void SetCurrentState(states newState)
-    {
-        if (newState != currentState)
-        {
-            prevState = currentState; //cache the previous state
-            currentState = newState;
-        }
-    }
-
     public void ReloadScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+    #endregion
 
-    //Coroutines
-    private IEnumerator DyingRoutine()
+    #region Coroutines
+    protected override IEnumerator DyingRoutine()
     {
         //Handle attached enemies
-        foreach (GameObject go in attachedEnemies)
+        foreach (GameObject go in attachedEntities)
         {
             go.SendMessage("DislodgeFrom", SendMessageOptions.DontRequireReceiver);
         }
-        attachedEnemies.Clear();
+        attachedEntities.Clear();
 
-        var aSrc = GetComponent<AudioSource>();
+        //Disable renderer and collider
+        model.SetActive(false);
+        col.enabled = false;
 
-        yield return new WaitForSeconds(aSrc.clip.length); //wait for the death music to finish before reloading.
+        //Play Audio
 
-        //Destroy the planet ;.;
-        //Destroy(gameObject);
-        //gameObject.GetComponent<Renderer>().enabled = false;
+
+        //Spawn explosion effect
+        var dustCloud = Instantiate(explosionEffect, transform.position, transform.rotation);
+        Destroy(dustCloud, 10f);
+
+        yield return new WaitForSeconds(scriptAudioManager.Instance.musicLoops[(int)scriptAudioManager.vibes.Dead].length); //wait for the death music to finish before reloading.
 
         //Reload the scene
         Invoke("ReloadScene", 1f);
 
+        hasDied = true;
         dyingRoutine = null;
     }
 
-    private IEnumerator SafeRoutine()
+    protected override IEnumerator SafeRoutine()
     {
         //Handle attached enemies
-        foreach (GameObject go in attachedEnemies)
+        foreach (GameObject go in attachedEntities)
         {
             go.SendMessage("DislodgeFrom", SendMessageOptions.DontRequireReceiver);
         }
-        attachedEnemies.Clear();
-
-        var aSrc = GetComponent<AudioSource>();
+        attachedEntities.Clear();
 
         yield return new WaitForSeconds(aSrc.clip.length); //wait for the death music to finish before reloading.
 
-        //Destroy the planet ;.;
-        //Destroy(gameObject);
-        //gameObject.GetComponent<Renderer>().enabled = false;
-
-        //... Now what?
-        //Invoke("ReloadScene", 0f);
+        //... Now what do we load?
 
         safeRoutine = null;
     }
+	#endregion
 }

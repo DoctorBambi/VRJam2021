@@ -390,7 +390,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   health: 0
-  enemyTerritoryDist: 5
+  hasDied: 0
+  explosionEffect: {fileID: 3762497184249177684, guid: 4a1a5b4b7be24d148bbf22f7f744196b,
+    type: 3}
   currentState: 0
   prevState: 0
 --- !u!82 &8772382713348184996

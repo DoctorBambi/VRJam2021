@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class scriptAudioManager : MonoBehaviour
 {
+    static public scriptAudioManager Instance;
+
     public GameObject earth;
     public GameObject[] enemyPacks;
     public AudioClip[] musicLoops;
@@ -27,10 +29,19 @@ public class scriptAudioManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Debug.LogError("An audio manager already exists in the scene!", Instance);
+        }
+
         //Go find the earth
         var potentialEarths = GameObject.FindGameObjectsWithTag("Earth");
         if (potentialEarths.Length == 0)
-            Debug.LogError("There is no earth object in the scene for this enemy pack to look for.");
+            Debug.LogError("There is no earth object in the scene for the audio manager to reference.");
         else if (potentialEarths.Length > 1)
             Debug.LogError("There is more than 1 earth object in the scene.");
         else
@@ -56,6 +67,7 @@ public class scriptAudioManager : MonoBehaviour
         //You Died
         else if (currentVibe == vibes.Dead)
             HandleDead();
+        //You Won!
         else if (currentVibe == vibes.Victory)
             HandleVictory();
 
@@ -162,7 +174,7 @@ public class scriptAudioManager : MonoBehaviour
     {
         vibes vibe = vibes.Chill;
 
-        //If the earth is dead, then what's the point?!
+        //How's the earth feeling?
         if (earth.GetComponent<scriptEarth>().currentState == scriptEarth.states.Dead)
 		{
             vibe = vibes.Dead;
@@ -176,7 +188,7 @@ public class scriptAudioManager : MonoBehaviour
             return;
         }
 
-        //Check the enemy packs to get their thoughts
+        //Check the enemy packs for their thoughts.
         foreach (GameObject pack in enemyPacks)
         {
             var packScript = pack.GetComponent<scriptEnemyPack>();
@@ -199,6 +211,27 @@ public class scriptAudioManager : MonoBehaviour
 	{
         StopCoroutine(playLoopRoutine);
         playLoopRoutine = null;
+    }
+
+    /// <summary>
+	/// Adjusts the pitch of a given audio source per a ridgid body's velocity.
+	/// </summary>
+	/// <param name="audioSource">To change the pitch</param>
+	/// <param name="rigbod">To check velocity</param>
+	/// <param name="maxVelocity">The expected max speed of the rigidbody.</param>
+	/// <param name="range">The range of pitch adjust. (Pitch can be set between -3 and 3 with 1 being no adjustment to the audio original pitch.</param>
+	/// <param name="offset">Positions the range accordingly.</param>
+	public void AdjustPitchBasedVelocity(AudioSource audioSource, Rigidbody rigbod, float maxVelocity, float range, float offset = 1)
+    {
+        if (rigbod != null)
+        {
+            var curVel = Mathf.Clamp(rigbod.velocity.sqrMagnitude, 0, maxVelocity);
+            var ratio = ((curVel / maxVelocity) * range) + offset; //* 2 + 1 because pitch can go from 1 to 3.
+
+            audioSource.pitch = Mathf.Lerp(audioSource.pitch, ratio, .1f);
+        }
+        else
+            audioSource.pitch = Mathf.Lerp(audioSource.pitch, 1, .1f);
     }
 
     //Coroutines

@@ -71,6 +71,8 @@ using UnityEngine;
 public class ChunkLoading : MonoBehaviour
 {
 	[SerializeField]
+	public bool debugging = true;
+	[SerializeField]
 	AsteroidSpawner astSpawner;
 	[SerializeField]
 	//curently occupied chunk
@@ -100,7 +102,7 @@ public class ChunkLoading : MonoBehaviour
 	chunk chunkVar;
 	void Update(){
 		bool changedChunkThisFrame = GetCurrentChunk() != chunk;
-		Debug.Log(chunks[chunk.x,chunk.y,chunk.z]);
+		if (debugging) Debug.Log(chunks[chunk.x,chunk.y,chunk.z]);
 		if(changedChunkThisFrame){
 			/* foreach (GameObject currentProcAsteroid in chunkVar.asteroids) */
 			/* { */
@@ -111,9 +113,9 @@ public class ChunkLoading : MonoBehaviour
 		chunkVar = chunks[GetCurrentChunk().x,GetCurrentChunk().y,GetCurrentChunk().z];
 		/* Debug.Log(chunkVar); */
 		if(changedChunkThisFrame){
-			Debug.Log("entered new chunk");
+			if (debugging) Debug.Log("entered new chunk");
 			if(chunkVar != null){
-				Debug.Log("new chunk");
+				if (debugging) Debug.Log("new chunk");
 				foreach (Vector3 curCoord in chunkVar.asteroids)
 				{
 					astSpawner.spawnAsteroidDirect(curCoord);	

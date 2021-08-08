@@ -752,6 +752,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 303e6e3ca63f7b9ce832fc772cbed0b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugging: 0
   astSpawner: {fileID: 1024454744}
   chunk: {x: 1, y: 1, z: 1}
   player: {fileID: 375809220}
@@ -1382,7 +1383,7 @@ BoxCollider:
   m_GameObject: {fileID: 1293186176}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -1481,7 +1482,7 @@ PrefabInstance:
     - target: {fileID: 1462243957812138642, guid: 4d695564a10769541a1c83691ea76cfd,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1346.17
+      value: 1346.99
       objectReference: {fileID: 0}
     - target: {fileID: 1462243957812138642, guid: 4d695564a10769541a1c83691ea76cfd,
         type: 3}

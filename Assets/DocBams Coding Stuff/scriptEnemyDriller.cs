@@ -4,22 +4,8 @@ using UnityEngine;
 
 public class scriptEnemyDriller : scriptEnemy
 {
-
+	#region Properties
 	public float drillDamage = .1f;
-
-	public enum states
-	{
-		Idle,
-		Patrolling,
-		Chasing,
-		Attacking,
-		Embedded,
-		Braking,
-		Stunned
-	}
-
-	public states currentState;
-	private states prevState;
 
 	//Audio
 	public AudioClip[] sounds;
@@ -36,7 +22,9 @@ public class scriptEnemyDriller : scriptEnemy
 	private IEnumerator dislodgeRoutine;
 	private IEnumerator patrolRoutine;
 	private IEnumerator stunRoutine;
+	#endregion
 
+	#region MonoBehaviour Stuff
 	// Start is called before the first frame update
 	protected override void Start()
 	{
@@ -87,6 +75,45 @@ public class scriptEnemyDriller : scriptEnemy
 
 		//Handle Audio settings
 		HandleAudio();
+	}
+
+	private void OnCollisionEnter(Collision collision)
+	{
+		print(collision.collider.name);
+
+		//general collisions
+		if (collision.transform.name.Contains("Hand") || collision.transform.name == "prefabStungun")//if we collide with player's hand or the stun gun
+		{
+			if (currentState == states.Embedded)
+				DislodgeFrom();
+			else
+				Stun();
+		}
+
+		//behaviour contextual collisions
+		if (currentState == states.Chasing)
+		{
+			if (collision.collider.CompareTag("Asteroid"))
+			{
+				EmbedInto(collision.collider.gameObject);
+			}
+			else if (collision.collider.CompareTag("Earth"))
+			{
+				EmbedInto(collision.collider.gameObject);
+			}
+		}
+	}
+	#endregion
+
+	#region AI Behaviours
+	//sets the curent state and caches the previous state
+	public void SetCurrentState(states newState)
+	{
+		if (newState != currentState)
+		{
+			prevState = currentState; //cache the previous state
+			currentState = newState;
+		}
 	}
 
 	void HandleIdle()
@@ -163,40 +190,22 @@ public class scriptEnemyDriller : scriptEnemy
 		//Just let the ship drift from whatever chaos stunned it.
 		target = null;
 	}
+	#endregion
 
-	private void OnCollisionEnter(Collision collision)
-	{
-		//print(collision.collider.name);
-
-		//general collisions
-		if (collision.transform.name.Contains("Hand") || collision.transform.name == "prefabStungun")//if we collide with player's hand
-		{
-			if (currentState == states.Embedded)
-				DislodgeFrom();
-			else
-				Stun();
-		}
-
-		//chase contextual collisions
-		if (currentState == states.Chasing)
-		{
-			if (collision.collider.CompareTag("Asteroid"))
-			{
-				Obliterate(collision.collider.gameObject);
-			}
-			else if (collision.collider.CompareTag("Earth"))
-			{
-				EmbedInto(collision.collider.gameObject);
-			}
-		}
-	}
-
+	#region External Inputs
+	/// <summary>
+	/// Used by the pack to alert this unit to an target's location.
+	/// </summary>
+	/// <param name="newTarget"></param>
 	public void AlertUnit(Transform newTarget)
 	{
 		target = newTarget;
 		SetCurrentState(scriptEnemyDriller.states.Chasing);
 	}
 
+	/// <summary>
+	/// When the player has left a pack's territory, the pack will use this to call off their attack mode.
+	/// </summary>
 	public void RetreatUnit()
 	{
 		target = null;
@@ -217,9 +226,6 @@ public class scriptEnemyDriller : scriptEnemy
 		currentState = states.Embedded;
 
 		Destroy(rb);
-		//rb.velocity = Vector3.zero;
-		//rb.angularVelocity = Vector3.zero;
-		//rb.isKinematic = true;
 
 		transform.SetParent(target.transform, true);
 		target.SendMessage("EmbedInto", gameObject, SendMessageOptions.DontRequireReceiver);
@@ -243,18 +249,9 @@ public class scriptEnemyDriller : scriptEnemy
 			StartCoroutine(stunRoutine);
 		}
 	}
+	#endregion
 
-	//sets the curent state and caches the previous state
-	public void SetCurrentState(states newState)
-	{
-		if (newState != currentState)
-		{
-			prevState = currentState; //cache the previous state
-			currentState = newState;
-		}
-	}
-
-	//Audio
+	#region Audio
 	void HandleAudio()
 	{
 		switch (currentState)
@@ -262,32 +259,31 @@ public class scriptEnemyDriller : scriptEnemy
 			case states.Chasing:
 				aSrc.clip = sounds[(int)soundTypes.HighSpeed];
 				if (aSrc.isPlaying == false) aSrc.Play();
+
+				//Change engine hum pitch based on current velocity
+				scriptAudioManager.Instance.AdjustPitchBasedVelocity(aSrc, rb, maxVelocity, 2, 1);
+				break;
+			case states.Stunned:
+				aSrc.clip = sounds[(int)soundTypes.Idle];
+				if (aSrc.isPlaying == false) aSrc.Play();
+
+				aSrc.pitch = Mathf.Lerp(aSrc.pitch, 1, .2f);
 				break;
 			default:
 				aSrc.clip = sounds[(int)soundTypes.Idle];
 				if (aSrc.isPlaying == false) aSrc.Play();
 				break;
 		}
-
-		if (rb != null)
-		{
-			var curVel = Mathf.Clamp(rb.velocity.sqrMagnitude, 0, maxVelocity);
-			var ratio = ((curVel / maxVelocity) * 2) + 1; //* 2 + 1 because pitch can go from 1 to 3.
-
-			aSrc.pitch = Mathf.Lerp(aSrc.pitch, ratio, .1f);
-		}
-		else
-			aSrc.pitch = Mathf.Lerp(aSrc.pitch, 1, .1f);
-
 	}
+	#endregion
 
-	//Coroutines
+	#region Coroutines
 	private IEnumerator DislodgeRoutine()
 	{
 		SetCurrentState(states.Idle);
 		target = null;
-		transform.SetParent(null, true);//set parent to the scene
 
+		transform.SetParent(null, true);//de-parent the driller
 		ReinitializeRidgidBody();
 
 		rb.AddForce(-transform.forward * chaseSpeed);//back the enemy away from embeded target
@@ -325,4 +321,5 @@ public class scriptEnemyDriller : scriptEnemy
 
 		stunRoutine = null;
 	}
+	#endregion
 }

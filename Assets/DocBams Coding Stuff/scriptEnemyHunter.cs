@@ -4,23 +4,12 @@ using UnityEngine;
 
 public class scriptEnemyHunter : scriptEnemy
 {
-	public float shootingRange = 2f; // how close does it need to be to shoot at earth
+	#region Properties
+	public float shootingRangeMax = 2f; // how close does it need to be to shoot at earth
+	public float shootingRangeMin = 1f; // how far away does it need to be to shoot at earth
 	public float shootCooldown = 2f;
 	public int bulletLifespan = 5;
 	public GameObject ammoType;
-
-	public enum states
-	{
-		Idle,
-		Patrolling,
-		Chasing,
-		Attacking,
-		Braking,
-		Stunned
-	}
-
-	public states currentState;
-	private states prevState;
 
 	public enum shotTypes
 	{
@@ -49,7 +38,9 @@ public class scriptEnemyHunter : scriptEnemy
 	private IEnumerator patrolRoutine;
 	private IEnumerator stunRoutine;
 	private IEnumerator shootRoutine;
+	#endregion
 
+	#region MonoBehaviour Stuff
 	// Start is called before the first frame update
 	protected override void Start()
 	{
@@ -107,6 +98,29 @@ public class scriptEnemyHunter : scriptEnemy
 		HandleAudio();
 	}
 
+	private void OnCollisionEnter(Collision collision)
+	{
+		//print(collision.collider.name);
+
+		//general collisions
+		if (collision.transform.name.Contains("Hand") || collision.transform.name == "prefabStungun")//if we collide with player's hand
+		{
+			Stun();
+		}
+	}
+	#endregion
+
+	#region AI Behaviours
+	//sets the curent state and caches the previous state
+	public void SetCurrentState(states newState)
+	{
+		if (newState != currentState)
+		{
+			prevState = currentState; //cache the previous state
+			currentState = newState;
+		}
+	}
+
 	void HandleIdle()
 	{
 		//For now we're just chillin
@@ -151,7 +165,7 @@ public class scriptEnemyHunter : scriptEnemy
 			transform.LookAt(Vector3.Lerp(transform.position, target.position, lookSpeed));
 
 			//Cast a ray and see what's ahead of us
-			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRange))
+			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRangeMax))
 			{
 				if (hit.collider.name == "Earth") //then we're in range so start attacking
 				{
@@ -181,7 +195,7 @@ public class scriptEnemyHunter : scriptEnemy
 			transform.LookAt(Vector3.Lerp(transform.position, target.position, lookSpeed));
 
 			//Check that player is still in range
-			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRange + 1))// + 1 so we have a cushion of space to start shooting if the player is moving the earth quickly.
+			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRangeMax + 1))// + 1 so we have a cushion of space to start shooting if the player is moving the earth quickly.
 			{
 				if (hit.collider.name == "Earth") //then we're in range so start shooting
 				{
@@ -221,18 +235,9 @@ public class scriptEnemyHunter : scriptEnemy
 		//Just let the ship drift from whatever chaos stunned it.
 		target = null;
 	}
+	#endregion
 
-	private void OnCollisionEnter(Collision collision)
-	{
-		//print(collision.collider.name);
-
-		//general collisions
-		if (collision.transform.name.Contains("Hand") || collision.transform.name == "prefabStungun")//if we collide with player's hand
-		{
-			Stun();
-		}
-	}
-
+	#region External Inputs
 	public void AlertUnit(Transform newTarget)
 	{
 		target = newTarget;
@@ -261,46 +266,35 @@ public class scriptEnemyHunter : scriptEnemy
 			StartCoroutine(stunRoutine);
 		}
 	}
+	#endregion
 
-	//sets the curent state and caches the previous state
-	public void SetCurrentState(states newState)
-	{
-		if (newState != currentState)
-		{
-			prevState = currentState; //cache the previous state
-			currentState = newState;
-		}
-	}
-
-	//Audio
+	#region Audio
 	void HandleAudio()
 	{
 		switch (currentState)
 		{
 			case states.Chasing:
-			case states.Attacking:
 				aSrc.clip = sounds[(int)soundTypes.HighSpeed];
 				if (aSrc.isPlaying == false) aSrc.Play();
+
+				//Change engine hum pitch based on current velocity
+				scriptAudioManager.Instance.AdjustPitchBasedVelocity(aSrc, rb, maxVelocity, 2, 1);
+				break;
+			case states.Stunned:
+				aSrc.clip = sounds[(int)soundTypes.Idle];
+				if (aSrc.isPlaying == false) aSrc.Play();
+
+				aSrc.pitch = Mathf.Lerp(aSrc.pitch, 1, .2f);
 				break;
 			default:
 				aSrc.clip = sounds[(int)soundTypes.Idle];
 				if (aSrc.isPlaying == false) aSrc.Play();
 				break;
 		}
-
-		if (rb != null)
-		{
-			var curVel = Mathf.Clamp(rb.velocity.sqrMagnitude, 0, maxVelocity);
-			var ratio = ((curVel / maxVelocity) * 2) + 1; //* 2 + 1 because pitch can go from 1 to 3.
-
-			aSrc.pitch = Mathf.Lerp(aSrc.pitch, ratio, .1f);
-		}
-		else
-			aSrc.pitch = Mathf.Lerp(aSrc.pitch, 1, .1f);
-
 	}
+	#endregion
 
-	//Coroutines
+	#region Coroutines
 	private IEnumerator PatrolRoutine()
 	{
 		patrolLocation = Random.insideUnitSphere * pack.patrolAreaSize + pack.packStartPoint.position;
@@ -335,9 +329,7 @@ public class scriptEnemyHunter : scriptEnemy
 			case shotTypes.Single:
 				//Instantiate lazer and fire at earth
 				var inst = Instantiate(ammoType, bulletChamber.position, bulletChamber.rotation);
-				//inst.transform.position = lazerShot.transform.position;
-				//inst.transform.rotation = lazerShot.transform.rotation;
-				//inst.transform.localScale = lazerShot.transform.localScale;
+				
 				inst.SetActive(true);
 				inst.GetComponent<AudioSource>().Play();
 
@@ -357,4 +349,5 @@ public class scriptEnemyHunter : scriptEnemy
 
 		shootRoutine = null;
 	}
+	#endregion
 }
