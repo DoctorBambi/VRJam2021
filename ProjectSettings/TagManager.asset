@@ -10,6 +10,7 @@ TagManager:
   - Driller
   - EnemyPack
   - Sun
+  - Hunter
   layers:
   - Default
   - TransparentFX

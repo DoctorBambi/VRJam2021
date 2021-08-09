@@ -23,17 +23,6 @@ public class scriptEnemyHunter : scriptEnemy
 	private GameObject lazerShot;
 	private Transform bulletChamber; //where bullets are loaded for firing
 
-	//Audio
-	public AudioClip[] sounds;
-
-	public enum soundTypes
-	{
-		Idle,
-		HighSpeed
-	}
-
-	private AudioSource aSrc;
-
 	//Coroutines
 	private IEnumerator patrolRoutine;
 	private IEnumerator stunRoutine;
@@ -44,20 +33,12 @@ public class scriptEnemyHunter : scriptEnemy
 	// Start is called before the first frame update
 	protected override void Start()
 	{
-		//Initing components
-		rb = GetComponent<Rigidbody>();
-		if (rb == null) Debug.LogError("No rigidbody found for this enemy.");
-
-		aSrc = GetComponent<AudioSource>();
-		if (aSrc == null) Debug.LogError("No audio source found for this enemy.");
+		base.Start();
 
 		if (ammoType == null) Debug.LogError("No ammo type assigned for this enemy.");
 
 		bulletChamber = transform.Find("BulletChamber");
 		if (bulletChamber == null) Debug.LogError("No bullet chamber found for this enemy.");
-
-		//Initial state
-		SetCurrentState(states.Patrolling);
 	}
 
 	// Update is called once per frame
@@ -98,12 +79,12 @@ public class scriptEnemyHunter : scriptEnemy
 		HandleAudio();
 	}
 
-	private void OnCollisionEnter(Collision collision)
+	public override void OnCollisionEnter(Collision collision)
 	{
 		//print(collision.collider.name);
 
 		//general collisions
-		if (collision.transform.name.Contains("Hand") || collision.transform.name == "prefabStungun")//if we collide with player's hand
+		if (collision.transform.name.Contains("Hand") || collision.transform.name == "prefabStungun")//if we collide with player's hand or stun gun
 		{
 			Stun();
 		}
@@ -111,16 +92,6 @@ public class scriptEnemyHunter : scriptEnemy
 	#endregion
 
 	#region AI Behaviours
-	//sets the curent state and caches the previous state
-	public void SetCurrentState(states newState)
-	{
-		if (newState != currentState)
-		{
-			prevState = currentState; //cache the previous state
-			currentState = newState;
-		}
-	}
-
 	void HandleIdle()
 	{
 		//For now we're just chillin
@@ -155,10 +126,6 @@ public class scriptEnemyHunter : scriptEnemy
 
 	void HandleChasing()
 	{
-		//Target the earth
-		//if (earth != null)
-		//    target = earth.transform;
-
 		if (target != null)
 		{
 			//Look at target
@@ -184,7 +151,7 @@ public class scriptEnemyHunter : scriptEnemy
 			}
 		}
 		else
-			Debug.Log("I have no target to chase.");
+			Debug.Log("I have no target to chase.", gameObject);
 	}
 
 	void HandleAttacking()
@@ -248,14 +215,6 @@ public class scriptEnemyHunter : scriptEnemy
 	{
 		target = null;
 		SetCurrentState(scriptEnemyHunter.states.Patrolling);
-	}
-
-	//pulverize a thing into dust
-	private void Obliterate(GameObject target)
-	{
-		//Likely will activate a coroutine that does lots of flashy stuff.
-		SetCurrentState(states.Braking);
-		Destroy(target);
 	}
 
 	public void Stun()

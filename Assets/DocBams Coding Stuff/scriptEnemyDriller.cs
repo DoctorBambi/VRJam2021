@@ -7,17 +7,6 @@ public class scriptEnemyDriller : scriptEnemy
 	#region Properties
 	public float drillDamage = .1f;
 
-	//Audio
-	public AudioClip[] sounds;
-
-	public enum soundTypes
-	{
-		Idle,
-		HighSpeed
-	}
-
-	private AudioSource aSrc;
-
 	//Coroutines
 	private IEnumerator dislodgeRoutine;
 	private IEnumerator patrolRoutine;
@@ -25,20 +14,6 @@ public class scriptEnemyDriller : scriptEnemy
 	#endregion
 
 	#region MonoBehaviour Stuff
-	// Start is called before the first frame update
-	protected override void Start()
-	{
-		//Initing components
-		rb = GetComponent<Rigidbody>();
-		if (rb == null) Debug.LogError("No rigidbody found for this enemy.");
-
-		aSrc = GetComponent<AudioSource>();
-		if (aSrc == null) Debug.LogError("No audio source found for this enemy.");
-
-		//Initial state
-		SetCurrentState(states.Patrolling);
-	}
-
 	// Update is called once per frame
 	protected override void Update()
 	{
@@ -77,9 +52,9 @@ public class scriptEnemyDriller : scriptEnemy
 		HandleAudio();
 	}
 
-	private void OnCollisionEnter(Collision collision)
+	public override void OnCollisionEnter(Collision collision)
 	{
-		print(collision.collider.name);
+		if (debugging) print($"Driller Collide: {collision.collider.name}");
 
 		//general collisions
 		if (collision.transform.name.Contains("Hand") || collision.transform.name == "prefabStungun")//if we collide with player's hand or the stun gun
@@ -103,19 +78,14 @@ public class scriptEnemyDriller : scriptEnemy
 			}
 		}
 	}
+
+	public void OnTriggerEnter(Collider other)
+	{
+		if (debugging) print($"Driller Trigger: {other.name}");
+	}
 	#endregion
 
 	#region AI Behaviours
-	//sets the curent state and caches the previous state
-	public void SetCurrentState(states newState)
-	{
-		if (newState != currentState)
-		{
-			prevState = currentState; //cache the previous state
-			currentState = newState;
-		}
-	}
-
 	void HandleIdle()
 	{
 		//For now we're just chillin
@@ -150,10 +120,6 @@ public class scriptEnemyDriller : scriptEnemy
 
 	void HandleChasing()
 	{
-		//Target the earth
-		//if (earth != null)
-		//    target = earth.transform;
-
 		if (target != null)
 		{
 			//Look at target
@@ -164,7 +130,7 @@ public class scriptEnemyDriller : scriptEnemy
 				rb.AddForce(transform.forward * chaseSpeed);
 		}
 		else
-			Debug.Log("I have no target to chase.");
+			Debug.Log("I have no target to chase.", gameObject);
 	}
 
 	void HandleBraking()
@@ -210,14 +176,6 @@ public class scriptEnemyDriller : scriptEnemy
 	{
 		target = null;
 		SetCurrentState(scriptEnemyDriller.states.Patrolling);
-	}
-
-	//pulverize a thing into dust
-	private void Obliterate(GameObject target)
-	{
-		//Likely will activate a coroutine that does lots of flashy stuff.
-		SetCurrentState(states.Braking);
-		Destroy(target);
 	}
 
 	//embed the driller into the target
@@ -280,6 +238,9 @@ public class scriptEnemyDriller : scriptEnemy
 	#region Coroutines
 	private IEnumerator DislodgeRoutine()
 	{
+		//Play audio
+
+
 		SetCurrentState(states.Idle);
 		target = null;
 

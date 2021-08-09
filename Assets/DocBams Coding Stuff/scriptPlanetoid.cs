@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class scriptPlanetoid : MonoBehaviour
 {
-	#region Properties
+    #region Properties
+    public bool debugging = false;
 	public float maxHealth = 100;
     public float health;
     public bool hasDied = false;

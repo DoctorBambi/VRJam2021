@@ -204,7 +204,7 @@ Transform:
   m_GameObject: {fileID: 5318957823161222446}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.465, y: 0.008479584, z: 0.069600426}
-  m_LocalScale: {x: 0.012742326, y: 0.012742326, z: 0.012742326}
+  m_LocalScale: {x: 0.076809466, y: 0.076809466, z: 0.076809466}
   m_Children:
   - {fileID: 4564233363736977480}
   - {fileID: 8562582578588636210}
@@ -361,7 +361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletDamage: 5
-  bulletSpeed: 5
+  bulletSpeed: 2.5
   isFiring: 0
 --- !u!1 &8562582578588636209
 GameObject:
@@ -420,7 +420,7 @@ Transform:
   m_GameObject: {fileID: 8796953582164605404}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.60107, y: 0.60107, z: 0.60107}
+  m_LocalScale: {x: 0.37936735, y: 0.37936735, z: 0.22482826}
   m_Children:
   - {fileID: 3093641953784323772}
   m_Father: {fileID: 8562582578588636210}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3304236465056875338}
   m_Layer: 0
   m_Name: MainBody
-  m_TagString: Untagged
+  m_TagString: Driller
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -205,11 +205,11 @@ GameObject:
   - component: {fileID: 354415068420816579}
   m_Layer: 0
   m_Name: prefabEnemyDriller
-  m_TagString: Untagged
+  m_TagString: Driller
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3371362840670206122
 Transform:
   m_ObjectHideFlags: 0
@@ -240,6 +240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c472ba17fd42614d84049f43b9338bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugging: 1
   pack: {fileID: 0}
   sightRadius: 5
   patrolSpeed: 2
@@ -251,10 +252,10 @@ MonoBehaviour:
   stunCooldown: 5
   patrolLocation: {x: 0, y: 0, z: 0}
   target: {fileID: 0}
-  drillDamage: 0.2
   sounds:
   - {fileID: 8300000, guid: 8f90aab743ca1854a98fc315c2f60cad, type: 3}
   - {fileID: 8300000, guid: 7c6332ea3c05c3841b7f4e50a8d2a6b0, type: 3}
+  drillDamage: 0.2
 --- !u!54 &3371362840670206120
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1388,7 +1389,7 @@ GameObject:
   - component: {fileID: 7393469907304747042}
   m_Layer: 0
   m_Name: Colliders
-  m_TagString: Untagged
+  m_TagString: Driller
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1421,7 +1422,7 @@ GameObject:
   - component: {fileID: 2951283951333258144}
   m_Layer: 0
   m_Name: Wings
-  m_TagString: Untagged
+  m_TagString: Driller
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

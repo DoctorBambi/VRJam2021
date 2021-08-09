@@ -4225,6 +4225,7 @@ GameObject:
   - component: {fileID: 4317026487750278625}
   - component: {fileID: 4317026487750278624}
   - component: {fileID: 4317026487875036890}
+  - component: {fileID: 4151960181917467790}
   m_Layer: 10
   m_Name: prefabStungunV2
   m_TagString: Untagged
@@ -4473,8 +4474,8 @@ MonoBehaviour:
   BulletImpactForce: 10
   InternalAmmo: 1
   MaxInternalAmmo: 10
-  AutoChamberRounds: 1
-  MustChamberRounds: 1
+  AutoChamberRounds: 0
+  MustChamberRounds: 0
   AlwaysFireProjectile: 1
   FireProjectileInSlowMo: 0
   SlowMoRateOfFire: 0.3
@@ -4488,7 +4489,7 @@ MonoBehaviour:
   TriggerTransform: {fileID: 4878862529942386155}
   SlideTransform: {fileID: 7526448899950057943}
   MuzzlePointTransform: {fileID: 7526448899740692392}
-  EjectPointTransform: {fileID: 0}
+  EjectPointTransform: {fileID: 7526448899923149214}
   ChamberedBullet: {fileID: 6327014343347906997}
   MuzzleFlashObject: {fileID: 7302008563399131400}
   BulletCasingPrefab: {fileID: 0}
@@ -4722,6 +4723,19 @@ MonoBehaviour:
   onSnapZoneExit:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4151960181917467790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7526448899333837623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 313205150aafb344796cc4cb02cfbaa9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slashDamage: 25
 --- !u!1 &7526448899543891814
 GameObject:
   m_ObjectHideFlags: 0
@@ -4847,7 +4861,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7526448899923149214
 Transform:
   m_ObjectHideFlags: 0

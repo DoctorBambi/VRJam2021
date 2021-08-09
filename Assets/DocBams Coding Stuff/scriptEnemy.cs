@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class scriptEnemy : MonoBehaviour
 {
-	#region Properties
+    #region Properties
+    public bool debugging = false;
+
 	public scriptEnemyPack pack;
     public float sightRadius = 3f;
     public float patrolSpeed = 2f;
@@ -32,16 +34,52 @@ public class scriptEnemy : MonoBehaviour
 
     protected Rigidbody rb;
     public Transform target;
+
+    //Audio
+    public AudioClip[] sounds;
+
+    public enum soundTypes
+    {
+        Idle,
+        HighSpeed
+    }
+
+    protected AudioSource aSrc;
 	#endregion
 
 	#region MonoBehaviour Stuff
-	protected virtual void Start() { }
+	protected virtual void Start()
+    {
+        //Initing components
+        rb = GetComponent<Rigidbody>();
+        if (rb == null) Debug.LogError("No rigidbody found for this enemy.");
+
+        aSrc = GetComponent<AudioSource>();
+        if (aSrc == null) Debug.LogError("No audio source found for this enemy.");
+
+        //Initial state
+        SetCurrentState(states.Patrolling);
+    }
 
 	protected virtual void Update() { }
-	#endregion
 
-	//Reapply the rigidbody
-	protected virtual void ReinitializeRidgidBody(float mass = .1f, float drag = .1f, float angularDrag = .05f)
+	public virtual void OnCollisionEnter(Collision collision) { }
+    #endregion
+
+    #region AI Behaviour
+    //sets the curent state and caches the previous state
+    public void SetCurrentState(states newState)
+    {
+        if (newState != currentState)
+        {
+            prevState = currentState; //cache the previous state
+            currentState = newState;
+        }
+    }
+    #endregion
+
+    //Reapply the rigidbody
+    protected virtual void ReinitializeRidgidBody(float mass = .1f, float drag = .1f, float angularDrag = .05f)
     {
         //rb.isKinematic = false;
         rb = gameObject.AddComponent<Rigidbody>();

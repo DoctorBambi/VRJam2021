@@ -228,7 +228,7 @@ GameObject:
   - component: {fileID: 8719615385902319697}
   m_Layer: 14
   m_Name: Colliders
-  m_TagString: Untagged
+  m_TagString: Hunter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -487,11 +487,11 @@ GameObject:
   - component: {fileID: 4875943268452549304}
   m_Layer: 0
   m_Name: prefabEnemyHunter
-  m_TagString: Untagged
+  m_TagString: Hunter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8719615386816156756
 Transform:
   m_ObjectHideFlags: 0
@@ -522,6 +522,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dedc167c3711284691f11fc9a45f80b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugging: 0
   pack: {fileID: 0}
   sightRadius: 5
   patrolSpeed: 2
@@ -533,15 +534,15 @@ MonoBehaviour:
   stunCooldown: 5
   patrolLocation: {x: 0, y: 0, z: 0}
   target: {fileID: 0}
-  shootingRange: 5
+  sounds:
+  - {fileID: 8300000, guid: 8f90aab743ca1854a98fc315c2f60cad, type: 3}
+  - {fileID: 8300000, guid: 7c6332ea3c05c3841b7f4e50a8d2a6b0, type: 3}
+  shootingRangeMax: 2
+  shootingRangeMin: 1
   shootCooldown: 2
   bulletLifespan: 10
   ammoType: {fileID: 5318957823161222446, guid: 5b646c469cdd7ca4ab3921f01b32dd2a,
     type: 3}
-  currentState: 0
-  sounds:
-  - {fileID: 8300000, guid: 8f90aab743ca1854a98fc315c2f60cad, type: 3}
-  - {fileID: 8300000, guid: 7c6332ea3c05c3841b7f4e50a8d2a6b0, type: 3}
 --- !u!54 &8719615386816156758
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -795,7 +796,7 @@ GameObject:
   - component: {fileID: 8719615386927791289}
   m_Layer: 14
   m_Name: WingRight
-  m_TagString: Untagged
+  m_TagString: Hunter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -839,7 +840,7 @@ GameObject:
   - component: {fileID: 8719615386988020971}
   m_Layer: 14
   m_Name: WingLeft
-  m_TagString: Untagged
+  m_TagString: Hunter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -883,7 +884,7 @@ GameObject:
   - component: {fileID: 8719615386999523445}
   m_Layer: 14
   m_Name: MainBody
-  m_TagString: Untagged
+  m_TagString: Hunter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

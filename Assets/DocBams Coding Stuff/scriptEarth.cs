@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 public class scriptEarth : scriptPlanetoid
 {
+    static public scriptEarth Instance;
+
     #region Properties
 
     GameObject model;
@@ -16,6 +18,11 @@ public class scriptEarth : scriptPlanetoid
         base.Start();
 
         model = transform.Find("EarthContainer").gameObject;
+
+        if (Instance == null)
+            Instance = this;
+        else
+            Debug.LogError("Earth already exists in the scene!", Instance);
     }
 
     // Update is called once per frame
@@ -29,9 +36,21 @@ public class scriptEarth : scriptPlanetoid
             HandleSafe();
     }
 
-    protected override void OnTriggerEnter(Collider other)
+	private void OnCollisionEnter(Collision collision)
 	{
-		if (other.CompareTag("Sun"))
+        if (debugging) print($"Earth collide: {collision.collider.name}");
+
+        //If we hit a driller that is currently embedded in the earth, knock it free.
+        var driller = collision.contacts[0].thisCollider.GetComponentInParent<scriptEnemyDriller>();
+
+        if (driller != null) driller.DislodgeFrom();
+    }
+
+	protected override void OnTriggerEnter(Collider other)
+	{
+        if (debugging) print($"Earth trigger: {other.name}");
+        
+        if (other.CompareTag("Sun"))
 		{
             SetCurrentState(states.Safe);
 		}
@@ -41,7 +60,7 @@ public class scriptEarth : scriptPlanetoid
 	#region External Inputs
 	public override void HandleDamage(float damageAmount)
 	{
-        print("Earth has been hit!");
+        if (debugging) print("Earth has been hit!");
 
         health -= damageAmount;
 
@@ -64,7 +83,7 @@ public class scriptEarth : scriptPlanetoid
         //Handle attached enemies
         foreach (GameObject go in attachedEntities)
         {
-            go.SendMessage("DislodgeFrom", SendMessageOptions.DontRequireReceiver);
+            if (go != null) go.SendMessage("DislodgeFrom", SendMessageOptions.DontRequireReceiver);
         }
         attachedEntities.Clear();
 
@@ -97,9 +116,9 @@ public class scriptEarth : scriptPlanetoid
         }
         attachedEntities.Clear();
 
-        yield return new WaitForSeconds(aSrc.clip.length); //wait for the death music to finish before reloading.
+        yield return new WaitForSeconds(scriptAudioManager.Instance.musicLoops[(int)scriptAudioManager.vibes.Victory].length); //wait for the victory music to finish because reasons?
 
-        //... Now what do we load?
+        //... Now what do we do?
 
         safeRoutine = null;
     }

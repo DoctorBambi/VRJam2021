@@ -34,7 +34,7 @@ public class scriptEnemyPack : MonoBehaviour
     public float enemyTerritoryRange = 5;
     public bool packAlerted = true;
     public float sleepRange = 20f; //range at which we will disable pack members to save on resources.
-    public bool isSleeping = false;
+    public bool isSleeping = true;
 
     private List<GameObject> packUnits = new List<GameObject>();
 	#endregion
@@ -107,19 +107,22 @@ public class scriptEnemyPack : MonoBehaviour
 		{
             var dist = Vector3.Distance(packStartPoint.position, earth.transform.position);
 
-            if (dist > sleepRange && !isSleeping)
+            //Sleep state
+            if (dist > sleepRange)
 			{
                 //put pack to sleep
                 aware = awareness.Asleep;
                 SleepPackMembers();
 			}
-            else if (dist < sleepRange && isSleeping)
+            else
 			{
                 //wake pack up
                 aware = awareness.Unknown;
                 WakePackMembers();
 			}
-            else if (dist < enemyTerritoryRange)
+
+            //Territory state
+            if (dist < enemyTerritoryRange)
             {
                 if (!packAlerted)
                     aware = awareness.InTerritory;
@@ -141,42 +144,54 @@ public class scriptEnemyPack : MonoBehaviour
 
     public void SleepPackMembers()
 	{
-        isSleeping = true;
-
-        foreach (GameObject unit in packUnits)
+        if (!isSleeping)
 		{
-            unit.SetActive(false);
+            isSleeping = true;
+
+            foreach (GameObject unit in packUnits)
+		    {
+                unit.SetActive(false);
+		    }
 		}
 	}
 
     public void WakePackMembers()
 	{
-        isSleeping = false;
-
-        foreach (GameObject unit in packUnits)
+        if (isSleeping)
 		{
-            unit.SetActive(true);
-		}
+            isSleeping = false;
+
+            foreach (GameObject unit in packUnits)
+            {
+                unit.SetActive(true);
+            }
+        }
 	}
 
     public void AlertPackMembers(Transform target)
 	{
-        packAlerted = true;
+        if (!packAlerted)
+		{
+            packAlerted = true;
 		
-        foreach (GameObject unit in packUnits)
-        {
-            unit.SendMessage("AlertUnit", target, SendMessageOptions.DontRequireReceiver);
-        }
+            foreach (GameObject unit in packUnits)
+            {
+                unit.SendMessage("AlertUnit", target, SendMessageOptions.DontRequireReceiver);
+            }
+		}
 	}
 
     public void RetreatPackMembers()
 	{
-        packAlerted = false;
+        if (packAlerted)
+		{
+            packAlerted = false;
 
-        foreach (GameObject unit in packUnits)
-        {
-            if (unit != null)
-                unit.SendMessage("RetreatUnit", SendMessageOptions.DontRequireReceiver);
+            foreach (GameObject unit in packUnits)
+            {
+                if (unit != null)
+                    unit.SendMessage("RetreatUnit", SendMessageOptions.DontRequireReceiver);
+            }
         }
     }
 }
