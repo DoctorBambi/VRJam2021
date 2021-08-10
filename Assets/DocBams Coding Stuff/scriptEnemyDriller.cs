@@ -130,19 +130,7 @@ public class scriptEnemyDriller : scriptEnemy
 				rb.AddForce(transform.forward * chaseSpeed);
 		}
 		else
-			Debug.Log("I have no target to chase.", gameObject);
-	}
-
-	void HandleBraking()
-	{
-		//Slow down to a stop
-		rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, breakingSpeed);
-		rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, breakingSpeed);
-
-		if (rb.velocity == Vector3.zero) //then we've finished braking so go back to whatever we were doing
-		{
-			SetCurrentState(states.Patrolling); //start patrolling to get your barings.
-		}
+			SetCurrentState(states.Patrolling);
 	}
 
 	//We've embedded ourselves into an object, drill into it until it is pulverized

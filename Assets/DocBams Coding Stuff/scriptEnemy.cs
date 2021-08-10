@@ -26,14 +26,16 @@ public class scriptEnemy : MonoBehaviour
         Attacking,
         Embedded,
         Braking,
+        BackingUp,
         Stunned
     }
 
-    protected states currentState;
-    protected states prevState;
+    public states currentState;
+    public states prevState;
 
     protected Rigidbody rb;
     public Transform target;
+    private Vector3 almostStopped = new Vector3(.001f, .001f, .001f);
 
     //Audio
     public AudioClip[] sounds;
@@ -68,12 +70,27 @@ public class scriptEnemy : MonoBehaviour
 
     #region AI Behaviour
     //sets the curent state and caches the previous state
-    public void SetCurrentState(states newState)
+    public virtual void SetCurrentState(states newState)
     {
         if (newState != currentState)
         {
             prevState = currentState; //cache the previous state
             currentState = newState;
+        }
+    }
+
+    protected virtual void HandleBraking()
+    {
+        //Slow down to a stop
+        rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, breakingSpeed);
+        if (rb.velocity.sqrMagnitude < .001) rb.velocity = Vector3.zero;
+
+        rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, breakingSpeed);
+        if (rb.angularVelocity.sqrMagnitude < .001) rb.angularVelocity = Vector3.zero;
+
+        if (rb.velocity == Vector3.zero && rb.angularVelocity == Vector3.zero)
+        {
+            SetCurrentState(states.Patrolling); //start patrolling to get your barings.
         }
     }
     #endregion

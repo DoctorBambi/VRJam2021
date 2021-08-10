@@ -17,14 +17,7 @@ public class scriptLazerShot : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-		if (other.name == "Earth")
-		{
-			other.SendMessage("HandleDamage", bulletDamage, SendMessageOptions.DontRequireReceiver);
-			Destroy(gameObject);
-		}
-		else
-		{
-			Destroy(gameObject);
-		}
+		other.SendMessage("HandleDamage", bulletDamage, SendMessageOptions.DontRequireReceiver);
+		Destroy(gameObject);
 	}
 }

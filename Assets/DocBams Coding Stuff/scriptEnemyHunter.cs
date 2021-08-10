@@ -8,17 +8,18 @@ public class scriptEnemyHunter : scriptEnemy
 	public float shootingRangeMax = 2f; // how close does it need to be to shoot at earth
 	public float shootingRangeMin = 1f; // how far away does it need to be to shoot at earth
 	public float shootCooldown = 2f;
+	public float burstCooldown = .2f;
 	public int bulletLifespan = 5;
 	public GameObject ammoType;
 
 	public enum shotTypes
 	{
 		Single,
-		Burst,
+		Burst3,
 		Charged
 	}
 
-	private shotTypes shotType;
+	public shotTypes shotType;
 
 	private GameObject lazerShot;
 	private Transform bulletChamber; //where bullets are loaded for firing
@@ -68,6 +69,11 @@ public class scriptEnemyHunter : scriptEnemy
 		else if (currentState == states.Braking)
 		{
 			HandleBraking();
+		}
+		//Backing Up Mode
+		else if (currentState == states.BackingUp)
+		{
+			HandleBackingUp();
 		}
 		//Stun Mode
 		else if (currentState == states.Stunned)
@@ -134,14 +140,19 @@ public class scriptEnemyHunter : scriptEnemy
 			//Cast a ray and see what's ahead of us
 			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRangeMax))
 			{
-				if (hit.collider.name == "Earth") //then we're in range so start attacking
+				if (hit.collider.CompareTag("Earth")) //then we're getting ready to attack
 				{
-					SetCurrentState(states.Attacking);
+					if (hit.distance < shootingRangeMin)
+					{ //then we're too close so back up
+						SetCurrentState(states.BackingUp);
+					}
+					else //we're just right, so start attacking
+						SetCurrentState(states.Attacking);
 				}
 				else //some other obstacle is in the way so try to get around it.
 				{
 					if (rb != null)
-						rb.AddForce(transform.right * chaseSpeed);
+						rb.AddForce(transform.right * breakingSpeed);
 				}
 			}
 			else //Clear skies so carry on
@@ -151,7 +162,7 @@ public class scriptEnemyHunter : scriptEnemy
 			}
 		}
 		else
-			Debug.Log("I have no target to chase.", gameObject);
+			SetCurrentState(states.Patrolling);
 	}
 
 	void HandleAttacking()
@@ -164,11 +175,54 @@ public class scriptEnemyHunter : scriptEnemy
 			//Check that player is still in range
 			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRangeMax + 1))// + 1 so we have a cushion of space to start shooting if the player is moving the earth quickly.
 			{
-				if (hit.collider.name == "Earth") //then we're in range so start shooting
+				if (hit.collider.CompareTag("Earth")) //then we're in range so start shooting
 				{
 					//Slow down to a stop
 					rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, breakingSpeed);
 					rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, breakingSpeed);
+
+					//Shoot at earth
+					if (shootRoutine == null)
+					{
+						shootRoutine = ShootRoutine(shotType);
+						StartCoroutine(shootRoutine);
+					}
+				}
+				else
+				{
+					//navigate around the object occluding the earth
+					SetCurrentState(states.Chasing);
+				}
+			}
+			else
+			{
+				SetCurrentState(states.Chasing);
+			}
+		}
+		else
+			SetCurrentState(states.Patrolling);
+	}
+
+	void HandleBackingUp()
+	{
+		if (target != null)
+		{
+			//Look at target
+			transform.LookAt(Vector3.Lerp(transform.position, target.position, lookSpeed));
+
+			//Check that player is still in range
+			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRangeMax + 1))// + 1 so we have a cushion of space to start shooting if the player is moving the earth quickly.
+			{
+				if (hit.collider.CompareTag("Earth")) //then we're in range so start shooting
+				{
+					if (hit.distance < shootingRangeMin)//then we're too close so back up
+					{
+						//if (rb.velocity.sqrMagnitude < maxVelocity) rb.AddForce(-transform.forward * breakingSpeed);
+						//else SetCurrentState(states.Braking);
+						if (rb.velocity.sqrMagnitude > maxVelocity) SetCurrentState(states.Braking);
+					}
+					else //we're just right, so just attack
+						SetCurrentState(states.Attacking);
 
 					//Shoot at earth
 					if (shootRoutine == null)
@@ -183,18 +237,8 @@ public class scriptEnemyHunter : scriptEnemy
 				SetCurrentState(states.Chasing);
 			}
 		}
-	}
-
-	void HandleBraking()
-	{
-		//Slow down to a stop
-		rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, breakingSpeed);
-		rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, breakingSpeed);
-
-		if (rb.velocity == Vector3.zero) //then we've finished braking so go back to whatever we were doing
-		{
-			SetCurrentState(states.Patrolling); //start patrolling to get your barings.
-		}
+		else
+			SetCurrentState(states.Patrolling);
 	}
 
 	void HandleStun()
@@ -224,6 +268,22 @@ public class scriptEnemyHunter : scriptEnemy
 			stunRoutine = StunRoutine();
 			StartCoroutine(stunRoutine);
 		}
+	}
+
+	public void SpawnBullet()
+	{
+		//Instantiate lazer and fire at earth
+		var inst = Instantiate(ammoType, bulletChamber.position, bulletChamber.rotation);
+
+		inst.SetActive(true);
+		inst.GetComponent<AudioSource>().Play();
+
+		var sls = inst.GetComponent<scriptLazerShot>();
+		if (sls == null)
+			Debug.LogError("No scriptLazerShot found on this ammoType.", ammoType);
+
+		sls.isFiring = true;
+		Destroy(inst, bulletLifespan);
 	}
 	#endregion
 
@@ -286,21 +346,22 @@ public class scriptEnemyHunter : scriptEnemy
 		switch (shot)
 		{
 			case shotTypes.Single:
-				//Instantiate lazer and fire at earth
-				var inst = Instantiate(ammoType, bulletChamber.position, bulletChamber.rotation);
-				
-				inst.SetActive(true);
-				inst.GetComponent<AudioSource>().Play();
+				SpawnBullet();
+				break;
+			case shotTypes.Burst3:
+				for (var i = 0; i < 3; i++)
+				{
+					SpawnBullet();
 
-				var sls = inst.GetComponent<scriptLazerShot>();
-				if (sls == null)
-					Debug.LogError("No scriptLazerShot found on this ammoType.", ammoType);
-
-				sls.isFiring = true;
-				Destroy(inst, bulletLifespan);
+					yield return new WaitForSeconds(burstCooldown);
+				}
 				break;
 			default:
-				Debug.LogWarning($"Shot type {shot} is not implemented yet.");
+				Debug.LogWarning($"Shot type {shot} is not implemented yet. Defaulting shot type to Single.");
+				
+				SpawnBullet();
+
+				shotType = shotTypes.Single;
 				break;
 		}
 

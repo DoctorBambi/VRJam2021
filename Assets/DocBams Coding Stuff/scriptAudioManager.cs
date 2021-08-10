@@ -30,13 +30,9 @@ public class scriptAudioManager : MonoBehaviour
     void Start()
     {
         if (Instance == null)
-        {
             Instance = this;
-        }
         else
-        {
             Debug.LogError("An audio manager already exists in the scene!", Instance);
-        }
 
         //Go find the earth
         var potentialEarths = GameObject.FindGameObjectsWithTag("Earth");

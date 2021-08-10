@@ -491,7 +491,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8719615386816156756
 Transform:
   m_ObjectHideFlags: 0
@@ -527,22 +527,26 @@ MonoBehaviour:
   sightRadius: 5
   patrolSpeed: 2
   patrolCooldown: 5
-  chaseSpeed: 10
-  maxVelocity: 10
+  chaseSpeed: 4
+  maxVelocity: 5
   lookSpeed: 0.1
   breakingSpeed: 0.01
   stunCooldown: 5
   patrolLocation: {x: 0, y: 0, z: 0}
+  currentState: 0
+  prevState: 0
   target: {fileID: 0}
   sounds:
   - {fileID: 8300000, guid: 8f90aab743ca1854a98fc315c2f60cad, type: 3}
   - {fileID: 8300000, guid: 7c6332ea3c05c3841b7f4e50a8d2a6b0, type: 3}
-  shootingRangeMax: 2
-  shootingRangeMin: 1
+  shootingRangeMax: 3
+  shootingRangeMin: 2
   shootCooldown: 2
+  burstCooldown: 0.2
   bulletLifespan: 10
   ammoType: {fileID: 5318957823161222446, guid: 5b646c469cdd7ca4ab3921f01b32dd2a,
     type: 3}
+  shotType: 1
 --- !u!54 &8719615386816156758
 Rigidbody:
   m_ObjectHideFlags: 0
