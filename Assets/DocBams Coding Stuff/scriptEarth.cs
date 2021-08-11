@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class scriptEarth : scriptPlanetoid
@@ -8,7 +9,10 @@ public class scriptEarth : scriptPlanetoid
 
     #region Properties
 
-    GameObject model;
+    public TextMeshProUGUI deathTextUI;
+    public string deathText;
+
+    private GameObject model;
 
     #endregion
 
@@ -55,10 +59,21 @@ public class scriptEarth : scriptPlanetoid
             SetCurrentState(states.Safe);
 		}
 	}
-	#endregion
+    #endregion
 
-	#region External Inputs
-	public override void HandleDamage(float damageAmount)
+    #region AI Behaviours
+    protected override void HandleDeath()
+    {
+        if (dyingRoutine == null && hasDied == false)
+        {
+            dyingRoutine = DyingRoutine();
+            StartCoroutine(dyingRoutine);
+        }
+    }
+    #endregion
+
+    #region External Inputs
+    public override void HandleDamage(float damageAmount)
 	{
         if (debugging) print("Earth has been hit!");
 
@@ -66,7 +81,8 @@ public class scriptEarth : scriptPlanetoid
 
         if (health <= 0)
 		{
-			//SceneManager.LoadScene(2);
+            //SceneManager.LoadScene(2);
+            deathText = "EARTH HAS DIED";
             SetCurrentState(states.Dead);
 		}
 	}
@@ -78,7 +94,7 @@ public class scriptEarth : scriptPlanetoid
     #endregion
 
     #region Coroutines
-    protected override IEnumerator DyingRoutine()
+    protected IEnumerator DyingRoutine()
     {
         //Handle attached enemies
         foreach (GameObject go in attachedEntities)
@@ -97,6 +113,13 @@ public class scriptEarth : scriptPlanetoid
         //Spawn explosion effect
         var dustCloud = Instantiate(explosionEffect, transform.position, transform.rotation);
         Destroy(dustCloud, 10f);
+
+        //Activate the death text
+        if (deathTextUI != null)
+		{
+            deathTextUI.text = deathText;
+            deathTextUI.gameObject.SetActive(true);
+        }
 
         yield return new WaitForSeconds(scriptAudioManager.Instance.musicLoops[(int)scriptAudioManager.vibes.Dead].length); //wait for the death music to finish before reloading.
 

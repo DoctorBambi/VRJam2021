@@ -396,6 +396,8 @@ MonoBehaviour:
     type: 3}
   currentState: 0
   prevState: 0
+  deathTextUI: {fileID: 0}
+  deathText: 
 --- !u!82 &8772382713348184996
 AudioSource:
   m_ObjectHideFlags: 0

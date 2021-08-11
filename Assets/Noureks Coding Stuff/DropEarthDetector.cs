@@ -10,6 +10,9 @@ public class DropEarthDetector : MonoBehaviour
 	void Update()
 	{
 		if (Vector3.Distance(transform.position, player.position) > maxDistance)
-			scriptEarth.Instance.ReloadScene(); //previously: SceneManager.LoadScene(2);
+		{
+			scriptEarth.Instance.deathText = "EARTH IS LOST";
+			scriptEarth.Instance.SetCurrentState(scriptPlanetoid.states.Dead); //previously: SceneManager.LoadScene(2);
+		}
 	}
 }
