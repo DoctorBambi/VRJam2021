@@ -35,7 +35,6 @@ public class scriptEnemy : MonoBehaviour
 
     protected Rigidbody rb;
     public Transform target;
-    private Vector3 almostStopped = new Vector3(.001f, .001f, .001f);
 
     //Audio
     public AudioClip[] sounds;
@@ -47,10 +46,13 @@ public class scriptEnemy : MonoBehaviour
     }
 
     protected AudioSource aSrc;
-	#endregion
 
-	#region MonoBehaviour Stuff
-	protected virtual void Start()
+    //Coroutines
+    private IEnumerator brakingRoutine;
+    #endregion
+
+    #region MonoBehaviour Stuff
+    protected virtual void Start()
     {
         //Initing components
         rb = GetComponent<Rigidbody>();
@@ -81,16 +83,10 @@ public class scriptEnemy : MonoBehaviour
 
     protected virtual void HandleBraking()
     {
-        //Slow down to a stop
-        rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, breakingSpeed);
-        if (rb.velocity.sqrMagnitude < .001) rb.velocity = Vector3.zero;
-
-        rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, breakingSpeed);
-        if (rb.angularVelocity.sqrMagnitude < .001) rb.angularVelocity = Vector3.zero;
-
-        if (rb.velocity == Vector3.zero && rb.angularVelocity == Vector3.zero)
+        if (brakingRoutine == null)
         {
-            SetCurrentState(states.Patrolling); //start patrolling to get your barings.
+            brakingRoutine = BrakingRoutine();
+            StartCoroutine(brakingRoutine);
         }
     }
     #endregion
@@ -105,4 +101,27 @@ public class scriptEnemy : MonoBehaviour
         rb.drag = drag;
         rb.angularDrag = angularDrag;
     }
+
+	#region Coroutines
+    protected virtual IEnumerator BrakingRoutine()
+	{
+        var startingVelocity = rb.velocity;
+        var startingAngularVelocity = rb.angularVelocity;
+
+        //Slow down to a stop
+        while (rb.velocity != Vector3.zero || rb.angularVelocity != Vector3.zero)
+        {
+            rb.velocity -= Vector3.Lerp(startingVelocity, Vector3.zero, breakingSpeed);
+
+            rb.angularVelocity -= Vector3.Lerp(startingAngularVelocity, Vector3.zero, breakingSpeed);
+
+            yield return null;
+        }
+
+        //start patrolling to get your barings.
+        SetCurrentState(states.Patrolling);
+
+        brakingRoutine = null;
+    }
+	#endregion
 }

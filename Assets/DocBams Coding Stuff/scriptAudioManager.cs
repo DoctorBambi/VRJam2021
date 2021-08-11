@@ -1,14 +1,24 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class scriptAudioManager : MonoBehaviour
 {
     static public scriptAudioManager Instance;
+    public bool debugging = false;
 
     public GameObject earth;
     public GameObject[] enemyPacks;
     public AudioClip[] musicLoops;
+    public bool deckToggle = true;//flips between two decks as we queue up tracks.
+    public float transitionChill = .01f;
+    public float transitionEnemyTerritory = .01f;
+    public float transitionAlerted = .1f;
+    public float transitionDead = .1f;
+    public float transitionVictory = .1f;
+
+    private AudioSource[] musicDecks;
 
     public enum vibes
     {
@@ -22,9 +32,10 @@ public class scriptAudioManager : MonoBehaviour
     private vibes currentVibe;
     private vibes prevVibe;
     private bool vibeChange = false;
+    private Queue<Track> trackQueue = new Queue<Track>();
 
     //Coroutines
-    private IEnumerator playLoopRoutine;
+    private IEnumerator crossFadeRoutine;
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +44,15 @@ public class scriptAudioManager : MonoBehaviour
             Instance = this;
         else
             Debug.LogError("An audio manager already exists in the scene!", Instance);
+
+        //Get our music decks
+        var potentialASrcs = GetComponents<AudioSource>();
+        if (potentialASrcs.Length == 0)
+            Debug.LogError("No audio sources found on audio manager.", Instance);
+        else if (potentialASrcs.Length > 2)
+            Debug.LogError("Too many audio sources found on audio manager. Should only have 2.", Instance);
+        else
+            musicDecks = potentialASrcs;
 
         //Go find the earth
         var potentialEarths = GameObject.FindGameObjectsWithTag("Earth");
@@ -43,8 +63,10 @@ public class scriptAudioManager : MonoBehaviour
         else
             earth = potentialEarths[0];
 
+        //Go find enemy packs
         FindEnemyPacks();
 
+        currentVibe = vibes.Dead;//set the current vibe to something else just to trigger the first transition
         SetCurrentVibe(vibes.Chill);
     }
 
@@ -60,12 +82,14 @@ public class scriptAudioManager : MonoBehaviour
         //It's go time
         else if (currentVibe == vibes.Alerted)
             HandleAlerted();
-        //You Died
+        //You Died.
         else if (currentVibe == vibes.Dead)
             HandleDead();
         //You Won!
         else if (currentVibe == vibes.Victory)
             HandleVictory();
+
+        HandleTrackQueue();
 
         CheckUnits();
     }
@@ -96,17 +120,21 @@ public class scriptAudioManager : MonoBehaviour
             enemyPacks = potentialPacks;
     }
 
+    void HandleTrackQueue()
+	{
+        if (trackQueue.Count > 0 && crossFadeRoutine == null)
+		{
+            var track = trackQueue.Peek();
+            TransitionMusic(track.vibe, track.transitionSpeed, track.loop);
+            trackQueue.Dequeue();
+		}
+	}
+
     void HandleChill()
 	{
         if (vibeChange)
         {
-            TransitionMusic();
-        }
-
-        if (playLoopRoutine == null)
-		{
-            playLoopRoutine = PlayLoopRoutine(earth.GetComponent<AudioSource>(), vibes.Chill);
-            StartCoroutine(playLoopRoutine);
+            trackQueue.Enqueue(new Track { vibe = vibes.Chill, transitionSpeed = transitionChill, loop = true });
         }
 	}
 
@@ -114,27 +142,15 @@ public class scriptAudioManager : MonoBehaviour
 	{
         if (vibeChange)
 		{
-            TransitionMusic();
+            trackQueue.Enqueue(new Track { vibe = vibes.EnemyTerritory, transitionSpeed = transitionEnemyTerritory, loop = true });
 		}
-            
-        if (playLoopRoutine == null)
-		{
-            playLoopRoutine = PlayLoopRoutine(earth.GetComponent<AudioSource>(), vibes.EnemyTerritory);
-            StartCoroutine(playLoopRoutine);
-        }
 	}
 
     void HandleAlerted()
 	{
         if (vibeChange)
         {
-            TransitionMusic();
-        }
-
-        if (playLoopRoutine == null)
-		{
-            playLoopRoutine = PlayLoopRoutine(earth.GetComponent<AudioSource>(), vibes.Alerted);
-            StartCoroutine(playLoopRoutine);
+            trackQueue.Enqueue(new Track { vibe = vibes.Alerted, transitionSpeed = transitionAlerted, loop = true });
         }
 	}
 
@@ -142,13 +158,7 @@ public class scriptAudioManager : MonoBehaviour
 	{
         if (vibeChange)
         {
-            TransitionMusic();
-        }
-
-        if (playLoopRoutine == null && vibeChange) //only one-shot this.
-		{
-            playLoopRoutine = PlayLoopRoutine(earth.GetComponent<AudioSource>(), vibes.Dead);
-            StartCoroutine(playLoopRoutine);
+            trackQueue.Enqueue(new Track { vibe = vibes.Dead, transitionSpeed = transitionDead, loop = false });
         }
 	}
 
@@ -156,13 +166,7 @@ public class scriptAudioManager : MonoBehaviour
 	{
         if (vibeChange)
         {
-            TransitionMusic();
-        }
-
-        if (playLoopRoutine == null && vibeChange) //only one-shot this.
-		{
-            playLoopRoutine = PlayLoopRoutine(earth.GetComponent<AudioSource>(), vibes.Victory);
-            StartCoroutine(playLoopRoutine);
+            trackQueue.Enqueue(new Track { vibe = vibes.Victory, transitionSpeed = transitionVictory, loop = false });
         }
 	}
 
@@ -171,16 +175,14 @@ public class scriptAudioManager : MonoBehaviour
         vibes vibe = vibes.Chill;
 
         //How's the earth feeling?
-        if (earth.GetComponent<scriptEarth>().currentState == scriptEarth.states.Dead)
+        if (scriptEarth.Instance.currentState == scriptEarth.states.Dead)
 		{
-            vibe = vibes.Dead;
-            SetCurrentVibe(vibe);
+            SetCurrentVibe(vibes.Dead);
             return;
 		}
-        else if (earth.GetComponent<scriptEarth>().currentState == scriptEarth.states.Safe)
+        else if (scriptEarth.Instance.currentState == scriptEarth.states.Safe)
 		{
-            vibe = vibes.Victory;
-            SetCurrentVibe(vibe);
+            SetCurrentVibe(vibes.Victory);
             return;
         }
 
@@ -203,10 +205,17 @@ public class scriptAudioManager : MonoBehaviour
         SetCurrentVibe(vibe);
     }
 
-	void TransitionMusic()
+    /// <summary>
+    /// Will cross-fade next music track based on the transitionSpeed.
+    /// Some things need to cut in quickly while others need to ease in.
+    /// </summary>
+    /// <param name="vibe"></param>
+    /// <param name="transitionSpeed">Lerp value (should be between 0 and 1).</param>
+    /// <param name="loop">Launches the clip with loop mode enabled on the audio source.</param>
+	void TransitionMusic(vibes vibe, float transitionSpeed = 1f, bool loop = false)
 	{
-        StopCoroutine(playLoopRoutine);
-        playLoopRoutine = null;
+        crossFadeRoutine = CrossFadeRoutine(vibe, transitionSpeed, loop);
+        StartCoroutine(crossFadeRoutine);
     }
 
     /// <summary>
@@ -231,15 +240,51 @@ public class scriptAudioManager : MonoBehaviour
     }
 
     //Coroutines
-    private IEnumerator PlayLoopRoutine(AudioSource anASrc, vibes vibe)
+    private IEnumerator CrossFadeRoutine(vibes vibe, float transitionSpeed, bool loop)
     {
         AudioClip audClip = musicLoops[(int)vibe];
+        AudioSource deckToFadeOut = null;
+        AudioSource deckToFadeIn = null;
 
-        anASrc.clip = audClip;
-        anASrc.Play();
+        //Figure out which deck needs to come up and which down.
+        if (!deckToggle)
+		{
+            deckToFadeIn = musicDecks[0];
+            deckToFadeOut = musicDecks[1];
+		}
+		else
+		{
+            deckToFadeIn = musicDecks[1];
+            deckToFadeOut = musicDecks[0];
+        }
+        deckToggle = !deckToggle;//Flip the deck toggle so we alternate which deck to crossfade to.
 
-        yield return new WaitForSeconds(audClip.length); //give the enemies time to run their dislodge scripts
+        //Set the new audio clip
+        deckToFadeIn.clip = audClip;
+        deckToFadeIn.loop = loop;
+        deckToFadeIn.Play();
 
-        playLoopRoutine = null;
+        var transitionValue = Mathf.Lerp(0, 1, transitionSpeed);
+
+        //Cross fade
+        while (deckToFadeIn.volume < 1 || deckToFadeOut.volume > 0)
+		{
+            deckToFadeIn.volume += transitionValue;
+            deckToFadeOut.volume -= transitionValue;
+
+            yield return null;
+        }
+
+        if (debugging) print("Stopping Deck.");
+        deckToFadeOut.Stop();
+
+        crossFadeRoutine = null;
     }
+}
+
+public class Track
+{
+    public scriptAudioManager.vibes vibe { get; set; }
+    public float transitionSpeed { get; set; }
+    public bool loop { get; set; }
 }
