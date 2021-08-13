@@ -262,7 +262,7 @@ PrefabInstance:
     - target: {fileID: 4610591986898345800, guid: 6d708f4baa5a5ed489b1a0a2d4e1b191,
         type: 3}
       propertyPath: packSize
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4610591986898345800, guid: 6d708f4baa5a5ed489b1a0a2d4e1b191,
         type: 3}
@@ -1371,7 +1371,7 @@ PrefabInstance:
     - target: {fileID: 4610591986898345800, guid: 6d708f4baa5a5ed489b1a0a2d4e1b191,
         type: 3}
       propertyPath: packSize
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4610591986898345800, guid: 6d708f4baa5a5ed489b1a0a2d4e1b191,
         type: 3}
@@ -2124,6 +2124,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b646c469cdd7ca4ab3921f01b32dd2a, type: 3}
+--- !u!114 &1793308669 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1027557041340129346, guid: 1fd41c938b7f6d848a92aa057eb0c5a4,
+    type: 3}
+  m_PrefabInstance: {fileID: 328902153}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97c434fd275be114c94f38dc0decbeb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1834537738
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2686,6 +2698,36 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4317026487875036890, guid: dce360999ff46434facb9fea2ba975be,
+        type: 3}
+      propertyPath: onGrab.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4317026487875036890, guid: dce360999ff46434facb9fea2ba975be,
+        type: 3}
+      propertyPath: onGrab.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4317026487875036890, guid: dce360999ff46434facb9fea2ba975be,
+        type: 3}
+      propertyPath: onGrab.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1793308669}
+    - target: {fileID: 4317026487875036890, guid: dce360999ff46434facb9fea2ba975be,
+        type: 3}
+      propertyPath: onGrab.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4317026487875036890, guid: dce360999ff46434facb9fea2ba975be,
+        type: 3}
+      propertyPath: onGrab.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: PickUpStunGun
+      objectReference: {fileID: 0}
+    - target: {fileID: 4317026487875036890, guid: dce360999ff46434facb9fea2ba975be,
+        type: 3}
+      propertyPath: onGrab.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 7008979892050146084, guid: dce360999ff46434facb9fea2ba975be,
         type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag

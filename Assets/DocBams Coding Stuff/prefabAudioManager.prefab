@@ -45,15 +45,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97c434fd275be114c94f38dc0decbeb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugging: 0
   earth: {fileID: 0}
   enemyPacks: []
   musicLoops:
   - {fileID: 8300000, guid: b3e5d1013575c7247ae9b517b64e1322, type: 3}
+  - {fileID: 8300000, guid: 4d9641771ef62f54cb6fd7a30e5733b1, type: 3}
   - {fileID: 8300000, guid: 4116e8945f7ba4a4daad7a4683cc4cdb, type: 3}
   - {fileID: 8300000, guid: 36a9fdd15a8ff5948b232235384971bd, type: 3}
+  - {fileID: 8300000, guid: 7310d2a57509f1c409bc932cd7cfa00b, type: 3}
   - {fileID: 8300000, guid: 579826bcf0035ce44aed1db5a65774f0, type: 3}
   - {fileID: 8300000, guid: 8cb461136edfabd48a1cafcdca0bbb3f, type: 3}
   deckToggle: 1
+  transitionChill: 0.01
+  transitionEnemyTerritory: 0.01
+  transitionAlerted: 0.1
+  transitionDead: 0.1
+  transitionVictory: 0.1
+  musicIntensityThreshold: 5
+  hasStunGun: 0
 --- !u!82 &4311864870829647193
 AudioSource:
   m_ObjectHideFlags: 0

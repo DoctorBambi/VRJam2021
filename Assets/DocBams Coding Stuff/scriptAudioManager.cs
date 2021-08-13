@@ -17,14 +17,18 @@ public class scriptAudioManager : MonoBehaviour
     public float transitionAlerted = .1f;
     public float transitionDead = .1f;
     public float transitionVictory = .1f;
+    public int musicIntensityThreshold = 5; //the number of enemies in a pack at which point we up the music to the next intensity level.
+    public bool hasStunGun = false;
 
     private AudioSource[] musicDecks;
 
     public enum vibes
     {
         Chill,
+        Chill2,
         EnemyTerritory,
         Alerted,
+        Alerted2,
         Dead,
         Victory
     }
@@ -76,12 +80,18 @@ public class scriptAudioManager : MonoBehaviour
         //Chill vibe
         if (currentVibe == vibes.Chill)
             HandleChill();
+        //Chill2 vibe
+        if (currentVibe == vibes.Chill2)
+            HandleChill2();
         //Enemy territory
         else if (currentVibe == vibes.EnemyTerritory)
             HandleEnemyTerritory();
         //It's go time
         else if (currentVibe == vibes.Alerted)
             HandleAlerted();
+        //It's really go time
+        else if (currentVibe == vibes.Alerted2)
+            HandleAlerted2();
         //You Died.
         else if (currentVibe == vibes.Dead)
             HandleDead();
@@ -138,6 +148,14 @@ public class scriptAudioManager : MonoBehaviour
         }
 	}
 
+    void HandleChill2()
+	{
+        if (vibeChange)
+        {
+            trackQueue.Enqueue(new Track { vibe = vibes.Chill2, transitionSpeed = transitionChill, loop = true });
+        }
+	}
+
     void HandleEnemyTerritory()
 	{
         if (vibeChange)
@@ -151,6 +169,14 @@ public class scriptAudioManager : MonoBehaviour
         if (vibeChange)
         {
             trackQueue.Enqueue(new Track { vibe = vibes.Alerted, transitionSpeed = transitionAlerted, loop = true });
+        }
+	}
+
+    void HandleAlerted2()
+	{
+        if (vibeChange)
+        {
+            trackQueue.Enqueue(new Track { vibe = vibes.Alerted2, transitionSpeed = transitionAlerted, loop = true });
         }
 	}
 
@@ -170,9 +196,16 @@ public class scriptAudioManager : MonoBehaviour
         }
 	}
 
+    /// <summary>
+    /// This is where the magic happens.
+    /// This will listen to entity proximity and set the vibe accordingly.
+    /// </summary>
     void CheckUnits()
     {
+        //Default the vibe to chill
         vibes vibe = vibes.Chill;
+        if (hasStunGun)
+            vibe = vibes.Chill2;
 
         //How's the earth feeling?
         if (scriptEarth.Instance.currentState == scriptEarth.states.Dead)
@@ -193,10 +226,15 @@ public class scriptAudioManager : MonoBehaviour
 
             if (packScript.aware == scriptEnemyPack.awareness.Alerted)
             {
-                vibe = vibes.Alerted;
-                break; //break out cause we're full force in this case
+                if (packScript.packSize <= musicIntensityThreshold)
+                    vibe = vibes.Alerted;
+				else
+				{
+                    vibe = vibes.Alerted2;
+                    break; //break out cause we're full force in this case
+                }
             }
-            else if (packScript.aware == scriptEnemyPack.awareness.InTerritory)
+            else if (packScript.aware == scriptEnemyPack.awareness.InTerritory && (int)vibe <= (int)vibes.EnemyTerritory)
             {
                 vibe = vibes.EnemyTerritory;
             }
@@ -218,7 +256,8 @@ public class scriptAudioManager : MonoBehaviour
         StartCoroutine(crossFadeRoutine);
     }
 
-    /// <summary>
+	#region External Inputs
+	/// <summary>
 	/// Adjusts the pitch of a given audio source per a ridgid body's velocity.
 	/// </summary>
 	/// <param name="audioSource">To change the pitch</param>
@@ -239,8 +278,21 @@ public class scriptAudioManager : MonoBehaviour
             audioSource.pitch = Mathf.Lerp(audioSource.pitch, 1, .1f);
     }
 
-    //Coroutines
-    private IEnumerator CrossFadeRoutine(vibes vibe, float transitionSpeed, bool loop)
+    /// <summary>
+    /// When we pick up the stun gun, make the music slightly more intense.
+    /// </summary>
+    public void PickUpStunGun()
+	{
+        if (!hasStunGun)
+		{
+            hasStunGun = true;
+            SetCurrentVibe(vibes.Chill2);
+        }
+	}
+	#endregion
+
+	//Coroutines
+	private IEnumerator CrossFadeRoutine(vibes vibe, float transitionSpeed, bool loop)
     {
         AudioClip audClip = musicLoops[(int)vibe];
         AudioSource deckToFadeOut = null;
