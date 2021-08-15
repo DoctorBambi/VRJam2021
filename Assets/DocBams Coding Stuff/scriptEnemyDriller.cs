@@ -9,8 +9,6 @@ public class scriptEnemyDriller : scriptEnemy
 
 	//Coroutines
 	private IEnumerator dislodgeRoutine;
-	private IEnumerator patrolRoutine;
-	private IEnumerator stunRoutine;
 	#endregion
 
 	#region MonoBehaviour Stuff
@@ -32,20 +30,10 @@ public class scriptEnemyDriller : scriptEnemy
 		{
 			HandleChasing();
 		}
-		//Braking Mode
-		else if (currentState == states.Braking)
-		{
-			HandleBraking();
-		}
 		//Embedded Mode
 		else if (currentState == states.Embedded)
 		{
 			HandleEmbed();
-		}
-		//Stun Mode
-		else if (currentState == states.Stunned)
-		{
-			HandleStun();
 		}
 
 		//Handle Audio settings
@@ -86,44 +74,17 @@ public class scriptEnemyDriller : scriptEnemy
 	#endregion
 
 	#region AI Behaviours
-	void HandleIdle()
-	{
-		//For now we're just chillin
-		target = null;
-	}
-
-	void HandlePatrolling()
-	{
-		//give patrol commands
-		if (patrolRoutine == null)
-		{
-			patrolRoutine = PatrolRoutine();
-			StartCoroutine(patrolRoutine);
-		}
-
-		//Check if we sense the player and they're still alive.
-		if (pack.earth.GetComponent<scriptEarth>().currentState != scriptEarth.states.Dead && pack.earth.GetComponent<scriptEarth>().currentState != scriptEarth.states.Safe)
-		{
-			var dist = Vector3.Distance(transform.position, pack.earth.transform.position);
-			if (dist < sightRadius)
-			{
-				pack.AlertPackMembers(pack.earth.transform);
-			}
-		}
-
-		if (pack.packAlerted)
-		{
-			target = pack.earth.transform;
-			SetCurrentState(states.Chasing);
-		}
-	}
-
 	void HandleChasing()
 	{
+		//Check the status of the earth
+		EarthCheck();
+
 		if (target != null)
 		{
 			//Look at target
-			transform.LookAt(Vector3.Lerp(transform.position, target.position, lookSpeed));
+			Vector3 targetDirection = target.position - transform.position;
+			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, lookSpeed * Time.deltaTime, 0.0f);
+			rb.MoveRotation(Quaternion.LookRotation(newDirection));
 
 			//Move toward the target
 			if (rb != null && rb.velocity.sqrMagnitude < maxVelocity)
@@ -138,12 +99,6 @@ public class scriptEnemyDriller : scriptEnemy
 	{
 		transform.parent.SendMessage("HandleDamage", drillDamage, SendMessageOptions.DontRequireReceiver);
 	}
-
-	void HandleStun()
-	{
-		//Just let the ship drift from whatever chaos stunned it.
-		target = null;
-	}
 	#endregion
 
 	#region External Inputs
@@ -151,20 +106,20 @@ public class scriptEnemyDriller : scriptEnemy
 	/// Used by the pack to alert this unit to an target's location.
 	/// </summary>
 	/// <param name="newTarget"></param>
-	public void AlertUnit(Transform newTarget)
-	{
-		target = newTarget;
-		SetCurrentState(scriptEnemyDriller.states.Chasing);
-	}
+	//public void AlertUnit(Transform newTarget)
+	//{
+	//	target = newTarget;
+	//	//SetCurrentState(scriptEnemyDriller.states.Chasing);
+	//}
 
 	/// <summary>
 	/// When the player has left a pack's territory, the pack will use this to call off their attack mode.
 	/// </summary>
-	public void RetreatUnit()
-	{
-		target = null;
-		SetCurrentState(scriptEnemyDriller.states.Patrolling);
-	}
+	//public void RetreatUnit()
+	//{
+	//	target = null;
+	//	SetCurrentState(scriptEnemyDriller.states.Patrolling);
+	//}
 
 	//embed the driller into the target
 	private void EmbedInto(GameObject target)
@@ -184,15 +139,6 @@ public class scriptEnemyDriller : scriptEnemy
 		{
 			dislodgeRoutine = DislodgeRoutine();
 			StartCoroutine(dislodgeRoutine);
-		}
-	}
-
-	public void Stun()
-	{
-		if (stunRoutine == null)
-		{
-			stunRoutine = StunRoutine();
-			StartCoroutine(stunRoutine);
 		}
 	}
 	#endregion
@@ -242,33 +188,6 @@ public class scriptEnemyDriller : scriptEnemy
 		SetCurrentState(states.Patrolling);
 
 		dislodgeRoutine = null;
-	}
-
-	private IEnumerator PatrolRoutine()
-	{
-		patrolLocation = Random.insideUnitSphere * pack.patrolAreaSize + pack.packStartPoint.position;
-
-		//Look at target
-		transform.LookAt(Vector3.Lerp(transform.position, patrolLocation, lookSpeed));
-
-		//Move toward the target
-		if (rb != null && rb.velocity.sqrMagnitude < maxVelocity)
-			rb.AddForce(transform.forward * patrolSpeed);
-
-		yield return new WaitForSeconds(patrolCooldown);
-
-		patrolRoutine = null;
-	}
-
-	private IEnumerator StunRoutine()
-	{
-		SetCurrentState(states.Stunned);
-
-		yield return new WaitForSeconds(stunCooldown); //oo we stunned
-
-		SetCurrentState(states.Patrolling); //get your barings
-
-		stunRoutine = null;
 	}
 	#endregion
 }

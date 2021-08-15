@@ -224,7 +224,7 @@ public class scriptAudioManager : MonoBehaviour
         {
             var packScript = pack.GetComponent<scriptEnemyPack>();
 
-            if (packScript.aware == scriptEnemyPack.awareness.Alerted)
+            if (packScript.currentAwareness == scriptEnemyPack.awareness.Alerted)
             {
                 if (packScript.packSize <= musicIntensityThreshold)
                     vibe = vibes.Alerted;
@@ -234,7 +234,7 @@ public class scriptAudioManager : MonoBehaviour
                     break; //break out cause we're full force in this case
                 }
             }
-            else if (packScript.aware == scriptEnemyPack.awareness.InTerritory && (int)vibe <= (int)vibes.EnemyTerritory)
+            else if (packScript.currentAwareness == scriptEnemyPack.awareness.InTerritory && (int)vibe <= (int)vibes.EnemyTerritory)
             {
                 vibe = vibes.EnemyTerritory;
             }

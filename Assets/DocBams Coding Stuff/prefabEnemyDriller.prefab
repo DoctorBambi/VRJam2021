@@ -209,7 +209,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3371362840670206122
 Transform:
   m_ObjectHideFlags: 0
@@ -247,10 +247,14 @@ MonoBehaviour:
   patrolCooldown: 5
   chaseSpeed: 4
   maxVelocity: 4
-  lookSpeed: 0.1
+  lookSpeed: 1
   breakingSpeed: 0.02
   stunCooldown: 5
-  patrolLocation: {x: 0, y: 0, z: 0}
+  startPoint: {x: 0, y: 0, z: 0}
+  patrolRoute: {x: 0, y: 0, z: 0}
+  patrolAreaSize: 5
+  currentState: 0
+  prevState: 0
   target: {fileID: 0}
   sounds:
   - {fileID: 8300000, guid: 8f90aab743ca1854a98fc315c2f60cad, type: 3}

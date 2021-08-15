@@ -5,8 +5,8 @@ using UnityEngine;
 public class scriptEnemyHunter : scriptEnemy
 {
 	#region Properties
-	public float shootingRangeMax = 2f; // how close does it need to be to shoot at earth
-	public float shootingRangeMin = 1f; // how far away does it need to be to shoot at earth
+	public float shootingRangeMax = 2f; // furthest away it can shoot at earth
+	public float shootingRangeMin = 1f; // how close it can get before backing up
 	public float shootCooldown = 2f;
 	public float burstCooldown = .2f;
 	public int bulletLifespan = 5;
@@ -16,17 +16,15 @@ public class scriptEnemyHunter : scriptEnemy
 	{
 		Single,
 		Burst3,
+		Burst5,
 		Charged
 	}
 
 	public shotTypes shotType;
 
-	private GameObject lazerShot;
 	private Transform bulletChamber; //where bullets are loaded for firing
 
 	//Coroutines
-	private IEnumerator patrolRoutine;
-	private IEnumerator stunRoutine;
 	private IEnumerator shootRoutine;
 	#endregion
 
@@ -65,20 +63,10 @@ public class scriptEnemyHunter : scriptEnemy
 		{
 			HandleAttacking();
 		}
-		//Braking Mode
-		else if (currentState == states.Braking)
-		{
-			HandleBraking();
-		}
 		//Backing Up Mode
 		else if (currentState == states.BackingUp)
 		{
 			HandleBackingUp();
-		}
-		//Stun Mode
-		else if (currentState == states.Stunned)
-		{
-			HandleStun();
 		}
 
 		//Handle Audio settings
@@ -98,44 +86,17 @@ public class scriptEnemyHunter : scriptEnemy
 	#endregion
 
 	#region AI Behaviours
-	void HandleIdle()
-	{
-		//For now we're just chillin
-		target = null;
-	}
-
-	void HandlePatrolling()
-	{
-		//give patrol commands
-		if (patrolRoutine == null)
-		{
-			patrolRoutine = PatrolRoutine();
-			StartCoroutine(patrolRoutine);
-		}
-
-		//Check if we sense the player and they're still alive.
-		if (pack.earth.GetComponent<scriptEarth>().currentState != scriptEarth.states.Dead && pack.earth.GetComponent<scriptEarth>().currentState != scriptEarth.states.Safe)
-		{
-			var dist = Vector3.Distance(transform.position, pack.earth.transform.position);
-			if (dist < sightRadius)
-			{
-				pack.AlertPackMembers(pack.earth.transform);
-			}
-		}
-
-		if (pack.packAlerted) //then get back in the action.
-		{
-			target = pack.earth.transform;
-			SetCurrentState(states.Chasing);
-		}
-	}
-
 	void HandleChasing()
 	{
+		//Check the status of the earth
+		EarthCheck();
+
 		if (target != null)
 		{
 			//Look at target
-			transform.LookAt(Vector3.Lerp(transform.position, target.position, lookSpeed));
+			Vector3 targetDirection = target.position - transform.position;
+			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, lookSpeed * Time.deltaTime, 0.0f);
+			rb.MoveRotation(Quaternion.LookRotation(newDirection));
 
 			//Cast a ray and see what's ahead of us
 			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRangeMax))
@@ -167,13 +128,18 @@ public class scriptEnemyHunter : scriptEnemy
 
 	void HandleAttacking()
 	{
+		//Check the status of the earth
+		EarthCheck();
+
 		if (target != null)
 		{
 			//Look at target
-			transform.LookAt(Vector3.Lerp(transform.position, target.position, lookSpeed));
+			Vector3 targetDirection = target.position - transform.position;
+			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, lookSpeed * Time.deltaTime, 0.0f);
+			rb.MoveRotation(Quaternion.LookRotation(newDirection));
 
 			//Check that player is still in range
-			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRangeMax + 1))// + 1 so we have a cushion of space to start shooting if the player is moving the earth quickly.
+			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRangeMax))
 			{
 				if (hit.collider.CompareTag("Earth")) //then we're in range so start shooting
 				{
@@ -188,16 +154,11 @@ public class scriptEnemyHunter : scriptEnemy
 						StartCoroutine(shootRoutine);
 					}
 				}
-				else
-				{
-					//navigate around the object occluding the earth
+				else //navigate around the object occluding the earth
 					SetCurrentState(states.Chasing);
-				}
 			}
 			else
-			{
 				SetCurrentState(states.Chasing);
-			}
 		}
 		else
 			SetCurrentState(states.Patrolling);
@@ -205,61 +166,60 @@ public class scriptEnemyHunter : scriptEnemy
 
 	void HandleBackingUp()
 	{
+		//Check the status of the earth
+		EarthCheck();
+
 		if (target != null)
 		{
 			//Look at target
-			transform.LookAt(Vector3.Lerp(transform.position, target.position, lookSpeed));
+			Vector3 targetDirection = target.position - transform.position;
+			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, lookSpeed * Time.deltaTime, 0.0f);
+			rb.MoveRotation(Quaternion.LookRotation(newDirection));
 
-			//Check that player is still in range
-			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRangeMax + 1))// + 1 so we have a cushion of space to start shooting if the player is moving the earth quickly.
+			//Check that target is still in range
+			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRangeMax))
 			{
 				if (hit.collider.CompareTag("Earth")) //then we're in range so start shooting
 				{
 					if (hit.distance < shootingRangeMin)//then we're too close so back up
 					{
-						//if (rb.velocity.sqrMagnitude < maxVelocity) rb.AddForce(-transform.forward * breakingSpeed);
-						//else SetCurrentState(states.Braking);
-						if (rb.velocity.sqrMagnitude > maxVelocity) SetCurrentState(states.Braking);
+						if (rb.velocity.sqrMagnitude < maxVelocity) rb.AddForce(-transform.forward * breakingSpeed);
+						
+						if (rb.velocity.sqrMagnitude > maxVelocity) Brake(states.Attacking);
 					}
-					else //we're just right, so just attack
+					else //we're just right, so attack
 						SetCurrentState(states.Attacking);
 
-					//Shoot at earth
+					//We can still shoot while backing up, so shoot at target
 					if (shootRoutine == null)
 					{
 						shootRoutine = ShootRoutine(shotType);
 						StartCoroutine(shootRoutine);
 					}
 				}
+				else //navigate around the object occluding the earth
+					SetCurrentState(states.Chasing);
 			}
 			else
-			{
 				SetCurrentState(states.Chasing);
-			}
 		}
 		else
 			SetCurrentState(states.Patrolling);
 	}
-
-	void HandleStun()
-	{
-		//Just let the ship drift from whatever chaos stunned it.
-		target = null;
-	}
 	#endregion
 
 	#region External Inputs
-	public void AlertUnit(Transform newTarget)
-	{
-		target = newTarget;
-		SetCurrentState(scriptEnemyHunter.states.Chasing);
-	}
+	//public void AlertUnit(Transform newTarget)
+	//{
+	//	target = newTarget;
+	//	SetCurrentState(scriptEnemyHunter.states.Chasing);
+	//}
 
-	public void RetreatUnit()
-	{
-		target = null;
-		SetCurrentState(scriptEnemyHunter.states.Patrolling);
-	}
+	//public void RetreatUnit()
+	//{
+	//	target = null;
+	//	SetCurrentState(scriptEnemyHunter.states.Patrolling);
+	//}
 
 	public void Stun()
 	{
@@ -314,32 +274,6 @@ public class scriptEnemyHunter : scriptEnemy
 	#endregion
 
 	#region Coroutines
-	private IEnumerator PatrolRoutine()
-	{
-		patrolLocation = Random.insideUnitSphere * pack.patrolAreaSize + pack.packStartPoint.position;
-
-		//Look at target
-		transform.LookAt(Vector3.Lerp(transform.position, patrolLocation, lookSpeed));
-
-		//Move toward the target
-		if (rb != null && rb.velocity.sqrMagnitude < maxVelocity)
-			rb.AddForce(transform.forward * patrolSpeed);
-
-		yield return new WaitForSeconds(patrolCooldown);
-
-		patrolRoutine = null;
-	}
-
-	private IEnumerator StunRoutine()
-	{
-		SetCurrentState(states.Stunned);
-
-		yield return new WaitForSeconds(stunCooldown);
-
-		SetCurrentState(states.Patrolling);
-
-		stunRoutine = null;
-	}
 
 	private IEnumerator ShootRoutine(shotTypes shot)
 	{
@@ -350,6 +284,14 @@ public class scriptEnemyHunter : scriptEnemy
 				break;
 			case shotTypes.Burst3:
 				for (var i = 0; i < 3; i++)
+				{
+					SpawnBullet();
+
+					yield return new WaitForSeconds(burstCooldown);
+				}
+				break;
+			case shotTypes.Burst5:
+				for (var i = 0; i < 5; i++)
 				{
 					SpawnBullet();
 

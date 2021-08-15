@@ -94,7 +94,7 @@ public class scriptEarth : scriptPlanetoid
     #endregion
 
     #region Coroutines
-    protected IEnumerator DyingRoutine()
+    protected override IEnumerator DyingRoutine()
     {
         //Handle attached enemies
         foreach (GameObject go in attachedEntities)

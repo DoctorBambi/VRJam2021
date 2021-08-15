@@ -532,7 +532,9 @@ MonoBehaviour:
   lookSpeed: 0.1
   breakingSpeed: 0.01
   stunCooldown: 5
-  patrolLocation: {x: 0, y: 0, z: 0}
+  startPoint: {x: 0, y: 0, z: 0}
+  patrolRoute: {x: 0, y: 0, z: 0}
+  patrolAreaSize: 5
   currentState: 0
   prevState: 0
   target: {fileID: 0}
@@ -546,7 +548,7 @@ MonoBehaviour:
   bulletLifespan: 10
   ammoType: {fileID: 5318957823161222446, guid: 5b646c469cdd7ca4ab3921f01b32dd2a,
     type: 3}
-  shotType: 1
+  shotType: 2
 --- !u!54 &8719615386816156758
 Rigidbody:
   m_ObjectHideFlags: 0

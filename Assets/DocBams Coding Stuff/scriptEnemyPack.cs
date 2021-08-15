@@ -7,7 +7,6 @@ public class scriptEnemyPack : MonoBehaviour
 {
 	#region Properties
 	public GameObject[] enemyPrefabs;
-    public GameObject earth;
 
     public enum types
     {
@@ -26,13 +25,12 @@ public class scriptEnemyPack : MonoBehaviour
         Alerted
     }
 
-    public awareness aware;
+    public awareness currentAwareness;
 
     public Transform packStartPoint;
     public int packSize = 5;
     public float patrolAreaSize = 5;
     public float enemyTerritoryRange = 5;
-    public bool packAlerted = true;
     public float sleepRange = 20f; //range at which we will disable pack members to save on resources.
     public bool isSleeping = true;
 
@@ -42,15 +40,6 @@ public class scriptEnemyPack : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-        //Go find the earth
-        var potentialEarths = GameObject.FindGameObjectsWithTag("Earth");
-        if (potentialEarths.Length == 0)
-            Debug.LogError("There is no earth object in the scene for this enemy pack to look for.");
-        else if (potentialEarths.Length > 1)
-            Debug.LogError("There is more than 1 earth object in the scene.");
-        else
-            earth = potentialEarths[0];
-
         SpawnPack(type, packStartPoint.position);
     }
 
@@ -76,6 +65,8 @@ public class scriptEnemyPack : MonoBehaviour
 
                     var script = unit.GetComponent<scriptEnemyDriller>();
                     script.pack = this;
+                    script.startPoint = packStartPoint.position;
+                    script.patrolAreaSize = patrolAreaSize;
 
                     packUnits.Add(unit);
                 }
@@ -91,6 +82,8 @@ public class scriptEnemyPack : MonoBehaviour
 
                     var script = unit.GetComponent<scriptEnemyHunter>();
                     script.pack = this;
+                    script.startPoint = packStartPoint.position;
+                    script.patrolAreaSize = patrolAreaSize;
 
                     packUnits.Add(unit);
                 }
@@ -103,42 +96,46 @@ public class scriptEnemyPack : MonoBehaviour
 
     void CheckProximity()
 	{
-        if (earth != null && earth.GetComponent<scriptEarth>().currentState != scriptPlanetoid.states.Dead && earth.GetComponent<scriptEarth>().currentState != scriptPlanetoid.states.Safe)
+        if (scriptEarth.Instance.currentState != scriptPlanetoid.states.Dead && scriptEarth.Instance.currentState != scriptPlanetoid.states.Safe)
 		{
-            var dist = Vector3.Distance(packStartPoint.position, earth.transform.position);
+            var dist = Vector3.Distance(packStartPoint.position, scriptEarth.Instance.transform.position);
 
             //Sleep state
             if (dist > sleepRange)
 			{
                 //put pack to sleep
-                aware = awareness.Asleep;
+                currentAwareness = awareness.Asleep;
                 SleepPackMembers();
 			}
             else
 			{
                 //wake pack up
-                aware = awareness.Unknown;
+                currentAwareness = awareness.Unknown;
                 WakePackMembers();
 			}
 
             //Territory state
             if (dist < enemyTerritoryRange)
             {
-                if (!packAlerted)
-                    aware = awareness.InTerritory;
+                bool enemySighted = false;
+                foreach (GameObject unit in packUnits)
+				{
+                    if (enemySighted == true) break; //a unit found a target so we're alerted
+
+                    if (unit.GetComponent<scriptEnemy>().target != null)
+                        enemySighted = true;
+				}
+
+                if (!enemySighted)
+                    currentAwareness = awareness.InTerritory;
                 else
-                    aware = awareness.Alerted;
-            }
-            else
-            {
-                aware = awareness.Unknown;
-                RetreatPackMembers();
+                    currentAwareness = awareness.Alerted;
             }
 		}
 		else //earth is not in an attackable state, so pull everyone back home.
 		{
-            aware = awareness.Unknown;
-            RetreatPackMembers();
+            currentAwareness = awareness.Unknown;
+            //RetreatPackMembers();
         }
 	}
 
@@ -168,30 +165,25 @@ public class scriptEnemyPack : MonoBehaviour
         }
 	}
 
-    public void AlertPackMembers(Transform target)
-	{
-        if (!packAlerted)
-		{
-            packAlerted = true;
-		
-            foreach (GameObject unit in packUnits)
-            {
-                unit.SendMessage("AlertUnit", target, SendMessageOptions.DontRequireReceiver);
-            }
-		}
-	}
+ //   public void AlertPackMembers(Transform target)
+	//{
+ //       foreach (GameObject unit in packUnits)
+ //       {
+ //           unit.SendMessage("AlertUnit", target, SendMessageOptions.DontRequireReceiver);
+ //       }
+	//}
 
-    public void RetreatPackMembers()
-	{
-        if (packAlerted)
-		{
-            packAlerted = false;
+ //   public void RetreatPackMembers()
+	//{
+ //       if (packAlerted)
+	//	{
+ //           packAlerted = false;
 
-            foreach (GameObject unit in packUnits)
-            {
-                if (unit != null)
-                    unit.SendMessage("RetreatUnit", SendMessageOptions.DontRequireReceiver);
-            }
-        }
-    }
+ //           foreach (GameObject unit in packUnits)
+ //           {
+ //               if (unit != null)
+ //                   unit.SendMessage("RetreatUnit", SendMessageOptions.DontRequireReceiver);
+ //           }
+ //       }
+ //   }
 }
