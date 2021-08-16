@@ -91,11 +91,11 @@ public class scriptEnemyHunter : scriptEnemy
 		//Check the status of the earth
 		EarthCheck();
 
-		if (target != null)
+		if (target != null && rb != null)
 		{
 			//Look at target
 			Vector3 targetDirection = target.position - transform.position;
-			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, lookSpeed * Time.deltaTime, 0.0f);
+			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, chaseLookSpeed * Time.deltaTime, 0.0f);
 			rb.MoveRotation(Quaternion.LookRotation(newDirection));
 
 			//Cast a ray and see what's ahead of us
@@ -112,14 +112,15 @@ public class scriptEnemyHunter : scriptEnemy
 				}
 				else //some other obstacle is in the way so try to get around it.
 				{
-					if (rb != null)
-						rb.AddForce(transform.right * breakingSpeed);
+					rb.AddForce(transform.right * strafingSpeed);
 				}
 			}
 			else //Clear skies so carry on
 			{
-				if (rb != null && rb.velocity.sqrMagnitude < maxVelocity)
+				if (rb.velocity.sqrMagnitude < maxVelocity)
 					rb.AddForce(transform.forward * chaseSpeed);
+				else
+					Brake(states.Chasing, maxVelocity - 1);
 			}
 		}
 		else
@@ -131,12 +132,13 @@ public class scriptEnemyHunter : scriptEnemy
 		//Check the status of the earth
 		EarthCheck();
 
-		if (target != null)
+		if (target != null && rb != null)
 		{
 			//Look at target
 			Vector3 targetDirection = target.position - transform.position;
-			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, lookSpeed * Time.deltaTime, 0.0f);
+			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, chaseLookSpeed * Time.deltaTime, 0.0f);
 			rb.MoveRotation(Quaternion.LookRotation(newDirection));
+
 
 			//Check that player is still in range
 			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRangeMax))
@@ -144,8 +146,8 @@ public class scriptEnemyHunter : scriptEnemy
 				if (hit.collider.CompareTag("Earth")) //then we're in range so start shooting
 				{
 					//Slow down to a stop
-					rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, breakingSpeed);
-					rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, breakingSpeed);
+					rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, brakingSpeed);
+					rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, brakingSpeed);
 
 					//Shoot at earth
 					if (shootRoutine == null)
@@ -169,11 +171,11 @@ public class scriptEnemyHunter : scriptEnemy
 		//Check the status of the earth
 		EarthCheck();
 
-		if (target != null)
+		if (target != null && rb != null)
 		{
 			//Look at target
 			Vector3 targetDirection = target.position - transform.position;
-			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, lookSpeed * Time.deltaTime, 0.0f);
+			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, chaseLookSpeed * Time.deltaTime, 0.0f);
 			rb.MoveRotation(Quaternion.LookRotation(newDirection));
 
 			//Check that target is still in range
@@ -183,8 +185,8 @@ public class scriptEnemyHunter : scriptEnemy
 				{
 					if (hit.distance < shootingRangeMin)//then we're too close so back up
 					{
-						if (rb.velocity.sqrMagnitude < maxVelocity) rb.AddForce(-transform.forward * breakingSpeed);
-						
+						if (rb.velocity.sqrMagnitude < maxVelocity) rb.AddForce(-transform.forward * backUpSpeed);
+
 						if (rb.velocity.sqrMagnitude > maxVelocity) Brake(states.Attacking);
 					}
 					else //we're just right, so attack
@@ -209,27 +211,6 @@ public class scriptEnemyHunter : scriptEnemy
 	#endregion
 
 	#region External Inputs
-	//public void AlertUnit(Transform newTarget)
-	//{
-	//	target = newTarget;
-	//	SetCurrentState(scriptEnemyHunter.states.Chasing);
-	//}
-
-	//public void RetreatUnit()
-	//{
-	//	target = null;
-	//	SetCurrentState(scriptEnemyHunter.states.Patrolling);
-	//}
-
-	public void Stun()
-	{
-		if (stunRoutine == null)
-		{
-			stunRoutine = StunRoutine();
-			StartCoroutine(stunRoutine);
-		}
-	}
-
 	public void SpawnBullet()
 	{
 		//Instantiate lazer and fire at earth
@@ -300,7 +281,7 @@ public class scriptEnemyHunter : scriptEnemy
 				break;
 			default:
 				Debug.LogWarning($"Shot type {shot} is not implemented yet. Defaulting shot type to Single.");
-				
+
 				SpawnBullet();
 
 				shotType = shotTypes.Single;

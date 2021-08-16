@@ -10,15 +10,18 @@ public class scriptEnemy : MonoBehaviour
 	public scriptEnemyPack pack;
     public float sightRadius = 3f;
     public float patrolSpeed = 2f;
+    public float patrolLookSpeed = .5f;
     public float patrolCooldown = 5f;//time before finding a new spot to patrol.
-    public float chaseSpeed = 10f;
-    public float maxVelocity = 10f;
-    public float lookSpeed = .1f;
-    public float breakingSpeed = .01f;
-    public float stunCooldown = 5f;
     public Vector3 startPoint;
     public Vector3 patrolRoute;
     public float patrolAreaSize = 5f;
+    public float chaseSpeed = 10f;
+    public float chaseLookSpeed = 1f;
+    public float maxVelocity = 10f;
+    public float brakingSpeed = .01f;
+    public float strafingSpeed = .01f;
+    public float backUpSpeed = 1f;
+    public float stunCooldown = 5f;
 
     public enum states
     {
@@ -26,6 +29,7 @@ public class scriptEnemy : MonoBehaviour
         Patrolling,
         Chasing,
         Attacking,
+        Dashing,
         Embedded,
         Braking,
         BackingUp,
@@ -148,22 +152,19 @@ public class scriptEnemy : MonoBehaviour
             StartCoroutine(stunRoutine);
         }
     }
-	#endregion
+    #endregion
 
-	#region Internal Tools
-	protected virtual void EarthCheck()
+    #region Internal Tools
+    protected virtual void EarthCheck()
 	{
-        if (scriptEarth.Instance.currentState != scriptEarth.states.Dead && scriptEarth.Instance.currentState != scriptEarth.states.Safe)
+        if (currentState != states.Embedded && scriptEarth.Instance.currentState != scriptEarth.states.Dead && scriptEarth.Instance.currentState != scriptEarth.states.Safe)
         {
             var dist = Vector3.Distance(transform.position, scriptEarth.Instance.transform.position);
 
             if (pack != null) //we are a pack member
 			{
                 if (dist < sightRadius && pack.currentAwareness == scriptEnemyPack.awareness.InTerritory)
-				{
                     target = scriptEarth.Instance.transform;
-                    //pack.AlertPackMembers(target);
-                }
                 else if (pack.currentAwareness == scriptEnemyPack.awareness.Alerted)
                     target = scriptEarth.Instance.transform;
                 else
@@ -184,12 +185,15 @@ public class scriptEnemy : MonoBehaviour
     //Reapply the rigidbody
     protected virtual void ReinitializeRidgidBody(float mass = .1f, float drag = .1f, float angularDrag = .05f)
     {
-        //rb.isKinematic = false;
-        rb = gameObject.AddComponent<Rigidbody>();
-        rb.useGravity = false;
-        rb.mass = mass;
-        rb.drag = drag;
-        rb.angularDrag = angularDrag;
+        if (rb == null)//only reinitialize if it's been destroyed
+		{
+            rb = gameObject.AddComponent<Rigidbody>();
+
+            rb.useGravity = false;
+            rb.mass = mass;
+            rb.drag = drag;
+            rb.angularDrag = angularDrag;
+        }
     }
 	#endregion
 
@@ -207,14 +211,15 @@ public class scriptEnemy : MonoBehaviour
 
     protected virtual IEnumerator BrakingRoutine(states returnState, float amount)
 	{
-        //Slow down to a stop
-        while (rb != null && (rb.velocity != Vector3.zero || rb.angularVelocity != Vector3.zero))
+        //Slow down to the desired speed.
+        while (rb != null && (rb.velocity.sqrMagnitude > amount || rb.angularVelocity != Vector3.zero))
         {
-            rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, breakingSpeed);
-            if (rb.velocity.sqrMagnitude < amount) rb.velocity = Vector3.zero;
+            if (rb.velocity.sqrMagnitude >= amount)
+                rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, brakingSpeed);
 
-            rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, breakingSpeed);
-            if (rb.angularVelocity.sqrMagnitude < amount) rb.angularVelocity = Vector3.zero;
+            //always zero out angular velocity so the ship isn't spinning oddly.
+            rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, brakingSpeed);
+            if (rb.angularVelocity.sqrMagnitude < .001f) rb.angularVelocity = Vector3.zero;
 
             yield return null;
         }
@@ -233,7 +238,7 @@ public class scriptEnemy : MonoBehaviour
         while ((transform.forward - targetDirection.normalized).sqrMagnitude > .0001f)
 		{
             targetDirection = patrolRoute - transform.position;
-            Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, lookSpeed * Time.deltaTime, 0.0f);
+            Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, patrolLookSpeed * Time.deltaTime, 0.0f);
             transform.rotation = Quaternion.LookRotation(newDirection);
             //transform.LookAt(Vector3.Lerp(transform.position, patrolRoute, lookSpeed));
 

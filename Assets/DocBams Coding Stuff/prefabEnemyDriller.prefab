@@ -244,11 +244,14 @@ MonoBehaviour:
   pack: {fileID: 0}
   sightRadius: 5
   patrolSpeed: 2
+  patrolLookSpeed: 0.5
   patrolCooldown: 5
   chaseSpeed: 4
+  chaseLookSpeed: 5
   maxVelocity: 4
-  lookSpeed: 1
-  breakingSpeed: 0.02
+  brakingSpeed: 0.01
+  strafingSpeed: 0.01
+  backUpSpeed: 1
   stunCooldown: 5
   startPoint: {x: 0, y: 0, z: 0}
   patrolRoute: {x: 0, y: 0, z: 0}
@@ -259,7 +262,7 @@ MonoBehaviour:
   sounds:
   - {fileID: 8300000, guid: 8f90aab743ca1854a98fc315c2f60cad, type: 3}
   - {fileID: 8300000, guid: 7c6332ea3c05c3841b7f4e50a8d2a6b0, type: 3}
-  drillDamage: 0.2
+  drillDamage: 0.1
 --- !u!54 &3371362840670206120
 Rigidbody:
   m_ObjectHideFlags: 0

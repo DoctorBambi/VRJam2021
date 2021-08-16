@@ -491,7 +491,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8719615386816156756
 Transform:
   m_ObjectHideFlags: 0
@@ -524,15 +524,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugging: 0
   pack: {fileID: 0}
-  sightRadius: 5
+  sightRadius: 7
   patrolSpeed: 2
   patrolCooldown: 5
-  chaseSpeed: 4
+  chaseSpeed: 3
   maxVelocity: 5
-  lookSpeed: 0.1
-  breakingSpeed: 0.01
+  lookSpeed: 1
+  brakingSpeed: 0.01
+  strafingSpeed: 0.05
+  backUpSpeed: 1
   stunCooldown: 5
-  startPoint: {x: 0, y: 0, z: 0}
+  startPoint: {x: 352.32, y: 117.034, z: 1117.256}
   patrolRoute: {x: 0, y: 0, z: 0}
   patrolAreaSize: 5
   currentState: 0
@@ -541,10 +543,10 @@ MonoBehaviour:
   sounds:
   - {fileID: 8300000, guid: 8f90aab743ca1854a98fc315c2f60cad, type: 3}
   - {fileID: 8300000, guid: 7c6332ea3c05c3841b7f4e50a8d2a6b0, type: 3}
-  shootingRangeMax: 3
-  shootingRangeMin: 2
+  shootingRangeMax: 5
+  shootingRangeMin: 3
   shootCooldown: 2
-  burstCooldown: 0.2
+  burstCooldown: 0.5
   bulletLifespan: 10
   ammoType: {fileID: 5318957823161222446, guid: 5b646c469cdd7ca4ab3921f01b32dd2a,
     type: 3}

@@ -125,7 +125,7 @@ public class scriptAudioManager : MonoBehaviour
         //Go find enemy packs
         var potentialPacks = GameObject.FindGameObjectsWithTag("EnemyPack");
         if (potentialPacks.Length == 0)
-            Debug.LogWarning("There is no enemy packs in the scene.");
+            Debug.LogWarning("There are no enemy packs in the scene.");
         else
             enemyPacks = potentialPacks;
     }

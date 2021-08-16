@@ -96,7 +96,7 @@ public class scriptEnemyPack : MonoBehaviour
 
     void CheckProximity()
 	{
-        if (scriptEarth.Instance.currentState != scriptPlanetoid.states.Dead && scriptEarth.Instance.currentState != scriptPlanetoid.states.Safe)
+        if (scriptEarth.Instance != null && scriptEarth.Instance.currentState != scriptPlanetoid.states.Dead && scriptEarth.Instance.currentState != scriptPlanetoid.states.Safe)
 		{
             var dist = Vector3.Distance(packStartPoint.position, scriptEarth.Instance.transform.position);
 

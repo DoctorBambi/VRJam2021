@@ -6,9 +6,12 @@ public class scriptEnemyDriller : scriptEnemy
 {
 	#region Properties
 	public float drillDamage = .1f;
+	public float dashCooldown = 4f;
+	private float dashRange = 2;
 
 	//Coroutines
 	private IEnumerator dislodgeRoutine;
+	private IEnumerator dashRoutine;
 	#endregion
 
 	#region MonoBehaviour Stuff
@@ -54,7 +57,7 @@ public class scriptEnemyDriller : scriptEnemy
 		}
 
 		//behaviour contextual collisions
-		if (currentState == states.Chasing)
+		if (currentState == states.Chasing || currentState == states.Dashing)
 		{
 			if (collision.collider.CompareTag("Asteroid"))
 			{
@@ -79,16 +82,24 @@ public class scriptEnemyDriller : scriptEnemy
 		//Check the status of the earth
 		EarthCheck();
 
-		if (target != null)
+		if (target != null && rb != null)
 		{
 			//Look at target
 			Vector3 targetDirection = target.position - transform.position;
-			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, lookSpeed * Time.deltaTime, 0.0f);
+			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, chaseLookSpeed * Time.deltaTime, 0.0f);
 			rb.MoveRotation(Quaternion.LookRotation(newDirection));
 
 			//Move toward the target
-			if (rb != null && rb.velocity.sqrMagnitude < maxVelocity)
+			if (rb.velocity.sqrMagnitude < maxVelocity)
 				rb.AddForce(transform.forward * chaseSpeed);
+			else
+				Brake(states.Chasing, maxVelocity - 1);
+
+			//Check if we're close enough to dash at the target
+			if ((transform.position - target.position).sqrMagnitude < dashRange)
+			{
+				Dash();
+			}
 		}
 		else
 			SetCurrentState(states.Patrolling);
@@ -102,31 +113,20 @@ public class scriptEnemyDriller : scriptEnemy
 	#endregion
 
 	#region External Inputs
-	/// <summary>
-	/// Used by the pack to alert this unit to an target's location.
-	/// </summary>
-	/// <param name="newTarget"></param>
-	//public void AlertUnit(Transform newTarget)
-	//{
-	//	target = newTarget;
-	//	//SetCurrentState(scriptEnemyDriller.states.Chasing);
-	//}
-
-	/// <summary>
-	/// When the player has left a pack's territory, the pack will use this to call off their attack mode.
-	/// </summary>
-	//public void RetreatUnit()
-	//{
-	//	target = null;
-	//	SetCurrentState(scriptEnemyDriller.states.Patrolling);
-	//}
-
 	//embed the driller into the target
 	private void EmbedInto(GameObject target)
 	{
-		currentState = states.Embedded;
+		SetCurrentState(states.Embedded);
 
 		Destroy(rb);
+
+		//TODO: make this a separate function and store routines in a list so we can dynamically kill everything easily.
+		StopAllCoroutines();
+		dislodgeRoutine = null;
+		stunRoutine = null;
+		brakingRoutine = null;
+		patrolRoutine = null;
+		dashRoutine = null;
 
 		transform.SetParent(target.transform, true);
 		target.SendMessage("EmbedInto", gameObject, SendMessageOptions.DontRequireReceiver);
@@ -139,6 +139,15 @@ public class scriptEnemyDriller : scriptEnemy
 		{
 			dislodgeRoutine = DislodgeRoutine();
 			StartCoroutine(dislodgeRoutine);
+		}
+	}
+
+	public void Dash()
+	{
+		if (dashRoutine == null)
+		{
+			dashRoutine = DashRoutine();
+			StartCoroutine(dashRoutine);
 		}
 	}
 	#endregion
@@ -188,6 +197,22 @@ public class scriptEnemyDriller : scriptEnemy
 		SetCurrentState(states.Patrolling);
 
 		dislodgeRoutine = null;
+	}
+
+	private IEnumerator DashRoutine()
+	{
+		//Play audio
+
+
+		SetCurrentState(states.Dashing);
+
+		if (rb != null) rb.AddForce(transform.forward * (chaseSpeed * 10));//dash toward the target
+
+		yield return new WaitForSeconds(dashCooldown);
+
+		SetCurrentState(states.Chasing);
+
+		dashRoutine = null;
 	}
 	#endregion
 }
