@@ -360,8 +360,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c06c8f02a0cc3974e9cd734ebc80a9c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletDamage: 5
-  bulletSpeed: 1.2
+  bulletDamage: 3
+  bulletSpeed: 2
   isFiring: 0
 --- !u!1 &8562582578588636209
 GameObject:

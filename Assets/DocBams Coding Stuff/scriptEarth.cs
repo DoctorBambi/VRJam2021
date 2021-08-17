@@ -12,6 +12,7 @@ public class scriptEarth : scriptPlanetoid
     public TextMeshProUGUI deathTextUI;
     public string deathText;
 
+    private Rigidbody rb;
     private GameObject model;
 
     #endregion
@@ -21,12 +22,15 @@ public class scriptEarth : scriptPlanetoid
     {
         base.Start();
 
-        model = transform.Find("EarthContainer").gameObject;
-
         if (Instance == null)
             Instance = this;
         else
             Debug.LogError("Earth already exists in the scene!", Instance);
+
+        model = transform.Find("EarthContainer").gameObject;
+
+        rb = GetComponent<Rigidbody>();
+        if (rb == null) Debug.LogError("No rigidbody found.", gameObject);
     }
 
     // Update is called once per frame
@@ -86,6 +90,13 @@ public class scriptEarth : scriptPlanetoid
             SetCurrentState(states.Dead);
 		}
 	}
+
+    public void SnapPosition(Vector3 newPos)
+    {
+        rb.MovePosition(newPos);
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+    }
 
     public void ReloadScene()
     {

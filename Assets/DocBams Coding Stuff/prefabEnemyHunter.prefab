@@ -524,19 +524,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugging: 0
   pack: {fileID: 0}
-  sightRadius: 7
+  sightRadius: 5
   patrolSpeed: 2
+  patrolLookSpeed: 0.5
   patrolCooldown: 5
+  startPoint: {x: 352.32, y: 117.034, z: 1117.256}
+  patrolRoute: {x: 0, y: 0, z: 0}
+  patrolAreaSize: 5
   chaseSpeed: 3
+  chaseLookSpeed: 1
   maxVelocity: 5
-  lookSpeed: 1
   brakingSpeed: 0.01
   strafingSpeed: 0.05
   backUpSpeed: 1
   stunCooldown: 5
-  startPoint: {x: 352.32, y: 117.034, z: 1117.256}
-  patrolRoute: {x: 0, y: 0, z: 0}
-  patrolAreaSize: 5
   currentState: 0
   prevState: 0
   target: {fileID: 0}

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class TeleportBallController : MonoBehaviour
 {
+    [SerializeField] private bool debugging = true;
     [Header("Components")]
     [SerializeField] private GameObject targetPlayer;
     [Header("Values")]
@@ -13,13 +14,40 @@ public class TeleportBallController : MonoBehaviour
     [Tooltip("Time it takes to decide to teleport at the balls position")]
     [SerializeField] private float timeTillTele = 10f;
 
+    private Rigidbody rb;
+    private CharacterController controller;
+    private List<scriptHandSnapper> physicalHands = new List<scriptHandSnapper>();
     private bool beingHeld;
     private bool thrown = false;
     private bool resetTeleport = true;
     private bool collideWithTele = false;
     private float rememberTimer;
 
-    private void Awake()
+	private void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+        if (rb == null) Debug.LogError("No rigidbody found.", gameObject);
+
+        targetPlayer = GameObject.FindGameObjectWithTag("Player");
+        if (targetPlayer == null) Debug.LogError("No player found.", gameObject);
+
+        controller = targetPlayer.GetComponentInChildren<CharacterController>();
+        if (controller == null) Debug.LogError("No Character controller found on player.", gameObject);
+
+        var potentialHands = GameObject.FindGameObjectsWithTag("PhysicalHand");
+        if (potentialHands != null)
+		{
+            foreach (GameObject hand in potentialHands)
+			{
+                var script = hand.GetComponent<scriptHandSnapper>();
+                if (script == null) Debug.LogError("No scriptHandSnapper found on physical hand.", hand);
+
+                physicalHands.Add(script);
+			}
+		}
+    }
+
+	private void Awake()
     {
         rememberTimer = timeTillTele;
     }
@@ -27,7 +55,11 @@ public class TeleportBallController : MonoBehaviour
     public void SetBallGrab()
     {
         beingHeld = true;
+
+        //Set the teleport ball to the teleport ball layer so that it doesn't interact with the physics hands.
+        gameObject.layer = 17;
     }
+
     public void ResetBallGrab()
     {
         beingHeld = false;
@@ -41,10 +73,11 @@ public class TeleportBallController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        print(collision.gameObject.layer);
+        if (debugging) print(collision.gameObject.layer);
+
         if (collision.gameObject.layer == 12)
         {
-            print("Passed Layer Check");
+            if (debugging) print("Passed Layer Check");
             collideWithTele = true;
             MakeTeleportPoint();
         }
@@ -52,7 +85,7 @@ public class TeleportBallController : MonoBehaviour
 
     private void BallBeingThrown()
     {
-       if(gameObject.GetComponent<Rigidbody>().velocity.magnitude > minVelocity)
+        if (gameObject.GetComponent<Rigidbody>().velocity.magnitude > minVelocity)
         {
             thrown = true;
         }
@@ -72,7 +105,7 @@ public class TeleportBallController : MonoBehaviour
         {
             if (resetTeleport)
             {
-                print("Starting Teleport Process");
+                if (debugging) print("Starting Teleport Process");
                 Invoke("MakeTeleportPoint", timeTillTele);
                 //timeTillTele -= Time.deltaTime;
                 //if (timeTillTele <= 0)
@@ -90,7 +123,7 @@ public class TeleportBallController : MonoBehaviour
 
     private void MakeTeleportPoint()
     {
-        print("Testing Ball Tele Called");
+        if (debugging) print("Testing Ball Tele Called");
         GameObject pointObj = new GameObject();
         pointObj.name = "telePoint";
         pointObj.transform.position = gameObject.transform.position;
@@ -99,11 +132,27 @@ public class TeleportBallController : MonoBehaviour
 
     private void TeleportPlayer(GameObject point)
     {
-        print("Teleport Player Called");
-        targetPlayer = GameObject.FindGameObjectWithTag("Player");
-        targetPlayer.transform.position = point.transform.position;
+        if (debugging) print("Teleport Player Called");
+
+        // Apply Teleport to Player
+        controller.enabled = false;
+        controller.transform.position = point.transform.position;
+
+        // Apply Teleport to Physical hands if we are using them
+        foreach (scriptHandSnapper hand in physicalHands)
+		{
+            hand.SnapPosition(point.transform.position);
+		}
+
+        // Apply Teleport to Earth
+        if (physicalHands.Count > 0)
+            scriptEarth.Instance.SnapPosition(point.transform.position);
+        
+        //targetPlayer.transform.position = point.transform.position;
+
         //resetTeleport = true;
-        //print(point.transform.position);
+        //if (debugging) print(point.transform.position);
+
         collideWithTele = false;
         Destroy(point);
         Destroy(gameObject);
