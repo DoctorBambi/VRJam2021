@@ -9,6 +9,7 @@ public class scriptEarth : scriptPlanetoid
 
     #region Properties
 
+    public bool isGrabbed;
     public TextMeshProUGUI deathTextUI;
     public string deathText;
 
@@ -93,10 +94,18 @@ public class scriptEarth : scriptPlanetoid
 
     public void SnapPosition(Vector3 newPos)
     {
-        rb.MovePosition(newPos);
-        rb.velocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        if (isGrabbed)
+		{
+            rb.MovePosition(newPos);
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
     }
+
+    public void SetIsGrabbed(bool newState)
+	{
+        isGrabbed = newState;
+	}
 
     public void ReloadScene()
     {

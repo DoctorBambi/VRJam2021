@@ -4,13 +4,6 @@ using UnityEngine;
 
 public class AsteroidSpawner : MonoBehaviour
 {
-	void Start(){
-		cl=GetComponent<ChunkLoading>();
-		/* for (int i = 0; i < 20; i++) */
-		/* { */
-			/* SpawnAsteroid(Vector3.zero); */	
-		/* } */
-	}
 	[SerializeField]
 	GameObject droneSpawnerOne;
 	[SerializeField]
@@ -29,6 +22,16 @@ public class AsteroidSpawner : MonoBehaviour
 	Transform player;
 	[SerializeField]
 	Vector3 sunPos;
+
+	void Start()
+	{
+		cl = GetComponent<ChunkLoading>();
+		/* for (int i = 0; i < 20; i++) */
+		/* { */
+		/* SpawnAsteroid(Vector3.zero); */
+		/* } */
+	}
+
 	public void SpawnAsteroid(Vector3 basePosition,int index){
 		Vector3 scaleA = baseSize * RandomConstVectorThree(1-sizeVariation, 1+sizeVariation); 
 		Vector3 positionA = basePosition+RandomConstVectorThree(-chunkRadius,chunkRadius);
@@ -44,6 +47,7 @@ public class AsteroidSpawner : MonoBehaviour
 		tempAsteroid.transform.eulerAngles = RandomConstVectorThree(-180, 180);
 		cl.chunks[cl.GetCurrentChunk().x,cl.GetCurrentChunk().y,cl.GetCurrentChunk().z].asteroids[index]=positionA;
 	}
+
 	public void spawnAsteroidDirect(Vector3 basesPosition){
 		Vector3 scaleA = baseSize * RandomConstVectorThree(1-sizeVariation, 1+sizeVariation); 
 		GameObject tempAsteroid = Instantiate(Asteroid);
@@ -51,6 +55,7 @@ public class AsteroidSpawner : MonoBehaviour
 		tempAsteroid.transform.localScale = scaleA;
 		tempAsteroid.transform.eulerAngles = RandomConstVectorThree(-180, 180);
 	}
+
 	public Vector3 RandomConstVectorThree(float min, float max){
 		return new Vector3(Random.Range(min, max),Random.Range(min, max),Random.Range(min, max));
 	}

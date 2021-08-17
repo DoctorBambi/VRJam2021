@@ -544,7 +544,7 @@ MonoBehaviour:
   sounds:
   - {fileID: 8300000, guid: 8f90aab743ca1854a98fc315c2f60cad, type: 3}
   - {fileID: 8300000, guid: 7c6332ea3c05c3841b7f4e50a8d2a6b0, type: 3}
-  shootingRangeMax: 5
+  shootingRangeMax: 4
   shootingRangeMin: 3
   shootCooldown: 2
   burstCooldown: 0.5

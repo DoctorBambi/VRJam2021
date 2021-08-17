@@ -84,7 +84,7 @@ public class ChunkLoading : MonoBehaviour
 	[SerializeField]
 	int numAsteroidsPerChunk = 10;
 	void Start(){
-		chunkVar = new chunk();
+		chunkVar = new chunk(numAsteroidsPerChunk);
 		chunk = Vector3Int.one;
 		chunks = new chunk[200,200,200];
 		astSpawner = GetComponent<AsteroidSpawner>();
@@ -119,9 +119,9 @@ public class ChunkLoading : MonoBehaviour
 				foreach (Vector3 curCoord in chunkVar.asteroids)
 				{
 					astSpawner.spawnAsteroidDirect(curCoord);	
-				}	
+				}
 			}else{
-				chunks[GetCurrentChunk().x,GetCurrentChunk().y,GetCurrentChunk().z] = new chunk();
+				chunks[GetCurrentChunk().x,GetCurrentChunk().y,GetCurrentChunk().z] = new chunk(numAsteroidsPerChunk);
 				for (int i = 0; i < numAsteroidsPerChunk; i++)
 				{
 					astSpawner.SpawnAsteroid(player.position, i);
@@ -132,6 +132,11 @@ public class ChunkLoading : MonoBehaviour
 
 }
 public class chunk{
-	public Vector3[] asteroids = new Vector3[25];
+	public chunk(int numOfAsteroids)
+	{
+		asteroids = new Vector3[numOfAsteroids];
+	}
+
+	public Vector3[] asteroids;
 }
 
