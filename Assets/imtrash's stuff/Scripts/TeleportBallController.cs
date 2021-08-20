@@ -17,6 +17,7 @@ public class TeleportBallController : MonoBehaviour
     private Rigidbody rb;
     private CharacterController controller;
     private List<scriptHandSnapper> physicalHands = new List<scriptHandSnapper>();
+    private scriptStunGun stunGun;
     private bool beingHeld;
     private bool thrown = false;
     private bool resetTeleport = true;
@@ -45,6 +46,9 @@ public class TeleportBallController : MonoBehaviour
                 physicalHands.Add(script);
 			}
 		}
+
+        var potentialStunGun = GameObject.FindGameObjectWithTag("StunGun");
+        if (potentialStunGun != null) stunGun = potentialStunGun.GetComponent<scriptStunGun>();
     }
 
 	private void Awake()
@@ -57,6 +61,7 @@ public class TeleportBallController : MonoBehaviour
         beingHeld = true;
 
         //Set the teleport ball to the teleport ball layer so that it doesn't interact with the physics hands.
+        //It has to be set after grabbing otherwise you can't initially grab the teleport ball.
         gameObject.layer = 17;
     }
 
@@ -144,10 +149,16 @@ public class TeleportBallController : MonoBehaviour
             hand.SnapPosition(point.transform.position);
 		}
 
-        // Apply Teleport to Earth
+        // Apply Teleport to Earth and Stungun
         if (physicalHands.Count > 0)
+		{
             scriptEarth.Instance.SnapPosition(point.transform.position);
-        
+            if (stunGun != null) stunGun.SnapPosition(point.transform.position);
+		}
+
+        // Re-Enable the character controller so we can move again
+        controller.enabled = true;
+
         //targetPlayer.transform.position = point.transform.position;
 
         //resetTeleport = true;

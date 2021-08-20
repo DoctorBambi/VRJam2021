@@ -12,6 +12,7 @@ TagManager:
   - Sun
   - Hunter
   - PhysicalHand
+  - StunGun
   layers:
   - Default
   - TransparentFX

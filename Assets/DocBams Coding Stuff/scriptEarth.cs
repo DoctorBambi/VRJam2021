@@ -159,9 +159,10 @@ public class scriptEarth : scriptPlanetoid
         }
         attachedEntities.Clear();
 
-        yield return new WaitForSeconds(scriptAudioManager.Instance.musicLoops[(int)scriptAudioManager.vibes.Victory].length); //wait for the victory music to finish because reasons?
+        yield return new WaitForSeconds(scriptAudioManager.Instance.musicLoops[(int)scriptAudioManager.vibes.Victory].length); //wait for the victory music to finish
 
-        //... Now what do we do?
+        //Now load the win scene
+        SceneManager.LoadScene("_scene4Win");
 
         safeRoutine = null;
     }

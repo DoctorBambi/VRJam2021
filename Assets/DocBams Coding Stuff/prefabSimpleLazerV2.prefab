@@ -104,7 +104,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3093641953784323772}
   - component: {fileID: 3510605820661696811}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -186,7 +186,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5531212541000283343}
   - component: {fileID: 6686098861549578310}
-  - component: {fileID: 1467093008396437019}
   - component: {fileID: 1350478033}
   m_Layer: 13
   m_Name: prefabSimpleLazerV2
@@ -335,19 +334,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!65 &1467093008396437019
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5318957823161222446}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.9945707, y: 0.09234308, z: 0.100694045}
-  m_Center: {x: -0.002714665, y: 0.007648781, z: 0.010313114}
 --- !u!114 &1350478033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -360,9 +346,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c06c8f02a0cc3974e9cd734ebc80a9c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  debugging: 1
   bulletDamage: 3
   bulletSpeed: 2
   isFiring: 0
+  explosionEffect: {fileID: 6152357621190080888, guid: 955c56b55a665634d9faeb92c1868a6b,
+    type: 3}
 --- !u!1 &8562582578588636209
 GameObject:
   m_ObjectHideFlags: 0
@@ -372,6 +361,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8562582578588636210}
+  - component: {fileID: 8775129711015876725}
+  - component: {fileID: 3231035453466989897}
   m_Layer: 13
   m_Name: Model
   m_TagString: Untagged
@@ -394,6 +385,31 @@ Transform:
   m_Father: {fileID: 5531212541000283343}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!65 &8775129711015876725
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8562582578588636209}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.003109637, y: 0.002977647, z: 0.07943854}
+  m_Center: {x: -0.00011518627, y: -0.00024401769, z: -0.00007915869}
+--- !u!114 &3231035453466989897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8562582578588636209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 278c9e471b3e29940aef82ed11984f8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8796953582164605404
 GameObject:
   m_ObjectHideFlags: 0
@@ -404,7 +420,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8169210866218378086}
   - component: {fileID: 8562582580177835227}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: modelstun_bolt
   m_TagString: Untagged
   m_Icon: {fileID: 0}

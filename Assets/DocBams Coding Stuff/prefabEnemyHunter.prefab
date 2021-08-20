@@ -532,8 +532,8 @@ MonoBehaviour:
   patrolRoute: {x: 0, y: 0, z: 0}
   patrolAreaSize: 5
   chaseSpeed: 3
-  chaseLookSpeed: 1
-  maxVelocity: 5
+  chaseLookSpeed: 5
+  maxVelocity: 3
   brakingSpeed: 0.01
   strafingSpeed: 0.05
   backUpSpeed: 1
@@ -546,8 +546,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 7c6332ea3c05c3841b7f4e50a8d2a6b0, type: 3}
   shootingRangeMax: 4
   shootingRangeMin: 3
-  shootCooldown: 2
-  burstCooldown: 0.5
+  shootCooldown: 2.5
+  burstCooldown: 0.2
   bulletLifespan: 10
   ammoType: {fileID: 5318957823161222446, guid: 5b646c469cdd7ca4ab3921f01b32dd2a,
     type: 3}
