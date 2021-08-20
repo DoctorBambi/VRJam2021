@@ -7,6 +7,7 @@ public class scriptGate : MonoBehaviour
 {
 	public string countdownText = "30";
 
+	private AudioSource aSrc;
 	private TextMeshProUGUI textUI;
 
 	//Coroutines
@@ -15,6 +16,9 @@ public class scriptGate : MonoBehaviour
 	#region Monobehaviour Stuff
 	private void Start()
 	{
+		aSrc = GetComponent<AudioSource>();
+		if (aSrc == null) Debug.LogError("Gate missing Audio Source.", gameObject);
+
 		textUI = GetComponentInChildren<TextMeshProUGUI>();
 		if (textUI == null) Debug.LogError("Gate missing Text component.", gameObject);
 		
@@ -48,6 +52,8 @@ public class scriptGate : MonoBehaviour
 		}
 
 		//audio
+		aSrc.Play();
+		yield return new WaitForSeconds(aSrc.clip.length);
 
 		//destroy
 		Destroy(gameObject);

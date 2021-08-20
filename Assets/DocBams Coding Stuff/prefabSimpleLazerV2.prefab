@@ -347,7 +347,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugging: 1
-  bulletDamage: 3
+  bulletDamage: 5
   bulletSpeed: 2
   isFiring: 0
   explosionEffect: {fileID: 6152357621190080888, guid: 955c56b55a665634d9faeb92c1868a6b,

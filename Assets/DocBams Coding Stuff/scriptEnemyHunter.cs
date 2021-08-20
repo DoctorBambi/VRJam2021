@@ -134,45 +134,9 @@ public class scriptEnemyHunter : scriptEnemy
 
 		if (target != null && rb != null)
 		{
-			//Look at target
-			Vector3 targetDirection = target.position - transform.position;
-			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, chaseLookSpeed * Time.deltaTime, 0.0f);
-			rb.MoveRotation(Quaternion.LookRotation(newDirection));
+			//Have the unit strafe a little so they don't just set there and fire bullets
+			rb.AddForce(transform.right * strafingSpeed);
 
-
-			//Check that player is still in range
-			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRangeMax))
-			{
-				if (hit.collider.CompareTag("Earth")) //then we're in range so start shooting
-				{
-					//Slow down to a stop
-					rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, brakingSpeed);
-					rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, brakingSpeed);
-
-					//Shoot at earth
-					if (shootRoutine == null)
-					{
-						shootRoutine = ShootRoutine(shotType);
-						StartCoroutine(shootRoutine);
-					}
-				}
-				else //navigate around the object occluding the earth
-					SetCurrentState(states.Chasing);
-			}
-			else
-				SetCurrentState(states.Chasing);
-		}
-		else
-			SetCurrentState(states.Patrolling);
-	}
-
-	void HandleBackingUp()
-	{
-		//Check the status of the earth
-		EarthCheck();
-
-		if (target != null && rb != null)
-		{
 			if (shootRoutine == null) //If we're in the middle of a shoot pattern, let that play out. This will allow the bullets to flow in a nice line.
 			{
 				//Look at target
@@ -180,21 +144,16 @@ public class scriptEnemyHunter : scriptEnemy
 				Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, chaseLookSpeed * Time.deltaTime, 0.0f);
 				rb.MoveRotation(Quaternion.LookRotation(newDirection));
 
-				//Check that target is still in range
+				//Check that player is still in range
 				if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRangeMax))
 				{
 					if (hit.collider.CompareTag("Earth")) //then we're in range so start shooting
 					{
-						if (hit.distance < shootingRangeMin) //then we're too close so back up
-						{
-							if (rb.velocity.sqrMagnitude < maxVelocity) rb.AddForce(-transform.forward * backUpSpeed);
+						//Slow down to a stop
+						rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, brakingSpeed);
+						rb.angularVelocity = Vector3.Lerp(rb.angularVelocity, Vector3.zero, brakingSpeed);
 
-							if (rb.velocity.sqrMagnitude > maxVelocity) Brake(states.Attacking);
-						}
-						else //we're just right, so attack
-							SetCurrentState(states.Attacking);
-
-						//We can still shoot while backing up, so shoot at target
+						//Shoot at earth
 						if (shootRoutine == null)
 						{
 							shootRoutine = ShootRoutine(shotType);
@@ -207,6 +166,50 @@ public class scriptEnemyHunter : scriptEnemy
 				else
 					SetCurrentState(states.Chasing);
 			}
+		}
+		else
+			SetCurrentState(states.Patrolling);
+	}
+
+	void HandleBackingUp()
+	{
+		//Check the status of the earth
+		EarthCheck();
+
+		if (target != null && rb != null)
+		{
+
+			//Look at target
+			Vector3 targetDirection = target.position - transform.position;
+			Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, chaseLookSpeed * Time.deltaTime, 0.0f);
+			rb.MoveRotation(Quaternion.LookRotation(newDirection));
+
+			//Check that target is still in range
+			if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, shootingRangeMax))
+			{
+				if (hit.collider.CompareTag("Earth")) //then we're in range so start shooting
+				{
+					if (hit.distance < shootingRangeMin) //then we're too close so back up
+					{
+						if (rb.velocity.sqrMagnitude < maxVelocity) rb.AddForce(-transform.forward * backUpSpeed);
+
+						if (rb.velocity.sqrMagnitude > maxVelocity) Brake(states.Attacking);
+					}
+					else //we're just right, so attack
+						SetCurrentState(states.Attacking);
+
+					//We can still shoot while backing up, so shoot at target
+					if (shootRoutine == null)
+					{
+						shootRoutine = ShootRoutine(shotType);
+						StartCoroutine(shootRoutine);
+					}
+				}
+				else //navigate around the object occluding the earth
+					SetCurrentState(states.Chasing);
+			}
+			else
+				SetCurrentState(states.Chasing);
 		}
 		else
 			SetCurrentState(states.Patrolling);

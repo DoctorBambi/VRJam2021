@@ -10,7 +10,7 @@ public class scriptEarth : scriptPlanetoid
     #region Properties
 
     public bool isGrabbed;
-    public TextMeshProUGUI deathTextUI;
+    private TextMeshProUGUI deathTextUI;
     public string deathText;
 
     private Rigidbody rb;
