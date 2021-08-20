@@ -155,7 +155,7 @@ public class scriptEarth : scriptPlanetoid
         //Handle attached enemies
         foreach (GameObject go in attachedEntities)
         {
-            go.SendMessage("DislodgeFrom", SendMessageOptions.DontRequireReceiver);
+            if (go != null) go.SendMessage("DislodgeFrom", SendMessageOptions.DontRequireReceiver);
         }
         attachedEntities.Clear();
 
