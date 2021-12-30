@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TeleportBallController : MonoBehaviour
 {
-    [SerializeField] private bool debugging = true;
+    [SerializeField] private bool debugging = false;
     [Header("Components")]
     [SerializeField] private GameObject targetPlayer;
     [Header("Values")]

@@ -8,198 +8,221 @@ using UnityEngine.Events;
 public class scriptEnemyPack : MonoBehaviour
 {
 	#region Properties
+	public scriptGate gate;
 	public GameObject[] enemyPrefabs;
 
-    public enum types
-    {
-        AllDriller,
-        AllHunter,
-        RandomMix
-    }
+	public enum types
+	{
+		AllDriller,
+		AllHunter,
+		RandomMix
+	}
 
-    public types type;
+	public types type;
 
-    public enum awareness
-    {
-        Asleep,
-        Unknown,
-        InTerritory,
-        Alerted
-    }
+	public enum awareness
+	{
+		Asleep,
+		Unknown,
+		InTerritory,
+		Alerted
+	}
 
-    public awareness currentAwareness;
-    public awareness prevAwareness;
+	public awareness currentAwareness;
+	public awareness prevAwareness;
 
-    public Transform packStartPoint;
-    public int packSize = 5;
-    public float patrolAreaSize = 5;
-    public float enemyTerritoryRange = 5;
-    public float sleepRange = 20f; //range at which we will disable pack members to save on resources.
-    public bool isSleeping = true;
+	public Transform packStartPoint;
+	public int packSize = 5;
+	public float patrolAreaSize = 5;
+	public float enemyTerritoryRange = 5;
+	public float sleepRange = 20f; //range at which we will disable pack members to save on resources.
+	public bool isSleeping = true;
 
-    //Events
-    public event Action<scriptEnemyPack> OnPackAlertedAction;
-    public UnityEvent onPackAlerted;
+	//Events
+	public event Action<scriptEnemyPack> OnPackAlertedAction;
+	public UnityEvent onPackAlerted;
 
-    private List<GameObject> packUnits = new List<GameObject>();
+	private List<GameObject> packUnits = new List<GameObject>();
 	#endregion
 
 	#region Monobehaviour Stuff
 	// Start is called before the first frame update
 	void Start()
-    {
-        OnPackAlertedAction += HandlePackAlerted;
-        SpawnPack(type, packStartPoint.position);
-    }
+	{
+		if (gate == null)
+			Debug.LogError("Enemy pack doesn't have a gate assigned.", gameObject);
 
-    // Update is called once per frame
-    void Update()
-    {
-        //Check earth proximity
-        CheckProximity();
-    }
-    #endregion
+		OnPackAlertedAction += HandlePackAlerted;
+		SpawnPack(type, packStartPoint.position);
+	}
 
-    #region AI Behaviour
-    public virtual void SetCurrentAwareness(awareness newState)
-    {
-        if (newState != currentAwareness)
-        {
-            prevAwareness = currentAwareness; //cache the previous state
-            currentAwareness = newState;
-        }
-    }
-    #endregion
+	// Update is called once per frame
+	void Update()
+	{
+		//Check earth proximity
+		CheckProximity();
+	}
+	#endregion
 
-    #region Internal Inputs
-    public void SpawnPack(types type, Vector3 position)
+	#region AI Behaviour
+	public virtual void SetCurrentAwareness(awareness newState)
+	{
+		if (newState != currentAwareness)
+		{
+			prevAwareness = currentAwareness; //cache the previous state
+			currentAwareness = newState;
+		}
+	}
+	#endregion
+
+	#region Internal Inputs
+	public void SpawnPack(types type, Vector3 position)
 	{
 		switch (type)
 		{
-            case types.AllDriller:
-                GameObject drillerPf = enemyPrefabs[(int)types.AllDriller];
-                
-                for (int i = 0; i < packSize; i++)
-                {
-                    var unit = Instantiate(drillerPf);
+			case types.AllDriller:
+				GameObject drillerPf = enemyPrefabs[(int)types.AllDriller];
 
-                    unit.transform.position = UnityEngine.Random.insideUnitSphere * patrolAreaSize + position;
+				for (int i = 0; i < packSize; i++)
+				{
+					var unit = Instantiate(drillerPf);
 
-                    var script = unit.GetComponent<scriptEnemyDriller>();
-                    script.pack = this;
-                    script.startPoint = packStartPoint.position;
-                    script.patrolAreaSize = patrolAreaSize;
+					unit.transform.position = UnityEngine.Random.insideUnitSphere * patrolAreaSize + position;
 
-                    packUnits.Add(unit);
-                }
-                break;
-            case types.AllHunter:
-                GameObject hunterPf = enemyPrefabs[(int)types.AllHunter];
+					var script = unit.GetComponent<scriptEnemyDriller>();
+					script.pack = this;
+					script.startPoint = packStartPoint.position;
+					script.patrolAreaSize = patrolAreaSize;
 
-                for (int i = 0; i < packSize; i++)
-                {
-                    var unit = Instantiate(hunterPf);
+					packUnits.Add(unit);
+				}
+				break;
+			case types.AllHunter:
+				GameObject hunterPf = enemyPrefabs[(int)types.AllHunter];
 
-                    unit.transform.position = UnityEngine.Random.insideUnitSphere * patrolAreaSize + position;
+				for (int i = 0; i < packSize; i++)
+				{
+					var unit = Instantiate(hunterPf);
 
-                    var script = unit.GetComponent<scriptEnemyHunter>();
-                    script.pack = this;
-                    script.startPoint = packStartPoint.position;
-                    script.patrolAreaSize = patrolAreaSize;
+					unit.transform.position = UnityEngine.Random.insideUnitSphere * patrolAreaSize + position;
 
-                    packUnits.Add(unit);
-                }
-                break;
-            default:
-                Debug.LogWarning($"Have not implemented pack type {type}.");
-                break;
-        }
+					var script = unit.GetComponent<scriptEnemyHunter>();
+					script.pack = this;
+					script.startPoint = packStartPoint.position;
+					script.patrolAreaSize = patrolAreaSize;
+
+					packUnits.Add(unit);
+				}
+				break;
+			default:
+				Debug.LogWarning($"Have not implemented pack type {type}.");
+				break;
+		}
 	}
 
-    void CheckProximity()
+	void CheckProximity()
 	{
-        if (scriptEarth.Instance != null && scriptEarth.Instance.currentState != scriptPlanetoid.states.Dead && scriptEarth.Instance.currentState != scriptPlanetoid.states.Safe)
+		if (IsEarthInPlay())
 		{
-            var dist = Vector3.Distance(packStartPoint.position, scriptEarth.Instance.transform.position);
-
-            //Sleep state
-            if (dist > sleepRange)
+			//if the gate isn't counting down or if it's timed out, then you can check proximity,
+			//otherwise hold the attacking state
+			if ((gate != null && !gate.isCountingDown) || gate == null)
 			{
-                //put pack to sleep
-                SetCurrentAwareness(awareness.Asleep);
-                SleepPackMembers();
-			}
-            else
-			{
-                //wake pack up
-                SetCurrentAwareness(awareness.Unknown);
-                WakePackMembers();
-			}
+				var dist = Vector3.Distance(packStartPoint.position, scriptEarth.Instance.transform.position);
 
-            //Territory state
-            if (dist < enemyTerritoryRange)
-            {
-                bool enemySighted = false;
-                foreach (GameObject unit in packUnits)
+				//Sleep state
+				if (dist > sleepRange)
 				{
-                    if (enemySighted == true) break; //a unit found a target so we're alerted
-
-                    if (unit.GetComponent<scriptEnemy>().target != null)
-                        enemySighted = true;
+					//put pack to sleep
+					SetCurrentAwareness(awareness.Asleep);
+					SleepPackMembers();
 				}
-
-                if (!enemySighted)
-                    SetCurrentAwareness(awareness.InTerritory);
 				else
 				{
-                    OnPackAlertedAction?.Invoke(this); //A little hacky, but call this first so that, when future frames come through, we can check on the Alerted awareness to prevent the event from firing every frame.
-                    SetCurrentAwareness(awareness.Alerted);
+					//wake pack up
+					SetCurrentAwareness(awareness.Unknown);
+					WakePackMembers();
 				}
-            }
+
+				//Territory state
+				if (dist < enemyTerritoryRange)
+				{
+					bool enemySighted = false;
+					foreach (GameObject unit in packUnits)
+					{
+						if (enemySighted == true) break; //a unit found a target so we're alerted
+
+						if (unit.GetComponent<scriptEnemy>().target != null)
+							enemySighted = true;
+					}
+
+					if (!enemySighted)
+						SetCurrentAwareness(awareness.InTerritory);
+					else
+					{
+						OnPackAlertedAction?.Invoke(this); //A little hacky, but call this first so that, when future frames come through, we can check on the Alerted awareness to prevent the event from firing every frame.
+						SetCurrentAwareness(awareness.Alerted);
+					}
+				}
+			}
+			else //we should be in full on attack mode regardless of proximity.
+			{
+				OnPackAlertedAction?.Invoke(this); //A little hacky, but call this first so that, when future frames come through, we can check on the Alerted awareness to prevent the event from firing every frame.
+				SetCurrentAwareness(awareness.Alerted);
+			}
 		}
 		else //earth is not in an attackable state, so pull everyone back home.
 		{
-            SetCurrentAwareness(awareness.Unknown);
-        }
-	}
-
-    public void SleepPackMembers()
-	{
-        if (!isSleeping)
-		{
-            isSleeping = true;
-
-            foreach (GameObject unit in packUnits)
-		    {
-                unit.SetActive(false);
-		    }
+			SetCurrentAwareness(awareness.Unknown);
 		}
 	}
 
-    public void WakePackMembers()
+	/// <summary>
+	/// Used to check if the earth is in a state that we care to engage with.
+	/// </summary>
+	/// <returns></returns>
+	public bool IsEarthInPlay()
 	{
-        if (isSleeping)
-		{
-            isSleeping = false;
-
-            foreach (GameObject unit in packUnits)
-            {
-                unit.SetActive(true);
-            }
-        }
+		return scriptEarth.Instance != null && scriptEarth.Instance.currentState != scriptPlanetoid.states.Dead && scriptEarth.Instance.currentState != scriptPlanetoid.states.Safe;
 	}
-    #endregion
 
-    #region Events
-    /// <summary>
-    /// This pack has been altered this frame
-    /// </summary>
-    public void HandlePackAlerted(scriptEnemyPack pack)
-    {
-        if (onPackAlerted != null && currentAwareness != awareness.Alerted)
-        {
-            onPackAlerted.Invoke();
-        }
-    }
-    #endregion
+	public void SleepPackMembers()
+	{
+		if (!isSleeping)
+		{
+			isSleeping = true;
+
+			foreach (GameObject unit in packUnits)
+			{
+				unit.SetActive(false);
+			}
+		}
+	}
+
+	public void WakePackMembers()
+	{
+		if (isSleeping)
+		{
+			isSleeping = false;
+
+			foreach (GameObject unit in packUnits)
+			{
+				unit.SetActive(true);
+			}
+		}
+	}
+	#endregion
+
+	#region Events
+	/// <summary>
+	/// This pack has been altered this frame
+	/// </summary>
+	public void HandlePackAlerted(scriptEnemyPack pack)
+	{
+		if (onPackAlerted != null && currentAwareness != awareness.Alerted)
+		{
+			onPackAlerted.Invoke();
+		}
+	}
+	#endregion
 }

@@ -6,6 +6,7 @@ using UnityEngine;
 public class scriptGate : MonoBehaviour
 {
 	public string countdownText = "30";
+	public bool isCountingDown = false;
 
 	private AudioSource aSrc;
 	private TextMeshProUGUI textUI;
@@ -40,6 +41,8 @@ public class scriptGate : MonoBehaviour
 	#region Coroutines
 	private IEnumerator CountdownRoutine()
 	{
+		isCountingDown = true;
+
 		int currentValue = int.Parse(textUI.text);
 
 		while (currentValue > 0)
